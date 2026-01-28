@@ -46,14 +46,16 @@ export default function ReviewPage() {
 
       const { data, error } = await supabase
         .from("bookings")
-        .select(`
+        .select(
+          `
           id,
           service_id,
           professional_id,
           status,
           service:services(name),
           professional:profiles!bookings_professional_id_fkey(full_name)
-        `)
+        `
+        )
         .eq("id", bookingId)
         .eq("customer_id", user.id)
         .single();
@@ -102,7 +104,8 @@ export default function ReviewPage() {
           <CardContent className="p-12 text-center">
             <h2 className="text-xl font-semibold mb-2">Booking not found</h2>
             <p className="text-gray-600 mb-4">
-              The booking you're looking for doesn't exist or you don't have access to it.
+              The booking you're looking for doesn't exist or you don't have
+              access to it.
             </p>
             <Link href="/customer/bookings">
               <Button>Back to Bookings</Button>
@@ -153,9 +156,12 @@ export default function ReviewPage() {
             </div>
             <h2 className="text-xl font-semibold mb-2">Review Submitted!</h2>
             <p className="text-gray-600 mb-4">
-              Thank you for your feedback. Your review has been submitted successfully.
+              Thank you for your feedback. Your review has been submitted
+              successfully.
             </p>
-            <p className="text-sm text-gray-500">Redirecting to booking details...</p>
+            <p className="text-sm text-gray-500">
+              Redirecting to booking details...
+            </p>
           </CardContent>
         </Card>
       </div>

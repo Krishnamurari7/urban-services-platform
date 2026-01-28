@@ -5,6 +5,7 @@ This document describes the Professional Dashboard features and setup instructio
 ## Features Implemented
 
 ### ✅ Job Requests Management
+
 - View all job requests assigned to the professional
 - Filter bookings by status (all, pending, confirmed, in_progress, completed)
 - Accept/reject pending job requests
@@ -12,12 +13,14 @@ This document describes the Professional Dashboard features and setup instructio
 - View detailed booking information including customer details, address, and special instructions
 
 ### ✅ Job Status Updates
+
 - Accept pending bookings (changes status to "confirmed")
 - Reject pending bookings (changes status to "cancelled")
 - Start confirmed jobs (changes status to "in_progress")
 - Mark jobs as completed (changes status to "completed" and sets completed_at timestamp)
 
 ### ✅ Availability Calendar
+
 - View all availability slots
 - Add new availability slots with date, start time, and end time
 - Support for recurring weekly slots
@@ -26,6 +29,7 @@ This document describes the Professional Dashboard features and setup instructio
 - Status indicators (available, booked, unavailable)
 
 ### ✅ Earnings Dashboard
+
 - Total earnings overview
 - Weekly, monthly, and yearly earnings breakdown
 - Average earnings per job
@@ -34,6 +38,7 @@ This document describes the Professional Dashboard features and setup instructio
 - Period selector (week/month/year)
 
 ### ✅ Document Verification Upload
+
 - Upload verification documents (ID Proof, Certificates, Licenses, Background Checks)
 - View uploaded documents with status (pending, approved, rejected)
 - Document status tracking
@@ -43,6 +48,7 @@ This document describes the Professional Dashboard features and setup instructio
 ## Database Schema
 
 ### New Table: `professional_documents`
+
 Created via migration `006_document_verification.sql`
 
 ```sql
@@ -136,6 +142,7 @@ Navigate to `/professional/dashboard` (requires professional role authentication
 ### Tab Navigation
 
 The dashboard has 5 main tabs:
+
 1. **Overview** - Stats and recent bookings
 2. **Job Requests** - Manage incoming job requests
 3. **Availability** - Manage availability calendar
@@ -192,6 +199,7 @@ All features use Supabase client-side queries with RLS policies for security:
 ## Future Enhancements
 
 Potential improvements:
+
 - Real-time notifications for new job requests
 - Calendar view for availability
 - Export earnings reports

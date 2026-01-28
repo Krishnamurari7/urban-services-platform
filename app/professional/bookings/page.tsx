@@ -3,11 +3,27 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Booking, Profile, Service, Address } from "@/lib/types/database";
-import { Calendar, Clock, MapPin, User, CheckCircle, XCircle, Loader2, Package, Filter } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  User,
+  CheckCircle,
+  XCircle,
+  Loader2,
+  Package,
+  Filter,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface BookingWithDetails extends Booking {
@@ -21,7 +37,9 @@ export default function ProfessionalBookingsPage() {
   const router = useRouter();
   const [bookings, setBookings] = useState<BookingWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<"all" | "pending" | "confirmed" | "in_progress" | "completed" | "cancelled">("all");
+  const [filter, setFilter] = useState<
+    "all" | "pending" | "confirmed" | "in_progress" | "completed" | "cancelled"
+  >("all");
   const [updating, setUpdating] = useState<string | null>(null);
 
   useEffect(() => {
@@ -53,12 +71,14 @@ export default function ProfessionalBookingsPage() {
       const supabase = createClient();
       let query = supabase
         .from("bookings")
-        .select(`
+        .select(
+          `
           *,
           service:services(*),
           customer:profiles!bookings_customer_id_fkey(*),
           address:addresses(*)
-        `)
+        `
+        )
         .eq("professional_id", user.id)
         .order("created_at", { ascending: false });
 
@@ -173,7 +193,16 @@ export default function ProfessionalBookingsPage() {
 
       {/* Filter Tabs */}
       <div className="mb-6 flex gap-2 flex-wrap">
-        {(["all", "pending", "confirmed", "in_progress", "completed", "cancelled"] as const).map((filterOption) => (
+        {(
+          [
+            "all",
+            "pending",
+            "confirmed",
+            "in_progress",
+            "completed",
+            "cancelled",
+          ] as const
+        ).map((filterOption) => (
           <Button
             key={filterOption}
             variant={filter === filterOption ? "default" : "outline"}
@@ -219,8 +248,12 @@ export default function ProfessionalBookingsPage() {
                   <div className="flex items-start gap-2">
                     <User className="h-5 w-5 text-gray-400 mt-0.5" />
                     <div>
-                      <p className="font-medium">{booking.customer?.full_name || "Customer"}</p>
-                      <p className="text-sm text-gray-600">{booking.customer?.phone || "No phone"}</p>
+                      <p className="font-medium">
+                        {booking.customer?.full_name || "Customer"}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {booking.customer?.phone || "No phone"}
+                      </p>
                     </div>
                   </div>
 
@@ -242,9 +275,12 @@ export default function ProfessionalBookingsPage() {
                     <div className="flex items-start gap-2">
                       <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
                       <div>
-                        <p className="text-sm font-medium">{booking.address.label}</p>
+                        <p className="text-sm font-medium">
+                          {booking.address.label}
+                        </p>
                         <p className="text-sm text-gray-600">
-                          {booking.address.address_line1}, {booking.address.city}
+                          {booking.address.address_line1},{" "}
+                          {booking.address.city}
                         </p>
                       </div>
                     </div>
@@ -254,15 +290,21 @@ export default function ProfessionalBookingsPage() {
                   <div className="flex items-center justify-between pt-2 border-t">
                     <div>
                       <p className="text-sm text-gray-600">Total Amount</p>
-                      <p className="text-lg font-bold">${Number(booking.final_amount).toFixed(2)}</p>
+                      <p className="text-lg font-bold">
+                        ${Number(booking.final_amount).toFixed(2)}
+                      </p>
                     </div>
                   </div>
 
                   {/* Special Instructions */}
                   {booking.special_instructions && (
                     <div className="pt-2 border-t">
-                      <p className="text-sm font-medium mb-1">Special Instructions:</p>
-                      <p className="text-sm text-gray-600">{booking.special_instructions}</p>
+                      <p className="text-sm font-medium mb-1">
+                        Special Instructions:
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {booking.special_instructions}
+                      </p>
                     </div>
                   )}
 
@@ -270,7 +312,9 @@ export default function ProfessionalBookingsPage() {
                   {booking.status === "pending" && (
                     <div className="flex gap-2 pt-4">
                       <Button
-                        onClick={() => updateBookingStatus(booking.id, "confirmed")}
+                        onClick={() =>
+                          updateBookingStatus(booking.id, "confirmed")
+                        }
                         disabled={updating === booking.id}
                         className="flex-1"
                       >
@@ -282,7 +326,9 @@ export default function ProfessionalBookingsPage() {
                         Accept
                       </Button>
                       <Button
-                        onClick={() => updateBookingStatus(booking.id, "cancelled")}
+                        onClick={() =>
+                          updateBookingStatus(booking.id, "cancelled")
+                        }
                         disabled={updating === booking.id}
                         variant="destructive"
                         className="flex-1"
@@ -300,7 +346,9 @@ export default function ProfessionalBookingsPage() {
                   {booking.status === "confirmed" && (
                     <div className="flex gap-2 pt-4">
                       <Button
-                        onClick={() => updateBookingStatus(booking.id, "in_progress")}
+                        onClick={() =>
+                          updateBookingStatus(booking.id, "in_progress")
+                        }
                         disabled={updating === booking.id}
                         className="flex-1"
                       >
@@ -317,7 +365,9 @@ export default function ProfessionalBookingsPage() {
                   {booking.status === "in_progress" && (
                     <div className="flex gap-2 pt-4">
                       <Button
-                        onClick={() => updateBookingStatus(booking.id, "completed")}
+                        onClick={() =>
+                          updateBookingStatus(booking.id, "completed")
+                        }
                         disabled={updating === booking.id}
                         className="flex-1"
                       >

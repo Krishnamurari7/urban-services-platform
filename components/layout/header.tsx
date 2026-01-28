@@ -32,7 +32,9 @@ export function Header() {
               className="transition-transform group-hover:scale-110"
               priority
             />
-            <span className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">vera company</span>
+            <span className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
+              vera company
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -57,11 +59,15 @@ export function Header() {
             </Link>
             {user ? (
               <div className="flex items-center space-x-4">
-                <Link href={
-                  role === "admin" ? "/admin/dashboard" :
-                  role === "professional" ? "/professional/dashboard" :
-                  "/customer/dashboard"
-                }>
+                <Link
+                  href={
+                    role === "admin"
+                      ? "/admin/dashboard"
+                      : role === "professional"
+                        ? "/professional/dashboard"
+                        : "/customer/dashboard"
+                  }
+                >
                   <Button variant="ghost" size="sm">
                     <User className="mr-2 h-4 w-4" />
                     Dashboard
@@ -124,16 +130,21 @@ export function Header() {
                 <>
                   <Link
                     href={
-                      role === "admin" ? "/admin/dashboard" :
-                      role === "professional" ? "/professional/dashboard" :
-                      "/customer/dashboard"
+                      role === "admin"
+                        ? "/admin/dashboard"
+                        : role === "professional"
+                          ? "/professional/dashboard"
+                          : "/customer/dashboard"
                     }
                     className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Dashboard
                   </Link>
-                  <form action={signOut} onClick={() => setMobileMenuOpen(false)}>
+                  <form
+                    action={signOut}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     <Button
                       variant="outline"
                       size="sm"
@@ -152,7 +163,10 @@ export function Header() {
                       Sign In
                     </Button>
                   </Link>
-                  <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
+                  <Link
+                    href="/register"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     <Button size="sm" className="w-full">
                       Get Started
                     </Button>

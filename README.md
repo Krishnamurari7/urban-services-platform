@@ -139,6 +139,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ### Deploying to Vercel
 
 1. **Push your code to GitHub**:
+
    ```bash
    git init
    git add .
@@ -155,6 +156,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 3. **Configure Environment Variables**:
    In Vercel project settings, add all environment variables:
+
    ```
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -177,10 +179,11 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ### Database Setup
 
 1. **Run Migrations**:
+
    ```bash
    # Using Supabase CLI (recommended)
    supabase db push
-   
+
    # Or manually run SQL files from supabase/migrations/ in Supabase SQL Editor
    ```
 
@@ -210,12 +213,14 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 #### Deploying to Other Platforms
 
 **Railway**:
+
 1. Connect GitHub repository
 2. Select Node.js template
 3. Add environment variables
 4. Deploy
 
 **Render**:
+
 1. Create new Web Service
 2. Connect GitHub repository
 3. Build command: `npm run build`
@@ -223,6 +228,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 5. Add environment variables
 
 **AWS/Google Cloud/Azure**:
+
 - Use Docker containerization
 - Build Dockerfile with Node.js
 - Deploy container to respective cloud platform

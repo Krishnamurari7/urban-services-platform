@@ -3,7 +3,13 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { Booking, Payment } from "@/lib/types/database";
 import { DollarSign, TrendingUp, Calendar, Package } from "lucide-react";
@@ -30,7 +36,9 @@ export function EarningsDashboard() {
     recentPayments: [],
   });
   const [loading, setLoading] = useState(true);
-  const [selectedPeriod, setSelectedPeriod] = useState<"week" | "month" | "year">("month");
+  const [selectedPeriod, setSelectedPeriod] = useState<
+    "week" | "month" | "year"
+  >("month");
 
   useEffect(() => {
     if (user) {
@@ -66,7 +74,10 @@ export function EarningsDashboard() {
       // Calculate earnings (assuming professional gets 80% of final_amount)
       const PROFESSIONAL_CUT = 0.8;
       const totalEarnings =
-        bookings?.reduce((sum, b) => sum + Number(b.final_amount) * PROFESSIONAL_CUT, 0) || 0;
+        bookings?.reduce(
+          (sum, b) => sum + Number(b.final_amount) * PROFESSIONAL_CUT,
+          0
+        ) || 0;
 
       // Monthly earnings
       const currentMonth = new Date().getMonth();
@@ -81,7 +92,10 @@ export function EarningsDashboard() {
               completedDate.getFullYear() === currentYear
             );
           })
-          .reduce((sum, b) => sum + Number(b.final_amount) * PROFESSIONAL_CUT, 0) || 0;
+          .reduce(
+            (sum, b) => sum + Number(b.final_amount) * PROFESSIONAL_CUT,
+            0
+          ) || 0;
 
       // Weekly earnings
       const oneWeekAgo = new Date();
@@ -92,7 +106,10 @@ export function EarningsDashboard() {
             if (!b.completed_at) return false;
             return new Date(b.completed_at) >= oneWeekAgo;
           })
-          .reduce((sum, b) => sum + Number(b.final_amount) * PROFESSIONAL_CUT, 0) || 0;
+          .reduce(
+            (sum, b) => sum + Number(b.final_amount) * PROFESSIONAL_CUT,
+            0
+          ) || 0;
 
       const completedBookings = bookings?.length || 0;
       const averageEarningPerJob =
@@ -113,10 +130,16 @@ export function EarningsDashboard() {
               const completedDate = new Date(b.completed_at);
               return completedDate >= monthStart && completedDate <= monthEnd;
             })
-            .reduce((sum, b) => sum + Number(b.final_amount) * PROFESSIONAL_CUT, 0) || 0;
+            .reduce(
+              (sum, b) => sum + Number(b.final_amount) * PROFESSIONAL_CUT,
+              0
+            ) || 0;
 
         monthlyBreakdown.push({
-          month: date.toLocaleDateString("en-US", { month: "short", year: "numeric" }),
+          month: date.toLocaleDateString("en-US", {
+            month: "short",
+            year: "numeric",
+          }),
           earnings: monthEarnings,
         });
       }
@@ -150,8 +173,8 @@ export function EarningsDashboard() {
     selectedPeriod === "week"
       ? earnings.weeklyEarnings
       : selectedPeriod === "month"
-      ? earnings.monthlyEarnings
-      : earnings.totalEarnings;
+        ? earnings.monthlyEarnings
+        : earnings.totalEarnings;
 
   return (
     <div className="space-y-6">
@@ -180,30 +203,36 @@ export function EarningsDashboard() {
               {selectedPeriod === "week"
                 ? "Weekly Earnings"
                 : selectedPeriod === "month"
-                ? "Monthly Earnings"
-                : "Total Earnings"}
+                  ? "Monthly Earnings"
+                  : "Total Earnings"}
             </CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${displayEarnings.toFixed(2)}</div>
+            <div className="text-2xl font-bold">
+              ${displayEarnings.toFixed(2)}
+            </div>
             <p className="text-xs text-muted-foreground">
               {selectedPeriod === "week"
                 ? "Last 7 days"
                 : selectedPeriod === "month"
-                ? "This month"
-                : "All time"}
+                  ? "This month"
+                  : "All time"}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Completed Jobs</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Completed Jobs
+            </CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{earnings.completedBookings}</div>
+            <div className="text-2xl font-bold">
+              {earnings.completedBookings}
+            </div>
             <p className="text-xs text-muted-foreground">Total completed</p>
           </CardContent>
         </Card>
@@ -214,18 +243,24 @@ export function EarningsDashboard() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${earnings.averageEarningPerJob.toFixed(2)}</div>
+            <div className="text-2xl font-bold">
+              ${earnings.averageEarningPerJob.toFixed(2)}
+            </div>
             <p className="text-xs text-muted-foreground">Average earnings</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Earnings</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Earnings
+            </CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${earnings.totalEarnings.toFixed(2)}</div>
+            <div className="text-2xl font-bold">
+              ${earnings.totalEarnings.toFixed(2)}
+            </div>
             <p className="text-xs text-muted-foreground">Lifetime earnings</p>
           </CardContent>
         </Card>
@@ -294,14 +329,20 @@ export function EarningsDashboard() {
                   className="flex items-center justify-between p-4 border rounded-lg"
                 >
                   <div>
-                    <p className="font-medium">Payment #{payment.id.slice(0, 8)}</p>
+                    <p className="font-medium">
+                      Payment #{payment.id.slice(0, 8)}
+                    </p>
                     <p className="text-sm text-gray-600">
                       {new Date(payment.created_at).toLocaleDateString()}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-lg">${Number(payment.amount).toFixed(2)}</p>
-                    <Badge className="bg-green-100 text-green-800">{payment.status}</Badge>
+                    <p className="font-bold text-lg">
+                      ${Number(payment.amount).toFixed(2)}
+                    </p>
+                    <Badge className="bg-green-100 text-green-800">
+                      {payment.status}
+                    </Badge>
                   </div>
                 </div>
               ))}

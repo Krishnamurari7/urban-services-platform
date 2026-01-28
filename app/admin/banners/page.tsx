@@ -6,7 +6,7 @@ import { BannerForm } from "./banner-form";
 
 async function getBanners() {
   const supabase = await createClient();
-  
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -43,7 +43,9 @@ export default async function AdminBannersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Homepage Banners CMS</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Homepage Banners CMS
+          </h1>
           <p className="text-gray-600 mt-1">Manage homepage banner content</p>
         </div>
         <BannerForm />
@@ -156,7 +158,9 @@ export default async function AdminBannersPage() {
       {banners.length === 0 && (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-gray-500">No banners created yet. Create your first banner!</p>
+            <p className="text-gray-500">
+              No banners created yet. Create your first banner!
+            </p>
           </CardContent>
         </Card>
       )}

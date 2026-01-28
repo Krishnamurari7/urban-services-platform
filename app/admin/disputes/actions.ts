@@ -6,7 +6,8 @@ import { revalidatePath } from "next/cache";
 export async function processRefund(formData: FormData) {
   const supabase = await createClient();
   const bookingId = formData.get("bookingId") as string;
-  const refundReason = formData.get("reason") as string || "Refund processed by admin";
+  const refundReason =
+    (formData.get("reason") as string) || "Refund processed by admin";
 
   if (!bookingId) {
     return { error: "Booking ID is required" };
@@ -97,7 +98,8 @@ export async function processRefund(formData: FormData) {
 export async function resolveDispute(formData: FormData) {
   const supabase = await createClient();
   const bookingId = formData.get("bookingId") as string;
-  const resolution = formData.get("resolution") as string || "Dispute resolved by admin";
+  const resolution =
+    (formData.get("resolution") as string) || "Dispute resolved by admin";
 
   if (!bookingId) {
     return { error: "Booking ID is required" };

@@ -39,9 +39,10 @@ export default function ServiceDetailClient({ service }: { service: Service }) {
       window.location.href = `/login?redirect=/services/${service.id}`;
       return;
     }
-    const bookingPath = role === "customer" 
-      ? `/customer/book-service?service=${service.id}`
-      : `/login?redirect=/services/${service.id}`;
+    const bookingPath =
+      role === "customer"
+        ? `/customer/book-service?service=${service.id}`
+        : `/login?redirect=/services/${service.id}`;
     window.location.href = bookingPath;
   };
 
@@ -81,9 +82,19 @@ export default function ServiceDetailClient({ service }: { service: Service }) {
           <div className="space-y-6">
             <div>
               <div className="mb-4 flex items-center gap-2 flex-wrap">
-                <Badge variant="secondary" className="px-3 py-1 text-sm capitalize">{service.category}</Badge>
+                <Badge
+                  variant="secondary"
+                  className="px-3 py-1 text-sm capitalize"
+                >
+                  {service.category}
+                </Badge>
                 {service.subcategory && (
-                  <Badge variant="outline" className="px-3 py-1 text-sm capitalize">{service.subcategory}</Badge>
+                  <Badge
+                    variant="outline"
+                    className="px-3 py-1 text-sm capitalize"
+                  >
+                    {service.subcategory}
+                  </Badge>
                 )}
               </div>
               <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
@@ -93,11 +104,14 @@ export default function ServiceDetailClient({ service }: { service: Service }) {
                 <div className="flex items-center gap-2 mb-4">
                   <div className="flex items-center gap-1">
                     <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                    <span className="font-semibold text-lg">{service.rating.toFixed(1)}</span>
+                    <span className="font-semibold text-lg">
+                      {service.rating.toFixed(1)}
+                    </span>
                   </div>
                   {service.reviewCount && (
                     <span className="text-sm text-muted-foreground">
-                      ({service.reviewCount} {service.reviewCount === 1 ? 'review' : 'reviews'})
+                      ({service.reviewCount}{" "}
+                      {service.reviewCount === 1 ? "review" : "reviews"})
                     </span>
                   )}
                 </div>
@@ -109,14 +123,20 @@ export default function ServiceDetailClient({ service }: { service: Service }) {
               <CardContent className="p-6">
                 <div className="flex items-baseline gap-6">
                   <div>
-                    <span className="text-sm text-muted-foreground">Starting from</span>
-                    <div className="text-4xl font-bold">₹{service.base_price}</div>
+                    <span className="text-sm text-muted-foreground">
+                      Starting from
+                    </span>
+                    <div className="text-4xl font-bold">
+                      ₹{service.base_price}
+                    </div>
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground border-l pl-6">
                     <Clock className="h-5 w-5" />
                     <div>
                       <div className="text-sm">Duration</div>
-                      <div className="font-semibold">{service.duration_minutes} minutes</div>
+                      <div className="font-semibold">
+                        {service.duration_minutes} minutes
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -146,19 +166,27 @@ export default function ServiceDetailClient({ service }: { service: Service }) {
                 <ul className="space-y-4">
                   <li className="flex items-start gap-3">
                     <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-muted-foreground">Professional and verified service provider</span>
+                    <span className="text-muted-foreground">
+                      Professional and verified service provider
+                    </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-muted-foreground">On-time service guarantee</span>
+                    <span className="text-muted-foreground">
+                      On-time service guarantee
+                    </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-muted-foreground">Quality assured work</span>
+                    <span className="text-muted-foreground">
+                      Quality assured work
+                    </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-muted-foreground">100% satisfaction guarantee</span>
+                    <span className="text-muted-foreground">
+                      100% satisfaction guarantee
+                    </span>
                   </li>
                 </ul>
               </CardContent>
@@ -168,7 +196,9 @@ export default function ServiceDetailClient({ service }: { service: Service }) {
             <div className="flex flex-wrap gap-3">
               <div className="flex items-center gap-2 rounded-lg border bg-muted/50 px-4 py-3 transition-all hover:shadow-md">
                 <Shield className="h-5 w-5 text-primary" />
-                <span className="text-sm font-medium">Verified Professionals</span>
+                <span className="text-sm font-medium">
+                  Verified Professionals
+                </span>
               </div>
               <div className="flex items-center gap-2 rounded-lg border bg-muted/50 px-4 py-3 transition-all hover:shadow-md">
                 <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />

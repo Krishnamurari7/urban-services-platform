@@ -65,7 +65,7 @@ export async function updateBookingStatus(formData: FormData) {
 export async function cancelBooking(formData: FormData) {
   const supabase = await createClient();
   const bookingId = formData.get("bookingId") as string;
-  const reason = formData.get("reason") as string || "Cancelled by admin";
+  const reason = (formData.get("reason") as string) || "Cancelled by admin";
 
   if (!bookingId) {
     return { error: "Booking ID is required" };

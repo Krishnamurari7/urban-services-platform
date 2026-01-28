@@ -63,7 +63,8 @@ export default function ContactPage() {
               Get in <span className="text-primary">Touch</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-              Have a question or need help? We're here to assist you. Reach out to us and we'll get back to you as soon as possible.
+              Have a question or need help? We're here to assist you. Reach out
+              to us and we'll get back to you as soon as possible.
             </p>
           </div>
         </div>
@@ -74,14 +75,19 @@ export default function ContactPage() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {contactMethods.map((method, index) => (
-              <Card key={index} className="group transition-all hover:shadow-lg hover:-translate-y-1">
+              <Card
+                key={index}
+                className="group transition-all hover:shadow-lg hover:-translate-y-1"
+              >
                 <CardContent className="p-6 text-center">
                   <div className="mb-4 flex justify-center text-primary transition-transform group-hover:scale-110">
                     {method.icon}
                   </div>
                   <h3 className="mb-2 font-semibold text-lg">{method.title}</h3>
                   <p className="mb-1 text-sm font-medium">{method.content}</p>
-                  <p className="text-sm text-muted-foreground">{method.description}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {method.description}
+                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -110,7 +116,9 @@ export default function ContactPage() {
                         type="text"
                         required
                         value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, name: e.target.value })
+                        }
                         placeholder="John Doe"
                         className="h-11"
                       />
@@ -124,7 +132,9 @@ export default function ContactPage() {
                         type="email"
                         required
                         value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, email: e.target.value })
+                        }
                         placeholder="john@example.com"
                         className="h-11"
                       />
@@ -138,7 +148,9 @@ export default function ContactPage() {
                       id="phone"
                       type="tel"
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, phone: e.target.value })
+                      }
                       placeholder="+91 9876543210"
                       className="h-11"
                     />
@@ -152,7 +164,9 @@ export default function ContactPage() {
                       type="text"
                       required
                       value={formData.subject}
-                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, subject: e.target.value })
+                      }
                       placeholder="What is this regarding?"
                       className="h-11"
                     />
@@ -165,13 +179,19 @@ export default function ContactPage() {
                       id="message"
                       required
                       value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, message: e.target.value })
+                      }
                       placeholder="Tell us how we can help..."
                       rows={6}
                       className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
-                  <Button type="submit" className="w-full h-12 text-base shadow-lg hover:shadow-xl transition-all" size="lg">
+                  <Button
+                    type="submit"
+                    className="w-full h-12 text-base shadow-lg hover:shadow-xl transition-all"
+                    size="lg"
+                  >
                     Send Message
                     <Send className="ml-2 h-4 w-4" />
                   </Button>

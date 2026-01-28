@@ -65,10 +65,16 @@ export default function TermsOfServicePage() {
               Terms of <span className="text-primary">Service</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-              Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+              Last updated:{" "}
+              {new Date().toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
             </p>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-              Please read these terms carefully before using our platform and services.
+              Please read these terms carefully before using our platform and
+              services.
             </p>
           </div>
         </div>
@@ -81,7 +87,11 @@ export default function TermsOfServicePage() {
             <div className="mb-8">
               <h2 className="mb-4 text-2xl font-bold">Introduction</h2>
               <p className="text-muted-foreground leading-relaxed">
-                These Terms of Service ("Terms") govern your access to and use of vera company's platform and services. By using our platform, you agree to comply with and be bound by these Terms. If you disagree with any part of these terms, you may not access or use our services.
+                These Terms of Service ("Terms") govern your access to and use
+                of vera company's platform and services. By using our platform,
+                you agree to comply with and be bound by these Terms. If you
+                disagree with any part of these terms, you may not access or use
+                our services.
               </p>
             </div>
 
@@ -96,7 +106,10 @@ export default function TermsOfServicePage() {
                   </div>
                   <ul className="ml-4 space-y-2">
                     {section.content.map((item, itemIndex) => (
-                      <li key={itemIndex} className="list-disc text-muted-foreground leading-relaxed">
+                      <li
+                        key={itemIndex}
+                        className="list-disc text-muted-foreground leading-relaxed"
+                      >
                         {item}
                       </li>
                     ))}
@@ -122,7 +135,8 @@ export default function TermsOfServicePage() {
                     Keep your password secure and confidential
                   </li>
                   <li className="list-disc text-muted-foreground leading-relaxed">
-                    Notify us immediately of any unauthorized use of your account
+                    Notify us immediately of any unauthorized use of your
+                    account
                   </li>
                   <li className="list-disc text-muted-foreground leading-relaxed">
                     Accept responsibility for all activities under your account
@@ -133,7 +147,9 @@ export default function TermsOfServicePage() {
 
             <Card className="mb-6">
               <CardContent className="p-6">
-                <h3 className="mb-4 text-xl font-semibold">Prohibited Activities</h3>
+                <h3 className="mb-4 text-xl font-semibold">
+                  Prohibited Activities
+                </h3>
                 <p className="mb-4 text-muted-foreground leading-relaxed">
                   You agree not to:
                 </p>
@@ -162,9 +178,15 @@ export default function TermsOfServicePage() {
 
             <Card className="mb-6">
               <CardContent className="p-6">
-                <h3 className="mb-4 text-xl font-semibold">Intellectual Property</h3>
+                <h3 className="mb-4 text-xl font-semibold">
+                  Intellectual Property
+                </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  All content on the platform, including text, graphics, logos, and software, is the property of vera company or its licensors and is protected by copyright and trademark laws. You may not reproduce, distribute, or create derivative works without our written permission.
+                  All content on the platform, including text, graphics, logos,
+                  and software, is the property of vera company or its licensors
+                  and is protected by copyright and trademark laws. You may not
+                  reproduce, distribute, or create derivative works without our
+                  written permission.
                 </p>
               </CardContent>
             </Card>
@@ -173,16 +195,24 @@ export default function TermsOfServicePage() {
               <CardContent className="p-6">
                 <h3 className="mb-4 text-xl font-semibold">Termination</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  We reserve the right to terminate or suspend your account and access to the platform immediately, without prior notice, for conduct that we believe violates these Terms or is harmful to other users, us, or third parties, or for any other reason.
+                  We reserve the right to terminate or suspend your account and
+                  access to the platform immediately, without prior notice, for
+                  conduct that we believe violates these Terms or is harmful to
+                  other users, us, or third parties, or for any other reason.
                 </p>
               </CardContent>
             </Card>
 
             <Card className="mb-6">
               <CardContent className="p-6">
-                <h3 className="mb-4 text-xl font-semibold">Dispute Resolution</h3>
+                <h3 className="mb-4 text-xl font-semibold">
+                  Dispute Resolution
+                </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Any disputes arising from these Terms or your use of the platform will be resolved through binding arbitration in accordance with applicable laws. You agree to waive any right to a jury trial or to participate in a class action lawsuit.
+                  Any disputes arising from these Terms or your use of the
+                  platform will be resolved through binding arbitration in
+                  accordance with applicable laws. You agree to waive any right
+                  to a jury trial or to participate in a class action lawsuit.
                 </p>
               </CardContent>
             </Card>
@@ -191,16 +221,22 @@ export default function TermsOfServicePage() {
               <CardContent className="p-6">
                 <h3 className="mb-4 text-xl font-semibold">Changes to Terms</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  We reserve the right to modify these Terms at any time. We will notify users of significant changes via email or through a notice on the platform. Your continued use of the platform after changes constitutes acceptance of the new Terms.
+                  We reserve the right to modify these Terms at any time. We
+                  will notify users of significant changes via email or through
+                  a notice on the platform. Your continued use of the platform
+                  after changes constitutes acceptance of the new Terms.
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardContent className="p-6">
-                <h3 className="mb-4 text-xl font-semibold">Contact Information</h3>
+                <h3 className="mb-4 text-xl font-semibold">
+                  Contact Information
+                </h3>
                 <p className="mb-4 text-muted-foreground leading-relaxed">
-                  If you have any questions about these Terms of Service, please contact us:
+                  If you have any questions about these Terms of Service, please
+                  contact us:
                 </p>
                 <ul className="space-y-2 text-muted-foreground">
                   <li>Email: legal@veracompany.com</li>

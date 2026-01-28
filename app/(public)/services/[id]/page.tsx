@@ -5,7 +5,7 @@ import ServiceDetailClient from "./service-detail-client";
 
 async function getService(id: string) {
   const supabase = await createClient();
-  
+
   const { data: service, error } = await supabase
     .from("services")
     .select("*")
@@ -24,9 +24,10 @@ async function getService(id: string) {
     .eq("service_id", id)
     .eq("is_visible", true);
 
-  const rating = reviews && reviews.length > 0
-    ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
-    : null;
+  const rating =
+    reviews && reviews.length > 0
+      ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+      : null;
 
   return {
     ...service,
@@ -49,7 +50,8 @@ export async function generateMetadata({
   }
 
   const title = `${service.name} - ${service.category} Service | vera company`;
-  const description = service.description || 
+  const description =
+    service.description ||
     `Book ${service.name} service starting at ₹${service.base_price}. Professional ${service.category.toLowerCase()} service with verified professionals.`;
 
   return {

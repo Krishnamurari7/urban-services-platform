@@ -78,7 +78,7 @@ function ProfessionalLayoutContent({
   };
 
   return (
-      <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Sidebar Navigation */}
       <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
         <div className="flex flex-col flex-grow border-r border-gray-200 bg-white">
@@ -87,7 +87,9 @@ function ProfessionalLayoutContent({
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
                 <span className="text-lg font-bold">U</span>
               </div>
-              <span className="ml-2 text-xl font-bold">Professional Portal</span>
+              <span className="ml-2 text-xl font-bold">
+                Professional Portal
+              </span>
             </Link>
           </div>
 
@@ -119,7 +121,8 @@ function ProfessionalLayoutContent({
                     <div className="flex items-center mt-1">
                       <span className="text-xs text-yellow-500">★</span>
                       <span className="text-xs text-gray-600 ml-1">
-                        {profile.rating_average.toFixed(1)} ({profile.total_reviews})
+                        {profile.rating_average.toFixed(1)} (
+                        {profile.total_reviews})
                       </span>
                     </div>
                   )}
@@ -131,7 +134,9 @@ function ProfessionalLayoutContent({
           <div className="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto">
             <nav className="flex-1 px-2 space-y-1">
               {navigation.map((item) => {
-                const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+                const isActive =
+                  pathname === item.href ||
+                  pathname.startsWith(item.href + "/");
                 return (
                   <Link
                     key={item.name}
@@ -146,7 +151,9 @@ function ProfessionalLayoutContent({
                     <item.icon
                       className={cn(
                         "mr-3 h-5 w-5 flex-shrink-0",
-                        isActive ? "text-blue-500" : "text-gray-400 group-hover:text-gray-500"
+                        isActive
+                          ? "text-blue-500"
+                          : "text-gray-400 group-hover:text-gray-500"
                       )}
                     />
                     {item.name}
@@ -219,7 +226,8 @@ function ProfessionalLayoutContent({
                   <div className="flex items-center mt-1">
                     <span className="text-xs text-yellow-500">★</span>
                     <span className="text-xs text-gray-600 ml-1">
-                      {profile.rating_average.toFixed(1)} ({profile.total_reviews})
+                      {profile.rating_average.toFixed(1)} (
+                      {profile.total_reviews})
                     </span>
                   </div>
                 )}
@@ -232,7 +240,8 @@ function ProfessionalLayoutContent({
         {mobileMenuOpen && (
           <div className="px-2 pt-2 pb-3 space-y-1 border-t border-gray-200">
             {navigation.map((item) => {
-              const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+              const isActive =
+                pathname === item.href || pathname.startsWith(item.href + "/");
               return (
                 <Link
                   key={item.name}

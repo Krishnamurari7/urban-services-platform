@@ -7,7 +7,7 @@ import { suspendUser, activateUser } from "./actions";
 
 async function getUsers() {
   const supabase = await createClient();
-  
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -56,12 +56,16 @@ async function getUsers() {
       let email = "N/A";
       try {
         // Try to get email using admin API
-        const { data: authUser, error } = await supabase.auth.admin.getUserById(profile.id);
+        const { data: authUser, error } = await supabase.auth.admin.getUserById(
+          profile.id
+        );
         if (!error && authUser?.user?.email) {
           email = authUser.user.email;
         } else {
           // Fallback: Use SQL query if admin API doesn't work
-          const { data: emailData } = await supabase.rpc('get_user_email', { user_id: profile.id });
+          const { data: emailData } = await supabase.rpc("get_user_email", {
+            user_id: profile.id,
+          });
           if (emailData) email = emailData;
         }
       } catch (error) {
@@ -80,7 +84,8 @@ async function getUsers() {
         .select("*", { count: "exact", head: true })
         .eq("professional_id", profile.id);
 
-      const totalBookings = (customerBookings || 0) + (professionalBookings || 0);
+      const totalBookings =
+        (customerBookings || 0) + (professionalBookings || 0);
 
       // Get completed bookings count
       const { count: completedBookings } = await supabase
@@ -116,7 +121,9 @@ export default async function AdminUsersPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-        <p className="text-gray-600 mt-1">Manage all users, customers, and professionals</p>
+        <p className="text-gray-600 mt-1">
+          Manage all users, customers, and professionals
+        </p>
       </div>
 
       {/* Stats */}
@@ -201,26 +208,32 @@ export default async function AdminUsersPage() {
                 <tbody>
                   {customers.map((user: any) => (
                     <tr key={user.id} className="border-b hover:bg-gray-50">
-                      <td className="p-2 font-medium">{user.full_name || "N/A"}</td>
+                      <td className="p-2 font-medium">
+                        {user.full_name || "N/A"}
+                      </td>
                       <td className="p-2 text-sm">{user.email || "N/A"}</td>
                       <td className="p-2 text-sm">{user.phone || "N/A"}</td>
-                      <td className="p-2 text-sm">{user.customerBookings || 0}</td>
-                      <td className="p-2 text-sm text-green-600">{user.completedBookings || 0}</td>
+                      <td className="p-2 text-sm">
+                        {user.customerBookings || 0}
+                      </td>
+                      <td className="p-2 text-sm text-green-600">
+                        {user.completedBookings || 0}
+                      </td>
                       <td className="p-2">
                         <span
                           className={`px-2 py-1 rounded text-xs ${
                             user.is_active && user.is_verified
                               ? "bg-green-100 text-green-700"
                               : user.is_active
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-red-100 text-red-700"
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-red-100 text-red-700"
                           }`}
                         >
                           {user.is_active && user.is_verified
                             ? "Active"
                             : user.is_active
-                            ? "Pending"
-                            : "Suspended"}
+                              ? "Pending"
+                              : "Suspended"}
                         </span>
                       </td>
                       <td className="p-2 text-sm text-gray-500">
@@ -234,15 +247,23 @@ export default async function AdminUsersPage() {
                             </Button>
                           </Link>
                           {user.is_active ? (
-                            <form action={suspendUser}>
-                              <input type="hidden" name="userId" value={user.id} />
+                            <form action={async (formData) => { await suspendUser(formData); }}>
+                              <input
+                                type="hidden"
+                                name="userId"
+                                value={user.id}
+                              />
                               <Button type="submit" variant="outline" size="sm">
                                 Suspend
                               </Button>
                             </form>
                           ) : (
-                            <form action={activateUser}>
-                              <input type="hidden" name="userId" value={user.id} />
+                            <form action={async (formData) => { await activateUser(formData); }}>
+                              <input
+                                type="hidden"
+                                name="userId"
+                                value={user.id}
+                              />
                               <Button type="submit" variant="default" size="sm">
                                 Activate
                               </Button>
@@ -284,22 +305,33 @@ export default async function AdminUsersPage() {
                 <tbody>
                   {professionals.map((user: any) => (
                     <tr key={user.id} className="border-b hover:bg-gray-50">
-                      <td className="p-2 font-medium">{user.full_name || "N/A"}</td>
+                      <td className="p-2 font-medium">
+                        {user.full_name || "N/A"}
+                      </td>
                       <td className="p-2 text-sm">{user.email || "N/A"}</td>
                       <td className="p-2 text-sm">{user.phone || "N/A"}</td>
                       <td className="p-2">
                         {user.rating_average ? (
                           <span className="text-sm font-medium">
-                            {user.rating_average.toFixed(1)} ⭐ ({user.total_reviews || 0})
+                            {user.rating_average.toFixed(1)} ⭐ (
+                            {user.total_reviews || 0})
                           </span>
                         ) : (
-                          <span className="text-sm text-gray-400">No ratings</span>
+                          <span className="text-sm text-gray-400">
+                            No ratings
+                          </span>
                         )}
                       </td>
-                      <td className="p-2 text-sm">{user.professionalBookings || 0}</td>
-                      <td className="p-2 text-sm text-green-600">{user.completedBookings || 0}</td>
                       <td className="p-2 text-sm">
-                        {user.experience_years ? `${user.experience_years} years` : "N/A"}
+                        {user.professionalBookings || 0}
+                      </td>
+                      <td className="p-2 text-sm text-green-600">
+                        {user.completedBookings || 0}
+                      </td>
+                      <td className="p-2 text-sm">
+                        {user.experience_years
+                          ? `${user.experience_years} years`
+                          : "N/A"}
                       </td>
                       <td className="p-2">
                         <span
@@ -307,15 +339,15 @@ export default async function AdminUsersPage() {
                             user.is_active && user.is_verified
                               ? "bg-green-100 text-green-700"
                               : user.is_active
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-red-100 text-red-700"
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-red-100 text-red-700"
                           }`}
                         >
                           {user.is_active && user.is_verified
                             ? "Active"
                             : user.is_active
-                            ? "Pending"
-                            : "Suspended"}
+                              ? "Pending"
+                              : "Suspended"}
                         </span>
                       </td>
                       <td className="p-2">
@@ -326,15 +358,23 @@ export default async function AdminUsersPage() {
                             </Button>
                           </Link>
                           {user.is_active ? (
-                            <form action={suspendUser}>
-                              <input type="hidden" name="userId" value={user.id} />
+                            <form action={async (formData) => { await suspendUser(formData); }}>
+                              <input
+                                type="hidden"
+                                name="userId"
+                                value={user.id}
+                              />
                               <Button type="submit" variant="outline" size="sm">
                                 Suspend
                               </Button>
                             </form>
                           ) : (
-                            <form action={activateUser}>
-                              <input type="hidden" name="userId" value={user.id} />
+                            <form action={async (formData) => { await activateUser(formData); }}>
+                              <input
+                                type="hidden"
+                                name="userId"
+                                value={user.id}
+                              />
                               <Button type="submit" variant="default" size="sm">
                                 Activate
                               </Button>
@@ -374,7 +414,9 @@ export default async function AdminUsersPage() {
               <tbody>
                 {users.map((user: any) => (
                   <tr key={user.id} className="border-b hover:bg-gray-50">
-                    <td className="p-2 font-medium">{user.full_name || "N/A"}</td>
+                    <td className="p-2 font-medium">
+                      {user.full_name || "N/A"}
+                    </td>
                     <td className="p-2 text-sm">{user.email || "N/A"}</td>
                     <td className="p-2 text-sm">{user.phone || "N/A"}</td>
                     <td className="p-2">
@@ -383,8 +425,8 @@ export default async function AdminUsersPage() {
                           user.role === "admin"
                             ? "bg-purple-100 text-purple-700"
                             : user.role === "professional"
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-green-100 text-green-700"
+                              ? "bg-blue-100 text-blue-700"
+                              : "bg-green-100 text-green-700"
                         }`}
                       >
                         {user.role}
@@ -397,15 +439,15 @@ export default async function AdminUsersPage() {
                           user.is_active && user.is_verified
                             ? "bg-green-100 text-green-700"
                             : user.is_active
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-red-100 text-red-700"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-red-100 text-red-700"
                         }`}
                       >
                         {user.is_active && user.is_verified
                           ? "Active"
                           : user.is_active
-                          ? "Pending"
-                          : "Suspended"}
+                            ? "Pending"
+                            : "Suspended"}
                       </span>
                     </td>
                     <td className="p-2 text-sm text-gray-500">
@@ -427,15 +469,23 @@ export default async function AdminUsersPage() {
                           </Link>
                         ) : null}
                         {user.is_active ? (
-                          <form action={suspendUser}>
-                            <input type="hidden" name="userId" value={user.id} />
+                          <form action={async (formData) => { await suspendUser(formData); }}>
+                            <input
+                              type="hidden"
+                              name="userId"
+                              value={user.id}
+                            />
                             <Button type="submit" variant="outline" size="sm">
                               Suspend
                             </Button>
                           </form>
                         ) : (
-                          <form action={activateUser}>
-                            <input type="hidden" name="userId" value={user.id} />
+                          <form action={async (formData) => { await activateUser(formData); }}>
+                            <input
+                              type="hidden"
+                              name="userId"
+                              value={user.id}
+                            />
                             <Button type="submit" variant="default" size="sm">
                               Activate
                             </Button>

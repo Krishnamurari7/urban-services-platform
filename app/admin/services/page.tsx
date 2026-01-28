@@ -8,7 +8,7 @@ import { DeleteServiceButton } from "@/components/admin/delete-service-button";
 
 async function getServices() {
   const supabase = await createClient();
-  
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -42,7 +42,9 @@ export default async function AdminServicesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Service Management</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Service Management
+          </h1>
           <p className="text-gray-600 mt-1">Manage services and pricing</p>
         </div>
         <ServiceForm />
@@ -82,8 +84,8 @@ export default async function AdminServicesPage() {
                           service.status === "active"
                             ? "bg-green-100 text-green-700"
                             : service.status === "suspended"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-gray-100 text-gray-700"
+                              ? "bg-red-100 text-red-700"
+                              : "bg-gray-100 text-gray-700"
                         }`}
                       >
                         {service.status}

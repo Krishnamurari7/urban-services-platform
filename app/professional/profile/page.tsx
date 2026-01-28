@@ -3,12 +3,27 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import type { Profile } from "@/lib/types/database";
-import { User, Edit, Check, X, Briefcase, DollarSign, Award, Star } from "lucide-react";
+import {
+  User,
+  Edit,
+  Check,
+  X,
+  Briefcase,
+  DollarSign,
+  Award,
+  Star,
+} from "lucide-react";
 
 export default function ProfessionalProfilePage() {
   const { user, role, loading: authLoading } = useAuth();
@@ -101,7 +116,9 @@ export default function ProfessionalProfilePage() {
           experience_years: profileForm.experience_years
             ? parseInt(profileForm.experience_years)
             : null,
-          hourly_rate: profileForm.hourly_rate ? parseFloat(profileForm.hourly_rate) : null,
+          hourly_rate: profileForm.hourly_rate
+            ? parseFloat(profileForm.hourly_rate)
+            : null,
           skills: profileForm.skills.length > 0 ? profileForm.skills : null,
           updated_at: new Date().toISOString(),
         })
@@ -120,7 +137,10 @@ export default function ProfessionalProfilePage() {
   };
 
   const handleAddSkill = () => {
-    if (profileForm.newSkill.trim() && !profileForm.skills.includes(profileForm.newSkill.trim())) {
+    if (
+      profileForm.newSkill.trim() &&
+      !profileForm.skills.includes(profileForm.newSkill.trim())
+    ) {
       setProfileForm({
         ...profileForm,
         skills: [...profileForm.skills, profileForm.newSkill.trim()],
@@ -164,7 +184,9 @@ export default function ProfessionalProfilePage() {
                 <User className="h-5 w-5" />
                 Profile Information
               </CardTitle>
-              <CardDescription>Manage your professional profile</CardDescription>
+              <CardDescription>
+                Manage your professional profile
+              </CardDescription>
             </div>
             {!editingProfile ? (
               <Button variant="outline" onClick={() => setEditingProfile(true)}>
@@ -173,7 +195,10 @@ export default function ProfessionalProfilePage() {
               </Button>
             ) : (
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setEditingProfile(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setEditingProfile(false)}
+                >
                   <X className="h-4 w-4 mr-2" />
                   Cancel
                 </Button>
@@ -189,11 +214,16 @@ export default function ProfessionalProfilePage() {
           {editingProfile ? (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Full Name</label>
+                <label className="block text-sm font-medium mb-2">
+                  Full Name
+                </label>
                 <Input
                   value={profileForm.full_name}
                   onChange={(e) =>
-                    setProfileForm((prev) => ({ ...prev, full_name: e.target.value }))
+                    setProfileForm((prev) => ({
+                      ...prev,
+                      full_name: e.target.value,
+                    }))
                   }
                   placeholder="Enter your full name"
                 />
@@ -203,18 +233,26 @@ export default function ProfessionalProfilePage() {
                 <Input
                   value={profileForm.phone}
                   onChange={(e) =>
-                    setProfileForm((prev) => ({ ...prev, phone: e.target.value }))
+                    setProfileForm((prev) => ({
+                      ...prev,
+                      phone: e.target.value,
+                    }))
                   }
                   placeholder="Enter your phone number"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Date of Birth</label>
+                <label className="block text-sm font-medium mb-2">
+                  Date of Birth
+                </label>
                 <Input
                   type="date"
                   value={profileForm.date_of_birth}
                   onChange={(e) =>
-                    setProfileForm((prev) => ({ ...prev, date_of_birth: e.target.value }))
+                    setProfileForm((prev) => ({
+                      ...prev,
+                      date_of_birth: e.target.value,
+                    }))
                   }
                 />
               </div>
@@ -239,7 +277,10 @@ export default function ProfessionalProfilePage() {
                   type="number"
                   value={profileForm.experience_years}
                   onChange={(e) =>
-                    setProfileForm((prev) => ({ ...prev, experience_years: e.target.value }))
+                    setProfileForm((prev) => ({
+                      ...prev,
+                      experience_years: e.target.value,
+                    }))
                   }
                   placeholder="e.g., 5"
                   min="0"
@@ -254,7 +295,10 @@ export default function ProfessionalProfilePage() {
                   type="number"
                   value={profileForm.hourly_rate}
                   onChange={(e) =>
-                    setProfileForm((prev) => ({ ...prev, hourly_rate: e.target.value }))
+                    setProfileForm((prev) => ({
+                      ...prev,
+                      hourly_rate: e.target.value,
+                    }))
                   }
                   placeholder="e.g., 25.00"
                   min="0"
@@ -270,7 +314,10 @@ export default function ProfessionalProfilePage() {
                   <Input
                     value={profileForm.newSkill}
                     onChange={(e) =>
-                      setProfileForm((prev) => ({ ...prev, newSkill: e.target.value }))
+                      setProfileForm((prev) => ({
+                        ...prev,
+                        newSkill: e.target.value,
+                      }))
                     }
                     placeholder="Add a skill"
                     onKeyPress={(e) => {
@@ -286,7 +333,11 @@ export default function ProfessionalProfilePage() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {profileForm.skills.map((skill) => (
-                    <Badge key={skill} variant="secondary" className="flex items-center gap-1">
+                    <Badge
+                      key={skill}
+                      variant="secondary"
+                      className="flex items-center gap-1"
+                    >
                       {skill}
                       <button
                         onClick={() => handleRemoveSkill(skill)}
@@ -314,13 +365,17 @@ export default function ProfessionalProfilePage() {
                   </div>
                 )}
                 <div className="flex-1">
-                  <h2 className="text-2xl font-bold">{profile?.full_name || "Not set"}</h2>
-                  {profile?.rating_average > 0 && (
+                  <h2 className="text-2xl font-bold">
+                    {profile?.full_name || "Not set"}
+                  </h2>
+                  {(profile?.rating_average ?? 0) > 0 && (
                     <div className="flex items-center gap-2 mt-1">
                       <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
-                      <span className="font-semibold">{profile.rating_average.toFixed(1)}</span>
+                      <span className="font-semibold">
+                        {(profile?.rating_average ?? 0).toFixed(1)}
+                      </span>
                       <span className="text-sm text-gray-500">
-                        ({profile.total_reviews} reviews)
+                        ({profile?.total_reviews ?? 0} reviews)
                       </span>
                     </div>
                   )}
@@ -350,7 +405,9 @@ export default function ProfessionalProfilePage() {
                       <Award className="h-4 w-4" />
                       Experience
                     </p>
-                    <p className="font-semibold">{profile.experience_years} years</p>
+                    <p className="font-semibold">
+                      {profile.experience_years} years
+                    </p>
                   </div>
                 )}
                 {profile?.hourly_rate && (
@@ -359,7 +416,9 @@ export default function ProfessionalProfilePage() {
                       <DollarSign className="h-4 w-4" />
                       Hourly Rate
                     </p>
-                    <p className="font-semibold">${profile.hourly_rate.toFixed(2)}/hr</p>
+                    <p className="font-semibold">
+                      ${profile.hourly_rate.toFixed(2)}/hr
+                    </p>
                   </div>
                 )}
               </div>

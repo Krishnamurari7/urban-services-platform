@@ -8,7 +8,7 @@ import { processRefund, resolveDispute } from "./actions";
 // In a full implementation, you'd have a separate disputes table
 async function getDisputes() {
   const supabase = await createClient();
-  
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -87,15 +87,21 @@ export default async function AdminDisputesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Refund & Dispute Handling</h1>
-        <p className="text-gray-600 mt-1">Manage refunds and resolve disputes</p>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Refund & Dispute Handling
+        </h1>
+        <p className="text-gray-600 mt-1">
+          Manage refunds and resolve disputes
+        </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Disputes</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Pending Disputes
+            </CardTitle>
             <span className="text-2xl">⏳</span>
           </CardHeader>
           <CardContent>
@@ -117,12 +123,17 @@ export default async function AdminDisputesPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Refunded</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Refunded
+            </CardTitle>
             <span className="text-2xl">💰</span>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              ₹{refunds.reduce((sum, r) => sum + (r.refund_amount || 0), 0).toLocaleString()}
+              ₹
+              {refunds
+                .reduce((sum, r) => sum + (r.refund_amount || 0), 0)
+                .toLocaleString()}
             </div>
             <p className="text-xs text-gray-500 mt-1">All time</p>
           </CardContent>
@@ -145,7 +156,9 @@ export default async function AdminDisputesPage() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-4 mb-2">
-                        <h3 className="font-semibold">Booking #{dispute.id.substring(0, 8)}</h3>
+                        <h3 className="font-semibold">
+                          Booking #{dispute.id.substring(0, 8)}
+                        </h3>
                         <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">
                           Cancelled
                         </span>
@@ -160,10 +173,12 @@ export default async function AdminDisputesPage() {
                           {dispute.professional?.full_name}
                         </div>
                         <div>
-                          <span className="text-gray-600">Service:</span> {dispute.service?.name}
+                          <span className="text-gray-600">Service:</span>{" "}
+                          {dispute.service?.name}
                         </div>
                         <div>
-                          <span className="text-gray-600">Amount:</span> ₹{dispute.final_amount}
+                          <span className="text-gray-600">Amount:</span> ₹
+                          {dispute.final_amount}
                         </div>
                       </div>
                       {dispute.cancellation_reason && (
@@ -176,14 +191,22 @@ export default async function AdminDisputesPage() {
                       )}
                     </div>
                     <div className="flex gap-2 ml-4">
-                      <form action={processRefund}>
-                        <input type="hidden" name="bookingId" value={dispute.id} />
+                      <form action={async (formData) => { await processRefund(formData); }}>
+                        <input
+                          type="hidden"
+                          name="bookingId"
+                          value={dispute.id}
+                        />
                         <Button type="submit" variant="default">
                           Process Refund
                         </Button>
                       </form>
-                      <form action={resolveDispute}>
-                        <input type="hidden" name="bookingId" value={dispute.id} />
+                      <form action={async (formData) => { await resolveDispute(formData); }}>
+                        <input
+                          type="hidden"
+                          name="bookingId"
+                          value={dispute.id}
+                        />
                         <Button type="submit" variant="outline">
                           Resolve
                         </Button>
@@ -224,7 +247,9 @@ export default async function AdminDisputesPage() {
                       <td className="p-2 text-sm font-mono">
                         {refund.id.substring(0, 8)}...
                       </td>
-                      <td className="p-2">{booking?.customer?.full_name || "N/A"}</td>
+                      <td className="p-2">
+                        {booking?.customer?.full_name || "N/A"}
+                      </td>
                       <td className="p-2">{booking?.service?.name || "N/A"}</td>
                       <td className="p-2">₹{refund.amount}</td>
                       <td className="p-2 font-medium text-red-600">

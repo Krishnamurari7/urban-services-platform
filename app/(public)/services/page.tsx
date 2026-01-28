@@ -28,11 +28,18 @@ export default function ServicesPage() {
   const searchParams = useSearchParams();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "all");
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || ""
+  );
+  const [selectedCategory, setSelectedCategory] = useState(
+    searchParams.get("category") || "all"
+  );
   const [location, setLocation] = useState(searchParams.get("location") || "");
   const [minRating, setMinRating] = useState<number | null>(null);
-  const [priceRange, setPriceRange] = useState<{ min: number | null; max: number | null }>({
+  const [priceRange, setPriceRange] = useState<{
+    min: number | null;
+    max: number | null;
+  }>({
     min: null,
     max: null,
   });
@@ -40,27 +47,20 @@ export default function ServicesPage() {
 
   const supabase = createClient();
 
-  useEffect(() => {
-    fetchServices();
-    fetchCategories();
-  }, [selectedCategory, searchQuery, location, minRating, priceRange]);
-
   const fetchCategories = async () => {
     const { data } = await supabase
       .from("services")
       .select("category")
       .eq("status", "active");
     if (data) {
-      const uniqueCategories = Array.from(
-        new Set(data.map((s) => s.category))
-      );
+      const uniqueCategories = Array.from(new Set(data.map((s) => s.category)));
       setCategories(uniqueCategories);
     }
   };
 
   const fetchServices = async () => {
     setLoading(true);
-    
+
     // Start with base query
     let query = supabase
       .from("services")
@@ -93,7 +93,7 @@ export default function ServicesPage() {
       setServices([]);
     } else {
       let filteredServices = data || [];
-      
+
       // Fetch ratings for services
       const serviceIds = filteredServices.map((s: any) => s.id);
       if (serviceIds.length > 0) {
@@ -106,7 +106,10 @@ export default function ServicesPage() {
         // Calculate average ratings
         const ratingsMap = new Map<string, { sum: number; count: number }>();
         reviewsData?.forEach((review: any) => {
-          const existing = ratingsMap.get(review.service_id) || { sum: 0, count: 0 };
+          const existing = ratingsMap.get(review.service_id) || {
+            sum: 0,
+            count: 0,
+          };
           ratingsMap.set(review.service_id, {
             sum: existing.sum + review.rating,
             count: existing.count + 1,
@@ -116,7 +119,9 @@ export default function ServicesPage() {
         // Add ratings to services
         filteredServices = filteredServices.map((service: any) => {
           const ratingData = ratingsMap.get(service.id);
-          const rating = ratingData ? ratingData.sum / ratingData.count : undefined;
+          const rating = ratingData
+            ? ratingData.sum / ratingData.count
+            : undefined;
           const reviewCount = ratingData?.count || 0;
           return { ...service, rating, reviewCount };
         });
@@ -124,22 +129,25 @@ export default function ServicesPage() {
         // Filter by minimum rating
         if (minRating !== null) {
           filteredServices = filteredServices.filter(
-            (service: any) => service.rating !== undefined && service.rating >= minRating
+            (service: any) =>
+              service.rating !== undefined && service.rating >= minRating
           );
         }
       }
-      
+
       // Filter by location if provided
       if (location) {
         const locationLower = location.toLowerCase();
-        
+
         // Fetch professionals with addresses matching location
         const { data: professionalsData } = await supabase
           .from("profiles")
-          .select(`
+          .select(
+            `
             id,
             addresses:addresses(city, state)
-          `)
+          `
+          )
           .eq("role", "professional")
           .eq("is_active", true);
 
@@ -147,9 +155,10 @@ export default function ServicesPage() {
           const matchingProfessionalIds = professionalsData
             .filter((prof: any) => {
               if (!prof.addresses || prof.addresses.length === 0) return false;
-              return prof.addresses.some((addr: any) => 
-                addr.city?.toLowerCase().includes(locationLower) ||
-                addr.state?.toLowerCase().includes(locationLower)
+              return prof.addresses.some(
+                (addr: any) =>
+                  addr.city?.toLowerCase().includes(locationLower) ||
+                  addr.state?.toLowerCase().includes(locationLower)
               );
             })
             .map((prof: any) => prof.id);
@@ -163,7 +172,11 @@ export default function ServicesPage() {
               .eq("is_available", true);
 
             if (professionalServices) {
-              const serviceIds = [...new Set(professionalServices.map((ps: any) => ps.service_id))];
+              const serviceIds = [
+                ...new Set(
+                  professionalServices.map((ps: any) => ps.service_id)
+                ),
+              ];
               filteredServices = filteredServices.filter((service: any) =>
                 serviceIds.includes(service.id)
               );
@@ -180,6 +193,11 @@ export default function ServicesPage() {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetchServices();
+    fetchCategories();
+  }, [selectedCategory, searchQuery, location, minRating, priceRange]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -210,7 +228,10 @@ export default function ServicesPage() {
 
           {/* Search and Filters */}
           <div className="space-y-4">
-            <form onSubmit={handleSearch} className="flex flex-col gap-3 sm:flex-row">
+            <form
+              onSubmit={handleSearch}
+              className="flex flex-col gap-3 sm:flex-row"
+            >
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                 <Input
@@ -231,7 +252,9 @@ export default function ServicesPage() {
                   className="h-12 pl-10 text-base"
                 />
               </div>
-              <Button type="submit" className="h-12 px-8 text-base">Search</Button>
+              <Button type="submit" className="h-12 px-8 text-base">
+                Search
+              </Button>
             </form>
           </div>
         </div>
@@ -240,7 +263,6 @@ export default function ServicesPage() {
       <div className="container mx-auto px-4 py-8">
         {/* Filters Section */}
         <div className="mb-8 space-y-4">
-
           {/* Category Filters */}
           <div className="flex flex-wrap gap-2">
             <Button
@@ -276,7 +298,9 @@ export default function ServicesPage() {
                     key={rating}
                     variant={minRating === rating ? "default" : "outline"}
                     size="sm"
-                    onClick={() => setMinRating(minRating === rating ? null : rating)}
+                    onClick={() =>
+                      setMinRating(minRating === rating ? null : rating)
+                    }
                     className="h-9 px-3"
                   >
                     {rating}+ ⭐
@@ -295,7 +319,10 @@ export default function ServicesPage() {
                   placeholder="Min"
                   value={priceRange.min || ""}
                   onChange={(e) =>
-                    setPriceRange({ ...priceRange, min: e.target.value ? Number(e.target.value) : null })
+                    setPriceRange({
+                      ...priceRange,
+                      min: e.target.value ? Number(e.target.value) : null,
+                    })
                   }
                   className="w-28 h-9"
                 />
@@ -305,7 +332,10 @@ export default function ServicesPage() {
                   placeholder="Max"
                   value={priceRange.max || ""}
                   onChange={(e) =>
-                    setPriceRange({ ...priceRange, max: e.target.value ? Number(e.target.value) : null })
+                    setPriceRange({
+                      ...priceRange,
+                      max: e.target.value ? Number(e.target.value) : null,
+                    })
                   }
                   className="w-28 h-9"
                 />
@@ -314,83 +344,96 @@ export default function ServicesPage() {
           </div>
 
           {/* Active Filters */}
-          {(selectedCategory !== "all" || searchQuery || location || minRating !== null || priceRange.min !== null || priceRange.max !== null) && (
+          {(selectedCategory !== "all" ||
+            searchQuery ||
+            location ||
+            minRating !== null ||
+            priceRange.min !== null ||
+            priceRange.max !== null) && (
             <div className="flex items-center gap-2 flex-wrap rounded-lg border bg-muted/50 p-4">
               <span className="text-sm font-medium">Active filters:</span>
-            {selectedCategory !== "all" && (
-              <Badge variant="secondary" className="gap-1">
-                Category: {selectedCategory}
-                <button
-                  onClick={() => setSelectedCategory("all")}
-                  className="ml-1 hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            )}
-            {searchQuery && (
-              <Badge variant="secondary" className="gap-1">
-                Search: {searchQuery}
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="ml-1 hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            )}
-            {location && (
-              <Badge variant="secondary" className="gap-1">
-                Location: {location}
-                <button
-                  onClick={() => setLocation("")}
-                  className="ml-1 hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            )}
-            {minRating !== null && (
-              <Badge variant="secondary" className="gap-1">
-                Rating: {minRating}+ ⭐
-                <button
-                  onClick={() => setMinRating(null)}
-                  className="ml-1 hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            )}
-            {(priceRange.min !== null || priceRange.max !== null) && (
-              <Badge variant="secondary" className="gap-1">
-                Price: ₹{priceRange.min || 0} - ₹{priceRange.max || "∞"}
-                <button
-                  onClick={() => setPriceRange({ min: null, max: null })}
-                  className="ml-1 hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            )}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearFilters}
-              className="h-6 text-xs"
-            >
-              Clear all
-            </Button>
-          </div>
-        )}
+              {selectedCategory !== "all" && (
+                <Badge variant="secondary" className="gap-1">
+                  Category: {selectedCategory}
+                  <button
+                    onClick={() => setSelectedCategory("all")}
+                    className="ml-1 hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              )}
+              {searchQuery && (
+                <Badge variant="secondary" className="gap-1">
+                  Search: {searchQuery}
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="ml-1 hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              )}
+              {location && (
+                <Badge variant="secondary" className="gap-1">
+                  Location: {location}
+                  <button
+                    onClick={() => setLocation("")}
+                    className="ml-1 hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              )}
+              {minRating !== null && (
+                <Badge variant="secondary" className="gap-1">
+                  Rating: {minRating}+ ⭐
+                  <button
+                    onClick={() => setMinRating(null)}
+                    className="ml-1 hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              )}
+              {(priceRange.min !== null || priceRange.max !== null) && (
+                <Badge variant="secondary" className="gap-1">
+                  Price: ₹{priceRange.min || 0} - ₹{priceRange.max || "∞"}
+                  <button
+                    onClick={() => setPriceRange({ min: null, max: null })}
+                    className="ml-1 hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearFilters}
+                className="h-6 text-xs"
+              >
+                Clear all
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Results Count */}
         {!loading && (
           <div className="mb-6 flex items-center justify-between">
             <p className="text-sm font-medium text-muted-foreground">
-              <span className="text-foreground font-semibold">{services.length}</span> service{services.length !== 1 ? "s" : ""} found
+              <span className="text-foreground font-semibold">
+                {services.length}
+              </span>{" "}
+              service{services.length !== 1 ? "s" : ""} found
             </p>
-            {(selectedCategory !== "all" || searchQuery || location || minRating !== null || priceRange.min !== null || priceRange.max !== null) && (
+            {(selectedCategory !== "all" ||
+              searchQuery ||
+              location ||
+              minRating !== null ||
+              priceRange.min !== null ||
+              priceRange.max !== null) && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -403,48 +446,49 @@ export default function ServicesPage() {
           </div>
         )}
 
-      {/* Services Grid */}
-      {loading ? (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {[...Array(6)].map((_, i) => (
-            <ServiceCardSkeleton key={i} />
-          ))}
-        </div>
-      ) : services.length > 0 ? (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((service) => (
-            <ServiceCard
-              key={service.id}
-              id={service.id}
-              name={service.name}
-              description={service.description}
-              category={service.category}
-              basePrice={service.base_price}
-              durationMinutes={service.duration_minutes}
-              imageUrl={service.image_url}
-              rating={service.rating}
-              reviewCount={service.reviewCount}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <div className="mb-4 rounded-full bg-muted p-6">
-            <Search className="h-12 w-12 text-muted-foreground" />
+        {/* Services Grid */}
+        {loading ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[...Array(6)].map((_, i) => (
+              <ServiceCardSkeleton key={i} />
+            ))}
           </div>
-          <p className="text-xl font-semibold mb-2">No services found</p>
-          <p className="mb-6 text-sm text-muted-foreground max-w-md">
-            Try adjusting your search or filters to find what you're looking for
-          </p>
-          <Button
-            variant="outline"
-            className="h-11 px-6"
-            onClick={clearFilters}
-          >
-            Clear All Filters
-          </Button>
-        </div>
-      )}
+        ) : services.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {services.map((service) => (
+              <ServiceCard
+                key={service.id}
+                id={service.id}
+                name={service.name}
+                description={service.description}
+                category={service.category}
+                basePrice={service.base_price}
+                durationMinutes={service.duration_minutes}
+                imageUrl={service.image_url}
+                rating={service.rating}
+                reviewCount={service.reviewCount}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="mb-4 rounded-full bg-muted p-6">
+              <Search className="h-12 w-12 text-muted-foreground" />
+            </div>
+            <p className="text-xl font-semibold mb-2">No services found</p>
+            <p className="mb-6 text-sm text-muted-foreground max-w-md">
+              Try adjusting your search or filters to find what you're looking
+              for
+            </p>
+            <Button
+              variant="outline"
+              className="h-11 px-6"
+              onClick={clearFilters}
+            >
+              Clear All Filters
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

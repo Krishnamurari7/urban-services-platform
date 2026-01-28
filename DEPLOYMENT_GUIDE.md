@@ -32,6 +32,7 @@ Before starting, ensure you have:
 - ✅ **A GitHub account** (for version control)
 
 **Verify installations:**
+
 ```bash
 node --version    # Should be 18.0.0 or higher
 npm --version     # Should be 9.0.0 or higher
@@ -61,11 +62,13 @@ npm install
 Create a `.env.local` file in the root directory (`urban-services-platform/.env.local`):
 
 **Windows (PowerShell):**
+
 ```powershell
 New-Item -Path .env.local -ItemType File
 ```
 
 **Mac/Linux:**
+
 ```bash
 touch .env.local
 ```
@@ -94,23 +97,29 @@ touch .env.local
 2. Copy the following values (you'll need them in Step 6):
 
    **Project URL:**
+
    ```
    https://xxxxx.supabase.co
    ```
+
    Copy this value - it looks like: `https://abcdefghijklmnop.supabase.co`
 
    **anon public key:**
+
    ```
    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
    ```
+
    This is a long string starting with `eyJ`
 
    **service_role key:**
+
    ```
    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
    ```
+
    This is also a long string starting with `eyJ`
-   
+
    ⚠️ **IMPORTANT:** The service_role key has admin privileges. Keep it secret!
 
 ### 2.3 Verify Supabase Connection
@@ -225,9 +234,9 @@ touch .env.local
 Run this verification query in SQL Editor:
 
 ```sql
-SELECT table_name 
-FROM information_schema.tables 
-WHERE table_schema = 'public' 
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public'
 AND table_name IN (
   'profiles',
   'services',
@@ -242,6 +251,7 @@ ORDER BY table_name;
 ```
 
 **Expected result:** You should see all 8 tables listed:
+
 - bookings
 - homepage_banners
 - payments
@@ -297,15 +307,19 @@ ORDER BY table_name;
 4. Copy the following values (you'll need them in Step 6):
 
    **Key ID:**
+
    ```
    rzp_test_xxxxxxxxxxxxx
    ```
+
    Starts with `rzp_test_`
 
    **Key Secret:**
+
    ```
    xxxxxxxxxxxxxxxxxxxxxx
    ```
+
    This is a long string (keep it secret!)
 
 **Note:** For production, you'll need to generate **Live Keys** after completing KYC.
@@ -336,6 +350,7 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **Replace:**
+
 - `https://xxxxx.supabase.co` with your Project URL from Step 2.2
 - `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (anon key) with your anon public key
 - `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (service role) with your service_role key
@@ -351,6 +366,7 @@ RAZORPAY_KEY_SECRET=xxxxxxxxxxxxxxxxxxxxxx
 ```
 
 **Replace:**
+
 - `rzp_test_xxxxxxxxxxxxx` with your Key ID from Step 5.2
 - `xxxxxxxxxxxxxxxxxxxxxx` with your Key Secret from Step 5.2
 
@@ -383,7 +399,8 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 NODE_ENV=development
 ```
 
-**Important:** 
+**Important:**
+
 - Never commit this file to Git
 - Keep all keys secret
 - Use test keys for development, live keys for production
@@ -399,6 +416,7 @@ npm run dev
 ```
 
 **Expected output:**
+
 ```
   ▲ Next.js 16.1.4
   - Local:        http://localhost:3000
@@ -550,9 +568,11 @@ Vercel will auto-detect Next.js. Verify these settings:
 ### 8.8 Get Your Deployment URL
 
 1. After deployment, Vercel will show your live URL:
+
    ```
    https://urban-services-platform.vercel.app
    ```
+
    (Your URL will be different)
 
 2. **Copy this URL** - you'll need it in the next step
@@ -667,6 +687,7 @@ If you generated a webhook secret:
 **Symptoms:** Error message about missing tables
 
 **Solution:**
+
 1. Go to Supabase Dashboard → **SQL Editor**
 2. Run the verification query from Step 3.11
 3. If tables are missing, re-run the corresponding migration file
@@ -677,6 +698,7 @@ If you generated a webhook secret:
 **Symptoms:** Error about storage bucket
 
 **Solution:**
+
 1. Go to Supabase Dashboard → **Storage** → **Buckets**
 2. Verify `professional-documents` bucket exists
 3. Verify bucket name is exactly `professional-documents` (case-sensitive)
@@ -687,6 +709,7 @@ If you generated a webhook secret:
 **Symptoms:** Can't register or login
 
 **Solution:**
+
 1. Verify Supabase URL and keys in Vercel environment variables
 2. Check Supabase Dashboard → **Authentication** → **Users**
 3. Verify RLS policies are active: **Authentication** → **Policies**
@@ -698,6 +721,7 @@ If you generated a webhook secret:
 **Symptoms:** Razorpay checkout doesn't open or payment fails
 
 **Solution:**
+
 1. Verify Razorpay keys in Vercel environment variables
 2. Check Razorpay Dashboard → **Settings** → **API Keys**
 3. Ensure you're using test keys for testing
@@ -709,6 +733,7 @@ If you generated a webhook secret:
 **Symptoms:** Deployment fails during build
 
 **Solution:**
+
 1. Check Vercel Dashboard → **Deployments** → Click on failed deployment → **Logs**
 2. Common issues:
    - Missing environment variables → Add them in Vercel settings
@@ -721,6 +746,7 @@ If you generated a webhook secret:
 **Symptoms:** "Permission denied" or "Row-level security" errors
 
 **Solution:**
+
 1. Go to Supabase Dashboard → **Authentication** → **Policies**
 2. Verify policies exist for all tables
 3. Re-run migration 003: `003_comprehensive_rls_policies.sql`
@@ -731,6 +757,7 @@ If you generated a webhook secret:
 **Symptoms:** Variables are undefined or wrong values
 
 **Solution:**
+
 1. Verify variables are set in Vercel → **Settings** → **Environment Variables**
 2. Ensure variable names match exactly (case-sensitive)
 3. Variables starting with `NEXT_PUBLIC_` are exposed to browser
@@ -742,6 +769,7 @@ If you generated a webhook secret:
 **Symptoms:** CORS errors in browser console
 
 **Solution:**
+
 1. Verify `NEXT_PUBLIC_SUPABASE_URL` is correct
 2. Check Supabase Dashboard → **Settings** → **API** → **CORS**
 3. Add your Vercel domain to allowed origins (if needed)

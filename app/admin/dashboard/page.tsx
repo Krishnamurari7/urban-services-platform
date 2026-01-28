@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 async function getAnalytics() {
   const supabase = await createClient();
-  
+
   // Check if user is admin
   const {
     data: { user },
@@ -60,7 +60,10 @@ async function getAnalytics() {
       .from("payments")
       .select("amount, status, created_at")
       .eq("status", "completed")
-      .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()),
+      .gte(
+        "created_at",
+        new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+      ),
     supabase
       .from("bookings")
       .select(
@@ -77,11 +80,13 @@ async function getAnalytics() {
   const totalRevenue =
     revenueData?.reduce((sum, payment) => sum + (payment.amount || 0), 0) || 0;
   const monthlyRevenue =
-    revenueData?.filter(
-      (p) =>
-        new Date(p.created_at).getTime() >
-        Date.now() - 7 * 24 * 60 * 60 * 1000
-    ).reduce((sum, payment) => sum + (payment.amount || 0), 0) || 0;
+    revenueData
+      ?.filter(
+        (p) =>
+          new Date(p.created_at).getTime() >
+          Date.now() - 7 * 24 * 60 * 60 * 1000
+      )
+      .reduce((sum, payment) => sum + (payment.amount || 0), 0) || 0;
 
   // Get booking status counts
   const { data: bookingStatuses } = await supabase
@@ -119,8 +124,12 @@ export default async function AdminDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Analytics Dashboard</h1>
-        <p className="text-gray-600 mt-1">Overview of platform metrics and performance</p>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Analytics Dashboard
+        </h1>
+        <p className="text-gray-600 mt-1">
+          Overview of platform metrics and performance
+        </p>
       </div>
 
       {/* Key Metrics */}
@@ -140,7 +149,9 @@ export default async function AdminDashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Bookings
+            </CardTitle>
             <span className="text-2xl">📅</span>
           </CardHeader>
           <CardContent>
@@ -168,7 +179,9 @@ export default async function AdminDashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Services</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Active Services
+            </CardTitle>
             <span className="text-2xl">🔧</span>
           </CardHeader>
           <CardContent>
@@ -188,7 +201,9 @@ export default async function AdminDashboard() {
             <div className="space-y-3">
               {Object.entries(analytics.statusCounts).map(([status, count]) => (
                 <div key={status} className="flex items-center justify-between">
-                  <span className="text-sm font-medium capitalize">{status.replace("_", " ")}</span>
+                  <span className="text-sm font-medium capitalize">
+                    {status.replace("_", " ")}
+                  </span>
                   <span className="text-sm text-gray-600">{count}</span>
                 </div>
               ))}

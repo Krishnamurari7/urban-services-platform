@@ -85,7 +85,8 @@ export default function CareersPage() {
               Join Our <span className="text-primary">Team</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-              Build your career with us. We're looking for talented individuals who are passionate about making a difference.
+              Build your career with us. We're looking for talented individuals
+              who are passionate about making a difference.
             </p>
           </div>
         </div>
@@ -104,13 +105,20 @@ export default function CareersPage() {
           </div>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {benefits.map((benefit, index) => (
-              <Card key={index} className="group transition-all hover:shadow-lg hover:-translate-y-1">
+              <Card
+                key={index}
+                className="group transition-all hover:shadow-lg hover:-translate-y-1"
+              >
                 <CardContent className="p-6 text-center">
                   <div className="mb-4 flex justify-center text-primary transition-transform group-hover:scale-110">
                     {benefit.icon}
                   </div>
-                  <h3 className="mb-2 font-semibold text-lg">{benefit.title}</h3>
-                  <p className="text-sm text-muted-foreground">{benefit.description}</p>
+                  <h3 className="mb-2 font-semibold text-lg">
+                    {benefit.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {benefit.description}
+                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -132,11 +140,16 @@ export default function CareersPage() {
             </div>
             <div className="space-y-4">
               {openPositions.map((position, index) => (
-                <Card key={index} className="group transition-all hover:shadow-lg">
+                <Card
+                  key={index}
+                  className="group transition-all hover:shadow-lg"
+                >
                   <CardContent className="p-6">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                       <div className="flex-1">
-                        <h3 className="text-xl font-semibold mb-2">{position.title}</h3>
+                        <h3 className="text-xl font-semibold mb-2">
+                          {position.title}
+                        </h3>
                         <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                           <div className="flex items-center gap-2">
                             <Briefcase className="h-4 w-4" />
@@ -169,9 +182,7 @@ export default function CareersPage() {
                 Don't see a position that matches your skills?
               </p>
               <Link href="/contact">
-                <Button variant="outline">
-                  Send Us Your Resume
-                </Button>
+                <Button variant="outline">Send Us Your Resume</Button>
               </Link>
             </div>
           </div>
@@ -214,12 +225,19 @@ export default function CareersPage() {
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link href="/contact">
-                <Button size="lg" className="h-12 px-8 text-base shadow-lg hover:shadow-xl transition-all">
+                <Button
+                  size="lg"
+                  className="h-12 px-8 text-base shadow-lg hover:shadow-xl transition-all"
+                >
                   Get in Touch
                 </Button>
               </Link>
               <Link href="/register">
-                <Button size="lg" variant="outline" className="h-12 px-8 text-base">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="h-12 px-8 text-base"
+                >
                   View Open Positions
                 </Button>
               </Link>

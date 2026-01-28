@@ -152,7 +152,9 @@ export default function HomePage() {
           <div className="mx-auto max-w-4xl text-center">
             <div className="mb-6 inline-flex items-center rounded-full border bg-background/50 px-4 py-2 text-sm backdrop-blur-sm">
               <Sparkles className="mr-2 h-4 w-4 text-primary" />
-              <span className="text-muted-foreground">Trusted by 10,000+ customers</span>
+              <span className="text-muted-foreground">
+                Trusted by 10,000+ customers
+              </span>
             </div>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
               Professional Services
@@ -167,12 +169,19 @@ export default function HomePage() {
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link href="/services">
-                <Button size="lg" className="w-full sm:w-auto text-base px-8 h-12 shadow-lg hover:shadow-xl transition-all">
+                <Button
+                  size="lg"
+                  className="w-full sm:w-auto text-base px-8 h-12 shadow-lg hover:shadow-xl transition-all"
+                >
                   Explore Services
                 </Button>
               </Link>
               <Link href="/become-professional">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto text-base px-8 h-12 border-2 hover:bg-primary/5 transition-all">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full sm:w-auto text-base px-8 h-12 border-2 hover:bg-primary/5 transition-all"
+                >
                   Become a Professional
                 </Button>
               </Link>
@@ -234,7 +243,8 @@ export default function HomePage() {
               Popular Service Categories
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Choose from a wide range of professional services tailored to your needs
+              Choose from a wide range of professional services tailored to your
+              needs
             </p>
           </div>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -280,16 +290,28 @@ export default function HomePage() {
             {/* Stats */}
             <div className="mt-12 grid grid-cols-3 gap-8 border-t border-primary-foreground/20 pt-8">
               <div>
-                <div className="text-3xl font-bold text-primary-foreground">10K+</div>
-                <div className="mt-1 text-sm text-primary-foreground/80">Happy Customers</div>
+                <div className="text-3xl font-bold text-primary-foreground">
+                  10K+
+                </div>
+                <div className="mt-1 text-sm text-primary-foreground/80">
+                  Happy Customers
+                </div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-primary-foreground">500+</div>
-                <div className="mt-1 text-sm text-primary-foreground/80">Verified Professionals</div>
+                <div className="text-3xl font-bold text-primary-foreground">
+                  500+
+                </div>
+                <div className="mt-1 text-sm text-primary-foreground/80">
+                  Verified Professionals
+                </div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-primary-foreground">4.8★</div>
-                <div className="mt-1 text-sm text-primary-foreground/80">Average Rating</div>
+                <div className="text-3xl font-bold text-primary-foreground">
+                  4.8★
+                </div>
+                <div className="mt-1 text-sm text-primary-foreground/80">
+                  Average Rating
+                </div>
               </div>
             </div>
           </div>

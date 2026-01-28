@@ -69,10 +69,16 @@ export default function PrivacyPolicyPage() {
               Privacy <span className="text-primary">Policy</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-              Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+              Last updated:{" "}
+              {new Date().toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
             </p>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-              Your privacy is important to us. This policy explains how we collect, use, and protect your personal information.
+              Your privacy is important to us. This policy explains how we
+              collect, use, and protect your personal information.
             </p>
           </div>
         </div>
@@ -85,7 +91,12 @@ export default function PrivacyPolicyPage() {
             <div className="mb-8">
               <h2 className="mb-4 text-2xl font-bold">Introduction</h2>
               <p className="text-muted-foreground leading-relaxed">
-                vera company ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform and services. By using our services, you agree to the collection and use of information in accordance with this policy.
+                vera company ("we", "our", or "us") is committed to protecting
+                your privacy. This Privacy Policy explains how we collect, use,
+                disclose, and safeguard your information when you use our
+                platform and services. By using our services, you agree to the
+                collection and use of information in accordance with this
+                policy.
               </p>
             </div>
 
@@ -100,7 +111,10 @@ export default function PrivacyPolicyPage() {
                   </div>
                   <ul className="ml-4 space-y-2">
                     {section.content.map((item, itemIndex) => (
-                      <li key={itemIndex} className="list-disc text-muted-foreground leading-relaxed">
+                      <li
+                        key={itemIndex}
+                        className="list-disc text-muted-foreground leading-relaxed"
+                      >
                         {item}
                       </li>
                     ))}
@@ -111,13 +125,17 @@ export default function PrivacyPolicyPage() {
 
             <Card className="mb-6">
               <CardContent className="p-6">
-                <h3 className="mb-4 text-xl font-semibold">Information Sharing</h3>
+                <h3 className="mb-4 text-xl font-semibold">
+                  Information Sharing
+                </h3>
                 <p className="mb-4 text-muted-foreground leading-relaxed">
-                  We do not sell your personal information. We may share your information only in the following circumstances:
+                  We do not sell your personal information. We may share your
+                  information only in the following circumstances:
                 </p>
                 <ul className="ml-4 space-y-2">
                   <li className="list-disc text-muted-foreground leading-relaxed">
-                    With service professionals to facilitate bookings (only necessary information)
+                    With service professionals to facilitate bookings (only
+                    necessary information)
                   </li>
                   <li className="list-disc text-muted-foreground leading-relaxed">
                     With payment processors to handle transactions
@@ -134,9 +152,14 @@ export default function PrivacyPolicyPage() {
 
             <Card className="mb-6">
               <CardContent className="p-6">
-                <h3 className="mb-4 text-xl font-semibold">Cookies and Tracking</h3>
+                <h3 className="mb-4 text-xl font-semibold">
+                  Cookies and Tracking
+                </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  We use cookies and similar tracking technologies to improve your experience, analyze usage patterns, and personalize content. You can control cookie preferences through your browser settings. For more information, please see our{" "}
+                  We use cookies and similar tracking technologies to improve
+                  your experience, analyze usage patterns, and personalize
+                  content. You can control cookie preferences through your
+                  browser settings. For more information, please see our{" "}
                   <a href="/cookies" className="text-primary hover:underline">
                     Cookie Policy
                   </a>
@@ -149,16 +172,25 @@ export default function PrivacyPolicyPage() {
               <CardContent className="p-6">
                 <h3 className="mb-4 text-xl font-semibold">Data Retention</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  We retain your personal information for as long as necessary to provide our services and fulfill the purposes outlined in this policy. When you delete your account, we will delete or anonymize your personal information, except where we are required to retain it for legal purposes.
+                  We retain your personal information for as long as necessary
+                  to provide our services and fulfill the purposes outlined in
+                  this policy. When you delete your account, we will delete or
+                  anonymize your personal information, except where we are
+                  required to retain it for legal purposes.
                 </p>
               </CardContent>
             </Card>
 
             <Card className="mb-6">
               <CardContent className="p-6">
-                <h3 className="mb-4 text-xl font-semibold">Changes to This Policy</h3>
+                <h3 className="mb-4 text-xl font-semibold">
+                  Changes to This Policy
+                </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the "Last updated" date. You are advised to review this policy periodically for any changes.
+                  We may update this Privacy Policy from time to time. We will
+                  notify you of any changes by posting the new policy on this
+                  page and updating the "Last updated" date. You are advised to
+                  review this policy periodically for any changes.
                 </p>
               </CardContent>
             </Card>
@@ -167,7 +199,8 @@ export default function PrivacyPolicyPage() {
               <CardContent className="p-6">
                 <h3 className="mb-4 text-xl font-semibold">Contact Us</h3>
                 <p className="mb-4 text-muted-foreground leading-relaxed">
-                  If you have any questions about this Privacy Policy or wish to exercise your rights, please contact us:
+                  If you have any questions about this Privacy Policy or wish to
+                  exercise your rights, please contact us:
                 </p>
                 <ul className="space-y-2 text-muted-foreground">
                   <li>Email: privacy@veracompany.com</li>

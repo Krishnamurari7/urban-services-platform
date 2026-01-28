@@ -67,20 +67,25 @@ export async function getPaymentDetails(paymentId: string) {
     return { success: true, payment };
   } catch (error: any) {
     console.error("Razorpay fetch payment error:", error);
-    return { success: false, error: error.message || "Failed to fetch payment" };
+    return {
+      success: false,
+      error: error.message || "Failed to fetch payment",
+    };
   }
 }
 
 /**
  * Map Razorpay payment method to our payment_method enum
  */
-export function mapRazorpayMethod(razorpayMethod: string | null | undefined): "credit_card" | "debit_card" | "upi" | "wallet" | "net_banking" {
+export function mapRazorpayMethod(
+  razorpayMethod: string | null | undefined
+): "credit_card" | "debit_card" | "upi" | "wallet" | "net_banking" {
   if (!razorpayMethod) {
     return "upi"; // Default fallback
   }
 
   const method = razorpayMethod.toLowerCase();
-  
+
   // Map Razorpay methods to our enum
   if (method === "card") {
     return "credit_card"; // Default to credit_card for card payments
@@ -97,7 +102,7 @@ export function mapRazorpayMethod(razorpayMethod: string | null | undefined): "c
   if (method === "netbanking" || method === "net_banking") {
     return "net_banking";
   }
-  
+
   // Default fallback
   return "upi";
 }
@@ -120,10 +125,16 @@ export async function refundPayment(params: {
       refundOptions.amount = params.amount;
     }
 
-    const refund = await razorpay.payments.refund(params.paymentId, refundOptions);
+    const refund = await razorpay.payments.refund(
+      params.paymentId,
+      refundOptions
+    );
     return { success: true, refund };
   } catch (error: any) {
     console.error("Razorpay refund error:", error);
-    return { success: false, error: error.message || "Failed to process refund" };
+    return {
+      success: false,
+      error: error.message || "Failed to process refund",
+    };
   }
 }

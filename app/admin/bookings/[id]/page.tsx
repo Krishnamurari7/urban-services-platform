@@ -8,7 +8,7 @@ import { AssignProfessionalForm } from "@/components/admin/assign-professional-f
 
 async function getBooking(id: string) {
   const supabase = await createClient();
-  
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -113,10 +113,10 @@ export default async function BookingDetailPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            Booking Details
-          </h1>
-          <p className="text-gray-600 mt-1">ID: {params.id.substring(0, 8)}...</p>
+          <h1 className="text-3xl font-bold text-gray-900">Booking Details</h1>
+          <p className="text-gray-600 mt-1">
+            ID: {params.id.substring(0, 8)}...
+          </p>
         </div>
         <Link href="/admin/bookings">
           <Button variant="outline">Back to Bookings</Button>
@@ -134,17 +134,20 @@ export default async function BookingDetailPage({
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Status</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Status
+                  </label>
                   <div className="mt-1">
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${
                         bookingData.status === "completed"
                           ? "bg-green-100 text-green-700"
-                          : bookingData.status === "cancelled" || bookingData.status === "refunded"
-                          ? "bg-red-100 text-red-700"
-                          : bookingData.status === "in_progress"
-                          ? "bg-blue-100 text-blue-700"
-                          : "bg-yellow-100 text-yellow-700"
+                          : bookingData.status === "cancelled" ||
+                              bookingData.status === "refunded"
+                            ? "bg-red-100 text-red-700"
+                            : bookingData.status === "in_progress"
+                              ? "bg-blue-100 text-blue-700"
+                              : "bg-yellow-100 text-yellow-700"
                       }`}
                     >
                       {bookingData.status.replace("_", " ").toUpperCase()}
@@ -152,19 +155,29 @@ export default async function BookingDetailPage({
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Service</label>
-                  <p className="mt-1 font-medium">{bookingData.service?.name}</p>
-                  <p className="text-sm text-gray-500">{bookingData.service?.category}</p>
+                  <label className="text-sm font-medium text-gray-500">
+                    Service
+                  </label>
+                  <p className="mt-1 font-medium">
+                    {bookingData.service?.name}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {bookingData.service?.category}
+                  </p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Scheduled At</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Scheduled At
+                  </label>
                   <p className="mt-1">
                     {new Date(bookingData.scheduled_at).toLocaleString()}
                   </p>
                 </div>
                 {bookingData.completed_at && (
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Completed At</label>
+                    <label className="text-sm font-medium text-gray-500">
+                      Completed At
+                    </label>
                     <p className="mt-1">
                       {new Date(bookingData.completed_at).toLocaleString()}
                     </p>
@@ -172,7 +185,9 @@ export default async function BookingDetailPage({
                 )}
                 {bookingData.cancelled_at && (
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Cancelled At</label>
+                    <label className="text-sm font-medium text-gray-500">
+                      Cancelled At
+                    </label>
                     <p className="mt-1">
                       {new Date(bookingData.cancelled_at).toLocaleString()}
                     </p>
@@ -182,15 +197,23 @@ export default async function BookingDetailPage({
 
               {bookingData.special_instructions && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Special Instructions</label>
-                  <p className="mt-1 text-sm">{bookingData.special_instructions}</p>
+                  <label className="text-sm font-medium text-gray-500">
+                    Special Instructions
+                  </label>
+                  <p className="mt-1 text-sm">
+                    {bookingData.special_instructions}
+                  </p>
                 </div>
               )}
 
               {bookingData.cancellation_reason && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Cancellation Reason</label>
-                  <p className="mt-1 text-sm text-red-600">{bookingData.cancellation_reason}</p>
+                  <label className="text-sm font-medium text-gray-500">
+                    Cancellation Reason
+                  </label>
+                  <p className="mt-1 text-sm text-red-600">
+                    {bookingData.cancellation_reason}
+                  </p>
                 </div>
               )}
             </CardContent>
@@ -204,7 +227,9 @@ export default async function BookingDetailPage({
             <CardContent>
               <div className="space-y-2">
                 <p className="font-medium">{bookingData.customer?.full_name}</p>
-                <p className="text-sm text-gray-600">{bookingData.customer?.phone}</p>
+                <p className="text-sm text-gray-600">
+                  {bookingData.customer?.phone}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -217,16 +242,23 @@ export default async function BookingDetailPage({
             <CardContent>
               {bookingData.professional ? (
                 <div className="space-y-2">
-                  <p className="font-medium">{bookingData.professional.full_name}</p>
-                  <p className="text-sm text-gray-600">{bookingData.professional.phone}</p>
+                  <p className="font-medium">
+                    {bookingData.professional.full_name}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {bookingData.professional.phone}
+                  </p>
                   {bookingData.professional.rating_average && (
                     <p className="text-sm">
-                      Rating: {bookingData.professional.rating_average.toFixed(1)} ⭐
+                      Rating:{" "}
+                      {bookingData.professional.rating_average.toFixed(1)} ⭐
                     </p>
                   )}
                 </div>
               ) : (
-                <p className="text-sm text-gray-500">No professional assigned</p>
+                <p className="text-sm text-gray-500">
+                  No professional assigned
+                </p>
               )}
             </CardContent>
           </Card>
@@ -242,7 +274,9 @@ export default async function BookingDetailPage({
                   <p className="font-medium">{bookingData.address.label}</p>
                   <p className="text-sm">{bookingData.address.address_line1}</p>
                   {bookingData.address.address_line2 && (
-                    <p className="text-sm">{bookingData.address.address_line2}</p>
+                    <p className="text-sm">
+                      {bookingData.address.address_line2}
+                    </p>
                   )}
                   <p className="text-sm">
                     {bookingData.address.city}, {bookingData.address.state}{" "}
@@ -263,13 +297,17 @@ export default async function BookingDetailPage({
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <span className="text-lg">⭐</span>
-                    <span className="font-medium">{bookingData.review.rating}/5</span>
+                    <span className="font-medium">
+                      {bookingData.review.rating}/5
+                    </span>
                   </div>
                   {bookingData.review.comment && (
                     <p className="text-sm">{bookingData.review.comment}</p>
                   )}
                   <p className="text-xs text-gray-500">
-                    {new Date(bookingData.review.created_at).toLocaleDateString()}
+                    {new Date(
+                      bookingData.review.created_at
+                    ).toLocaleDateString()}
                   </p>
                 </div>
               </CardContent>
@@ -292,18 +330,24 @@ export default async function BookingDetailPage({
               {bookingData.service_fee > 0 && (
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Service Fee</span>
-                  <span className="font-medium">₹{bookingData.service_fee}</span>
+                  <span className="font-medium">
+                    ₹{bookingData.service_fee}
+                  </span>
                 </div>
               )}
               {bookingData.discount_amount > 0 && (
                 <div className="flex justify-between text-green-600">
                   <span className="text-sm">Discount</span>
-                  <span className="font-medium">-₹{bookingData.discount_amount}</span>
+                  <span className="font-medium">
+                    -₹{bookingData.discount_amount}
+                  </span>
                 </div>
               )}
               <div className="border-t pt-3 flex justify-between">
                 <span className="font-medium">Total Amount</span>
-                <span className="font-bold text-lg">₹{bookingData.final_amount}</span>
+                <span className="font-bold text-lg">
+                  ₹{bookingData.final_amount}
+                </span>
               </div>
               {bookingData.payment && (
                 <div className="pt-3 border-t space-y-2">
@@ -314,8 +358,8 @@ export default async function BookingDetailPage({
                         bookingData.payment.status === "completed"
                           ? "bg-green-100 text-green-700"
                           : bookingData.payment.status === "refunded"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-yellow-100 text-yellow-700"
+                            ? "bg-red-100 text-red-700"
+                            : "bg-yellow-100 text-yellow-700"
                       }`}
                     >
                       {bookingData.payment.status}
@@ -336,7 +380,9 @@ export default async function BookingDetailPage({
                     <div className="pt-2 border-t">
                       <div className="flex justify-between text-sm text-red-600">
                         <span>Refund Amount</span>
-                        <span className="font-medium">₹{bookingData.payment.refund_amount}</span>
+                        <span className="font-medium">
+                          ₹{bookingData.payment.refund_amount}
+                        </span>
                       </div>
                       {bookingData.payment.refund_reason && (
                         <p className="text-xs text-gray-500 mt-1">
@@ -367,15 +413,23 @@ export default async function BookingDetailPage({
             <CardContent className="space-y-2">
               {bookingData.status === "pending" && (
                 <>
-                  <form action={updateBookingStatus} className="w-full">
-                    <input type="hidden" name="bookingId" value={bookingData.id} />
+                  <form action={async (formData) => { await updateBookingStatus(formData); }} className="w-full">
+                    <input
+                      type="hidden"
+                      name="bookingId"
+                      value={bookingData.id}
+                    />
                     <input type="hidden" name="status" value="confirmed" />
                     <Button type="submit" variant="default" className="w-full">
                       Confirm Booking
                     </Button>
                   </form>
-                  <form action={cancelBooking} className="w-full">
-                    <input type="hidden" name="bookingId" value={bookingData.id} />
+                  <form action={async (formData) => { await cancelBooking(formData); }} className="w-full">
+                    <input
+                      type="hidden"
+                      name="bookingId"
+                      value={bookingData.id}
+                    />
                     <Button type="submit" variant="outline" className="w-full">
                       Cancel Booking
                     </Button>
@@ -383,8 +437,12 @@ export default async function BookingDetailPage({
                 </>
               )}
               {bookingData.status === "confirmed" && (
-                <form action={updateBookingStatus} className="w-full">
-                  <input type="hidden" name="bookingId" value={bookingData.id} />
+                <form action={async (formData) => { await updateBookingStatus(formData); }} className="w-full">
+                  <input
+                    type="hidden"
+                    name="bookingId"
+                    value={bookingData.id}
+                  />
                   <input type="hidden" name="status" value="in_progress" />
                   <Button type="submit" variant="default" className="w-full">
                     Mark In Progress
@@ -392,8 +450,12 @@ export default async function BookingDetailPage({
                 </form>
               )}
               {bookingData.status === "in_progress" && (
-                <form action={updateBookingStatus} className="w-full">
-                  <input type="hidden" name="bookingId" value={bookingData.id} />
+                <form action={async (formData) => { await updateBookingStatus(formData); }} className="w-full">
+                  <input
+                    type="hidden"
+                    name="bookingId"
+                    value={bookingData.id}
+                  />
                   <input type="hidden" name="status" value="completed" />
                   <Button type="submit" variant="default" className="w-full">
                     Mark Completed

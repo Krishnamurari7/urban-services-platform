@@ -85,16 +85,19 @@ After creating the bucket:
 ## Troubleshooting
 
 ### Error: "Bucket not found"
+
 - Make sure the bucket name is exactly `professional-documents` (case-sensitive)
 - Check that the bucket is created in the correct Supabase project
 - Verify the bucket is set to **Public** if you want public access
 
 ### Error: "Permission denied"
+
 - Check that RLS policies are set up correctly
 - Verify the user has the correct role (professional)
 - Make sure the bucket is public or policies allow access
 
 ### Files not uploading
+
 - Check file size (max 10MB in the code)
 - Verify file format is allowed (PDF, JPG, PNG, DOC, DOCX)
 - Check browser console for detailed error messages
@@ -102,6 +105,7 @@ After creating the bucket:
 ## File Structure
 
 Documents are stored with the following structure:
+
 ```
 professional-documents/
   └── {user_id}/

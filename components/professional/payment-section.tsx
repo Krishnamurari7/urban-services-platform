@@ -3,22 +3,32 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import type { Booking, Payment, ProfessionalBankAccount } from "@/lib/types/database";
-import { 
-  CreditCard, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  CheckCircle, 
-  XCircle, 
+import type {
+  Booking,
+  Payment,
+  ProfessionalBankAccount,
+} from "@/lib/types/database";
+import {
+  CreditCard,
+  Plus,
+  Edit,
+  Trash2,
+  CheckCircle,
+  XCircle,
   DollarSign,
   Building2,
   Calendar,
-  Loader2
+  Loader2,
 } from "lucide-react";
 
 interface PaymentWithBooking extends Payment {
@@ -27,7 +37,9 @@ interface PaymentWithBooking extends Payment {
 
 export function PaymentSection() {
   const { user } = useAuth();
-  const [bankAccounts, setBankAccounts] = useState<ProfessionalBankAccount[]>([]);
+  const [bankAccounts, setBankAccounts] = useState<ProfessionalBankAccount[]>(
+    []
+  );
   const [payments, setPayments] = useState<PaymentWithBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddBankForm, setShowAddBankForm] = useState(false);
@@ -76,11 +88,16 @@ export function PaymentSection() {
       if (bookings && bookings.length > 0) {
         const { data: paymentsData, error: paymentsError } = await supabase
           .from("payments")
-          .select(`
+          .select(
+            `
             *,
             booking:bookings(*)
-          `)
-          .in("booking_id", bookings.map((b) => b.id))
+          `
+          )
+          .in(
+            "booking_id",
+            bookings.map((b) => b.id)
+          )
           .eq("status", "completed")
           .order("created_at", { ascending: false })
           .limit(20);
@@ -121,10 +138,12 @@ export function PaymentSection() {
         if (error) throw error;
       } else {
         // Create new account
-        const { error } = await supabase.from("professional_bank_accounts").insert({
-          professional_id: user.id,
-          ...bankForm,
-        });
+        const { error } = await supabase
+          .from("professional_bank_accounts")
+          .insert({
+            professional_id: user.id,
+            ...bankForm,
+          });
 
         if (error) throw error;
       }
@@ -231,7 +250,9 @@ export function PaymentSection() {
                 <Building2 className="h-5 w-5" />
                 Bank Accounts
               </CardTitle>
-              <CardDescription>Manage your bank accounts for payments</CardDescription>
+              <CardDescription>
+                Manage your bank accounts for payments
+              </CardDescription>
             </div>
             {!showAddBankForm && (
               <Button onClick={() => setShowAddBankForm(true)}>
@@ -246,27 +267,39 @@ export function PaymentSection() {
             <Card className="mb-6 border-blue-200 bg-blue-50">
               <CardHeader>
                 <CardTitle className="text-lg">
-                  {editingAccount ? "Edit Bank Account" : "Add New Bank Account"}
+                  {editingAccount
+                    ? "Edit Bank Account"
+                    : "Add New Bank Account"}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Account Holder Name</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Account Holder Name
+                  </label>
                   <Input
                     value={bankForm.account_holder_name}
                     onChange={(e) =>
-                      setBankForm({ ...bankForm, account_holder_name: e.target.value })
+                      setBankForm({
+                        ...bankForm,
+                        account_holder_name: e.target.value,
+                      })
                     }
                     placeholder="Enter account holder name"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Account Number</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Account Number
+                  </label>
                   <Input
                     value={bankForm.account_number}
                     onChange={(e) =>
-                      setBankForm({ ...bankForm, account_number: e.target.value })
+                      setBankForm({
+                        ...bankForm,
+                        account_number: e.target.value,
+                      })
                     }
                     placeholder="Enter account number"
                     required
@@ -274,18 +307,25 @@ export function PaymentSection() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">IFSC Code</label>
+                    <label className="block text-sm font-medium mb-2">
+                      IFSC Code
+                    </label>
                     <Input
                       value={bankForm.ifsc_code}
                       onChange={(e) =>
-                        setBankForm({ ...bankForm, ifsc_code: e.target.value.toUpperCase() })
+                        setBankForm({
+                          ...bankForm,
+                          ifsc_code: e.target.value.toUpperCase(),
+                        })
                       }
                       placeholder="IFSC Code"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Account Type</label>
+                    <label className="block text-sm font-medium mb-2">
+                      Account Type
+                    </label>
                     <select
                       value={bankForm.account_type}
                       onChange={(e) =>
@@ -302,19 +342,27 @@ export function PaymentSection() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Bank Name</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Bank Name
+                  </label>
                   <Input
                     value={bankForm.bank_name}
-                    onChange={(e) => setBankForm({ ...bankForm, bank_name: e.target.value })}
+                    onChange={(e) =>
+                      setBankForm({ ...bankForm, bank_name: e.target.value })
+                    }
                     placeholder="Enter bank name"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Branch Name (Optional)</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Branch Name (Optional)
+                  </label>
                   <Input
                     value={bankForm.branch_name}
-                    onChange={(e) => setBankForm({ ...bankForm, branch_name: e.target.value })}
+                    onChange={(e) =>
+                      setBankForm({ ...bankForm, branch_name: e.target.value })
+                    }
                     placeholder="Enter branch name"
                   />
                 </div>
@@ -396,14 +444,18 @@ export function PaymentSection() {
                               Verified
                             </Badge>
                           ) : (
-                            <Badge variant="secondary">Pending Verification</Badge>
+                            <Badge variant="secondary">
+                              Pending Verification
+                            </Badge>
                           )}
                         </div>
                         <p className="text-sm text-gray-600">
-                          <strong>Account Holder:</strong> {account.account_holder_name}
+                          <strong>Account Holder:</strong>{" "}
+                          {account.account_holder_name}
                         </p>
                         <p className="text-sm text-gray-600">
-                          <strong>Account Number:</strong> {maskAccountNumber(account.account_number)}
+                          <strong>Account Number:</strong>{" "}
+                          {maskAccountNumber(account.account_number)}
                         </p>
                         <p className="text-sm text-gray-600">
                           <strong>IFSC:</strong> {account.ifsc_code}
@@ -414,7 +466,9 @@ export function PaymentSection() {
                           </p>
                         )}
                         <p className="text-sm text-gray-600">
-                          <strong>Type:</strong> {account.account_type.charAt(0).toUpperCase() + account.account_type.slice(1)}
+                          <strong>Type:</strong>{" "}
+                          {account.account_type.charAt(0).toUpperCase() +
+                            account.account_type.slice(1)}
                         </p>
                       </div>
                       <div className="flex gap-2">
@@ -483,11 +537,14 @@ export function PaymentSection() {
                         Booking #{booking.id.slice(0, 8)}
                       </p>
                       <p className="text-sm text-gray-600">
-                        Payment Method: {payment.method.replace("_", " ").toUpperCase()}
+                        Payment Method:{" "}
+                        {payment.method.replace("_", " ").toUpperCase()}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-bold">${professionalEarning.toFixed(2)}</p>
+                      <p className="text-lg font-bold">
+                        ${professionalEarning.toFixed(2)}
+                      </p>
                       <p className="text-xs text-gray-500">
                         (80% of ${Number(booking.final_amount).toFixed(2)})
                       </p>

@@ -3,13 +3,26 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import type { Payment, Booking, Service } from "@/lib/types/database";
-import { DollarSign, Calendar, CreditCard, Search, Download, Filter } from "lucide-react";
+import {
+  DollarSign,
+  Calendar,
+  CreditCard,
+  Search,
+  Download,
+  Filter,
+} from "lucide-react";
 
 interface PaymentWithDetails extends Payment {
   booking: Booking & {
@@ -20,7 +33,9 @@ interface PaymentWithDetails extends Payment {
 export default function PaymentHistoryPage() {
   const { user, loading: authLoading } = useAuth();
   const [payments, setPayments] = useState<PaymentWithDetails[]>([]);
-  const [filteredPayments, setFilteredPayments] = useState<PaymentWithDetails[]>([]);
+  const [filteredPayments, setFilteredPayments] = useState<
+    PaymentWithDetails[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -44,13 +59,15 @@ export default function PaymentHistoryPage() {
 
       const { data, error } = await supabase
         .from("payments")
-        .select(`
+        .select(
+          `
           *,
           booking:bookings(
             *,
             service:services(*)
           )
-        `)
+        `
+        )
         .eq("customer_id", user.id)
         .order("created_at", { ascending: false });
 
@@ -150,7 +167,9 @@ export default function PaymentHistoryPage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Transactions</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">
+              Total Transactions
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalTransactions}</div>
@@ -158,26 +177,38 @@ export default function PaymentHistoryPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Completed</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">
+              Completed
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.completedTransactions}</div>
+            <div className="text-2xl font-bold">
+              {stats.completedTransactions}
+            </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Spent</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">
+              Total Spent
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₹{stats.totalSpent.toFixed(2)}</div>
+            <div className="text-2xl font-bold">
+              ₹{stats.totalSpent.toFixed(2)}
+            </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Refunded</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">
+              Total Refunded
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₹{stats.totalRefunded.toFixed(2)}</div>
+            <div className="text-2xl font-bold">
+              ₹{stats.totalRefunded.toFixed(2)}
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -246,7 +277,10 @@ export default function PaymentHistoryPage() {
       ) : (
         <div className="space-y-4">
           {filteredPayments.map((payment) => (
-            <Card key={payment.id} className="hover:shadow-lg transition-shadow">
+            <Card
+              key={payment.id}
+              className="hover:shadow-lg transition-shadow"
+            >
               <CardContent className="p-6">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div className="flex-1">
@@ -264,39 +298,49 @@ export default function PaymentHistoryPage() {
                         <Calendar className="h-4 w-4" />
                         <span>
                           <strong>Date:</strong>{" "}
-                          {new Date(payment.created_at).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
+                          {new Date(payment.created_at).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <CreditCard className="h-4 w-4" />
                         <span>
-                          <strong>Method:</strong> {payment.method.replace("_", " ").toUpperCase()}
+                          <strong>Method:</strong>{" "}
+                          {payment.method.replace("_", " ").toUpperCase()}
                         </span>
                       </div>
                       {payment.transaction_id && (
                         <div>
-                          <span className="text-gray-500">Transaction ID: </span>
-                          <span className="font-mono text-xs">{payment.transaction_id}</span>
-                        </div>
-                      )}
-                      {payment.status === "refunded" && payment.refund_amount > 0 && (
-                        <div>
-                          <span className="text-green-600">
-                            <strong>Refunded:</strong> ₹{Number(payment.refund_amount).toFixed(2)}
+                          <span className="text-gray-500">
+                            Transaction ID:{" "}
                           </span>
-                          {payment.refund_reason && (
-                            <p className="text-xs text-gray-500 mt-1">
-                              Reason: {payment.refund_reason}
-                            </p>
-                          )}
+                          <span className="font-mono text-xs">
+                            {payment.transaction_id}
+                          </span>
                         </div>
                       )}
+                      {payment.status === "refunded" &&
+                        payment.refund_amount > 0 && (
+                          <div>
+                            <span className="text-green-600">
+                              <strong>Refunded:</strong> ₹
+                              {Number(payment.refund_amount).toFixed(2)}
+                            </span>
+                            {payment.refund_reason && (
+                              <p className="text-xs text-gray-500 mt-1">
+                                Reason: {payment.refund_reason}
+                              </p>
+                            )}
+                          </div>
+                        )}
                     </div>
                   </div>
 

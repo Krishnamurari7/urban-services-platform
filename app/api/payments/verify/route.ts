@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { verifyPaymentSignature, getPaymentDetails, mapRazorpayMethod } from "@/lib/razorpay";
+import {
+  verifyPaymentSignature,
+  getPaymentDetails,
+  mapRazorpayMethod,
+} from "@/lib/razorpay";
 
 export async function POST(request: NextRequest) {
   try {
@@ -81,7 +85,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if payment amount matches booking amount
-    const paymentAmount = payment.amount / 100; // Convert from paise to rupees
+    const paymentAmount = Number(payment.amount) / 100; // Convert from paise to rupees
     if (Math.abs(paymentAmount - Number(booking.final_amount)) > 0.01) {
       return NextResponse.json(
         { error: "Payment amount mismatch" },
@@ -107,7 +111,10 @@ export async function POST(request: NextRequest) {
       booking_id: bookingId,
       customer_id: user.id,
       amount: paymentAmount,
-      status: payment.status === "authorized" || payment.status === "captured" ? "completed" : "failed",
+      status:
+        payment.status === "authorized" || payment.status === "captured"
+          ? "completed"
+          : "failed",
       method: mapRazorpayMethod(payment.method),
       transaction_id: paymentId,
       payment_gateway: "razorpay",

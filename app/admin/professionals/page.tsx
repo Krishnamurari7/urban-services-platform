@@ -7,7 +7,7 @@ import { approveProfessional, rejectProfessional } from "./actions";
 
 async function getProfessionals() {
   const supabase = await createClient();
-  
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -62,7 +62,9 @@ async function getProfessionals() {
       // Get email
       let email = "N/A";
       try {
-        const { data: authUser, error } = await supabase.auth.admin.getUserById(professional.id);
+        const { data: authUser, error } = await supabase.auth.admin.getUserById(
+          professional.id
+        );
         if (!error && authUser?.user?.email) {
           email = authUser.user.email;
         }
@@ -98,13 +100,17 @@ export default async function AdminProfessionalsPage() {
   const professionals = await getProfessionals();
 
   const pendingProfessionals = professionals.filter(
-    (p) => !p.is_verified || (p.documents && p.documents.some((d: any) => d.status === "pending"))
+    (p) =>
+      !p.is_verified ||
+      (p.documents && p.documents.some((d: any) => d.status === "pending"))
   );
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Professional Management</h1>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Professional Management
+        </h1>
         <p className="text-gray-600 mt-1">Approve and manage professionals</p>
       </div>
 
@@ -112,7 +118,9 @@ export default async function AdminProfessionalsPage() {
       {pendingProfessionals.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Pending Approvals ({pendingProfessionals.length})</CardTitle>
+            <CardTitle>
+              Pending Approvals ({pendingProfessionals.length})
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -123,68 +131,89 @@ export default async function AdminProfessionalsPage() {
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg">{professional.full_name}</h3>
-                      <p className="text-sm text-gray-600">{professional.email || "Email N/A"}</p>
-                      <p className="text-sm text-gray-600">{professional.phone || "Phone N/A"}</p>
+                      <h3 className="font-semibold text-lg">
+                        {professional.full_name}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {professional.email || "Email N/A"}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {professional.phone || "Phone N/A"}
+                      </p>
                       {professional.bio && (
-                        <p className="text-sm text-gray-500 mt-1">{professional.bio}</p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {professional.bio}
+                        </p>
                       )}
-                      
+
                       {professional.experience_years && (
                         <p className="text-sm text-gray-500 mt-1">
                           Experience: {professional.experience_years} years
                         </p>
                       )}
 
-                      {professional.documents && professional.documents.length > 0 && (
-                        <div className="mt-3">
-                          <p className="text-sm font-medium mb-2">Documents:</p>
-                          <div className="space-y-2">
-                            {professional.documents.map((doc: any) => (
-                              <div
-                                key={doc.id}
-                                className="flex items-center gap-2 text-sm"
-                              >
-                                <span className="capitalize">{doc.document_type}:</span>
-                                <a
-                                  href={doc.file_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-blue-600 hover:underline"
+                      {professional.documents &&
+                        professional.documents.length > 0 && (
+                          <div className="mt-3">
+                            <p className="text-sm font-medium mb-2">
+                              Documents:
+                            </p>
+                            <div className="space-y-2">
+                              {professional.documents.map((doc: any) => (
+                                <div
+                                  key={doc.id}
+                                  className="flex items-center gap-2 text-sm"
                                 >
-                                  {doc.document_name}
-                                </a>
-                                <span
-                                  className={`px-2 py-1 rounded text-xs ${
-                                    doc.status === "approved"
-                                      ? "bg-green-100 text-green-700"
-                                      : doc.status === "rejected"
-                                      ? "bg-red-100 text-red-700"
-                                      : "bg-yellow-100 text-yellow-700"
-                                  }`}
-                                >
-                                  {doc.status}
-                                </span>
-                                {doc.rejection_reason && (
-                                  <span className="text-red-600 text-xs">
-                                    {doc.rejection_reason}
+                                  <span className="capitalize">
+                                    {doc.document_type}:
                                   </span>
-                                )}
-                              </div>
-                            ))}
+                                  <a
+                                    href={doc.file_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 hover:underline"
+                                  >
+                                    {doc.document_name}
+                                  </a>
+                                  <span
+                                    className={`px-2 py-1 rounded text-xs ${
+                                      doc.status === "approved"
+                                        ? "bg-green-100 text-green-700"
+                                        : doc.status === "rejected"
+                                          ? "bg-red-100 text-red-700"
+                                          : "bg-yellow-100 text-yellow-700"
+                                    }`}
+                                  >
+                                    {doc.status}
+                                  </span>
+                                  {doc.rejection_reason && (
+                                    <span className="text-red-600 text-xs">
+                                      {doc.rejection_reason}
+                                    </span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
                     </div>
                     <div className="flex gap-2 ml-4">
-                      <form action={approveProfessional}>
-                        <input type="hidden" name="professionalId" value={professional.id} />
+                      <form action={async (formData) => { await approveProfessional(formData); }}>
+                        <input
+                          type="hidden"
+                          name="professionalId"
+                          value={professional.id}
+                        />
                         <Button type="submit" variant="default">
                           Approve
                         </Button>
                       </form>
-                      <form action={rejectProfessional}>
-                        <input type="hidden" name="professionalId" value={professional.id} />
+                      <form action={async (formData) => { await rejectProfessional(formData); }}>
+                        <input
+                          type="hidden"
+                          name="professionalId"
+                          value={professional.id}
+                        />
                         <Button type="submit" variant="outline">
                           Reject
                         </Button>
@@ -221,23 +250,41 @@ export default async function AdminProfessionalsPage() {
               </thead>
               <tbody>
                 {professionals.map((professional: any) => (
-                  <tr key={professional.id} className="border-b hover:bg-gray-50">
-                    <td className="p-2 font-medium">{professional.full_name}</td>
-                    <td className="p-2 text-sm">{professional.email || "N/A"}</td>
-                    <td className="p-2 text-sm">{professional.phone || "N/A"}</td>
+                  <tr
+                    key={professional.id}
+                    className="border-b hover:bg-gray-50"
+                  >
+                    <td className="p-2 font-medium">
+                      {professional.full_name}
+                    </td>
+                    <td className="p-2 text-sm">
+                      {professional.email || "N/A"}
+                    </td>
+                    <td className="p-2 text-sm">
+                      {professional.phone || "N/A"}
+                    </td>
                     <td className="p-2">
                       {professional.rating_average ? (
                         <span className="text-sm font-medium">
-                          {professional.rating_average.toFixed(1)} ⭐ ({professional.total_reviews || 0})
+                          {professional.rating_average.toFixed(1)} ⭐ (
+                          {professional.total_reviews || 0})
                         </span>
                       ) : (
-                        <span className="text-sm text-gray-400">No ratings</span>
+                        <span className="text-sm text-gray-400">
+                          No ratings
+                        </span>
                       )}
                     </td>
-                    <td className="p-2 text-sm">{professional.totalBookings || 0}</td>
-                    <td className="p-2 text-sm text-green-600">{professional.completedBookings || 0}</td>
                     <td className="p-2 text-sm">
-                      {professional.experience_years ? `${professional.experience_years} years` : "N/A"}
+                      {professional.totalBookings || 0}
+                    </td>
+                    <td className="p-2 text-sm text-green-600">
+                      {professional.completedBookings || 0}
+                    </td>
+                    <td className="p-2 text-sm">
+                      {professional.experience_years
+                        ? `${professional.experience_years} years`
+                        : "N/A"}
                     </td>
                     <td className="p-2">
                       <span
@@ -245,15 +292,15 @@ export default async function AdminProfessionalsPage() {
                           professional.is_verified && professional.is_active
                             ? "bg-green-100 text-green-700"
                             : professional.is_active
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-red-100 text-red-700"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-red-100 text-red-700"
                         }`}
                       >
                         {professional.is_verified && professional.is_active
                           ? "Active"
                           : professional.is_active
-                          ? "Pending"
-                          : "Suspended"}
+                            ? "Pending"
+                            : "Suspended"}
                       </span>
                     </td>
                     <td className="p-2">

@@ -64,22 +64,13 @@ export async function middleware(request: NextRequest) {
   const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
 
   // Role-specific routes that require authentication
-  const roleRoutes = [
-    "/customer",
-    "/professional",
-    "/admin",
-  ];
+  const roleRoutes = ["/customer", "/professional", "/admin"];
   const isRoleRoute = roleRoutes.some((route) => pathname.startsWith(route));
 
   // Protected routes that require authentication (but not role-specific)
-  const protectedRoutes = [
-    "/dashboard",
-    "/bookings",
-    "/profile",
-  ];
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
-  ) && !isRoleRoute;
+  const protectedRoutes = ["/dashboard", "/bookings", "/profile"];
+  const isProtectedRoute =
+    protectedRoutes.some((route) => pathname.startsWith(route)) && !isRoleRoute;
 
   // Protect admin routes
   if (isAdminRoute) {

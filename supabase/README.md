@@ -15,15 +15,18 @@ This directory contains database migrations and schema documentation for the Urb
 All primary keys and foreign keys in this schema use UUID type. When writing SQL queries:
 
 ✅ **Correct:**
+
 - `auth.uid()` - Gets current authenticated user's UUID
 - `'550e8400-e29b-41d4-a716-446655440000'::uuid` - Valid UUID with type cast
 - `gen_random_uuid()` - Generates a new UUID
 
 ❌ **Incorrect:**
+
 - `'user-uuid-from-auth'` - This is a string, not a UUID
 - `'customer-uuid'` - Placeholder strings won't work
 
 **Quick UUID Reference:**
+
 ```sql
 -- Get your current user UUID
 SELECT auth.uid();
@@ -43,6 +46,7 @@ SELECT '550e8400-e29b-41d4-a716-446655440000'::uuid;
 ### 1. Run the Migration
 
 **Option A: Using Supabase Dashboard**
+
 1. Go to your Supabase project dashboard
 2. Navigate to **SQL Editor**
 3. Click **New Query**
@@ -52,6 +56,7 @@ SELECT '550e8400-e29b-41d4-a716-446655440000'::uuid;
 7. **RECOMMENDED:** Run `migrations/003_comprehensive_rls_policies.sql` for strict role-based security policies
 
 **Option B: Using Supabase CLI**
+
 ```bash
 # Install Supabase CLI if you haven't
 npm install -g supabase
@@ -68,13 +73,14 @@ supabase db push
 After running the migration, verify that all tables were created:
 
 ```sql
-SELECT table_name 
-FROM information_schema.tables 
-WHERE table_schema = 'public' 
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public'
 ORDER BY table_name;
 ```
 
 You should see:
+
 - `profiles`
 - `services`
 - `professional_services`
@@ -90,12 +96,12 @@ You should see:
 Verify that Row Level Security is enabled:
 
 ```sql
-SELECT tablename, rowsecurity 
-FROM pg_tables 
-WHERE schemaname = 'public' 
+SELECT tablename, rowsecurity
+FROM pg_tables
+WHERE schemaname = 'public'
 AND tablename IN (
-  'profiles', 'services', 'professional_services', 
-  'addresses', 'bookings', 'payments', 'reviews', 
+  'profiles', 'services', 'professional_services',
+  'addresses', 'bookings', 'payments', 'reviews',
   'availability_slots', 'admin_actions'
 );
 ```
@@ -135,6 +141,7 @@ All tables should have `rowsecurity = true`.
 **Option 1: For the currently authenticated user**
 
 ⚠️ **Note:** `auth.uid()` only works when authenticated. In SQL Editor, you need to:
+
 1. First get a user UUID (see Option 2 or 3 below)
 2. Or use the Supabase Dashboard with an authenticated session
 
@@ -153,6 +160,7 @@ ON CONFLICT (id) DO NOTHING;
 ```
 
 **To use auth.uid() in SQL Editor:**
+
 1. First, get a user UUID: `SELECT id FROM auth.users LIMIT 1;`
 2. Copy that UUID and use it in Option 2 below
 
@@ -175,10 +183,11 @@ ON CONFLICT (id) DO NOTHING;
 ```
 
 **Quick one-liner to create profile for first user:**
+
 ```sql
 -- Creates profile for the first user in auth.users
 INSERT INTO profiles (id, role, full_name, phone)
-SELECT 
+SELECT
   id,
   'customer',
   'Test User',
@@ -190,7 +199,7 @@ LIMIT 1;
 
 **Option 3: Generate a new UUID (For testing only)**
 
-⚠️ **Warning:** This creates a profile with a UUID that doesn't exist in `auth.users`. 
+⚠️ **Warning:** This creates a profile with a UUID that doesn't exist in `auth.users`.
 This is only for testing and won't work with authentication.
 
 ```sql
@@ -205,13 +214,14 @@ VALUES (
 ```
 
 **Better: Create user first, then profile**
+
 ```sql
 -- Step 1: Create a user via Supabase Auth (Dashboard → Authentication → Add User)
 -- OR use the Supabase Auth API to create a user first
 
 -- Step 2: Then create the profile using the user's UUID
 INSERT INTO profiles (id, role, full_name, phone)
-SELECT 
+SELECT
   id,
   'customer',
   'Test User',
@@ -226,8 +236,8 @@ LIMIT 1;
 
 ```sql
 -- View all users in auth.users
-SELECT id, email, created_at 
-FROM auth.users 
+SELECT id, email, created_at
+FROM auth.users
 ORDER BY created_at DESC;
 ```
 
@@ -238,7 +248,7 @@ Since `auth.uid()` returns NULL in SQL Editor, use this one-liner:
 ```sql
 -- Creates profile for the first user in auth.users (if profile doesn't exist)
 INSERT INTO profiles (id, role, full_name, phone)
-SELECT 
+SELECT
   id,
   'customer',
   'Test User',
@@ -249,7 +259,8 @@ LIMIT 1
 ON CONFLICT (id) DO NOTHING;
 ```
 
-**💡 Tip:** 
+**💡 Tip:**
+
 - See `helpers/get_uuids.sql` for helper queries to get UUIDs
 - See `helpers/create_profile.sql` for multiple ways to create profiles
 
@@ -268,8 +279,9 @@ VALUES (
 ### Create a Test Booking
 
 ⚠️ **Prerequisites:** You need to have:
+
 1. At least one customer profile
-2. At least one professional profile  
+2. At least one professional profile
 3. At least one service
 4. At least one address
 
@@ -277,7 +289,7 @@ VALUES (
 
 ```sql
 -- Check if you have all required data
-SELECT 
+SELECT
   (SELECT COUNT(*) FROM profiles WHERE role = 'customer') as customer_count,
   (SELECT COUNT(*) FROM profiles WHERE role = 'professional') as professional_count,
   (SELECT COUNT(*) FROM services) as service_count,
@@ -289,7 +301,7 @@ SELECT
 ```sql
 -- This will only work if all subqueries return a value
 -- ⚠️ IMPORTANT: Run this check first to see what data you have
-SELECT 
+SELECT
   (SELECT COUNT(*) FROM profiles WHERE role = 'customer') as customers,
   (SELECT COUNT(*) FROM profiles WHERE role = 'professional') as professionals,
   (SELECT COUNT(*) FROM services) as services,
@@ -308,7 +320,7 @@ INSERT INTO bookings (
   total_amount,
   final_amount
 )
-SELECT 
+SELECT
   customer.id,
   professional.id,
   service.id,
@@ -352,7 +364,7 @@ ON CONFLICT DO NOTHING;
 
 -- Step 4: Create an address (if needed)
 INSERT INTO addresses (user_id, label, address_line1, city, state, postal_code, country)
-SELECT 
+SELECT
   (SELECT id FROM profiles WHERE role = 'customer' LIMIT 1),
   'Home',
   '123 Test Street',
@@ -368,7 +380,7 @@ ON CONFLICT DO NOTHING;
 -- Use the improved query below that validates data exists first
 
 -- First, check if you have all required data:
-SELECT 
+SELECT
   (SELECT COUNT(*) FROM profiles WHERE role = 'customer') as customers,
   (SELECT COUNT(*) FROM profiles WHERE role = 'professional') as professionals,
   (SELECT COUNT(*) FROM services) as services,
@@ -384,7 +396,7 @@ INSERT INTO bookings (
   total_amount,
   final_amount
 )
-SELECT 
+SELECT
   customer.id,
   professional.id,
   service.id,
@@ -411,7 +423,7 @@ WHERE EXISTS (SELECT 1 FROM profiles WHERE role = 'customer')
 
 ```sql
 -- Step 1: Get the UUIDs first (RUN THIS FIRST)
-SELECT 
+SELECT
   (SELECT id FROM profiles WHERE role = 'customer' LIMIT 1) as customer_id,
   (SELECT id FROM profiles WHERE role = 'professional' LIMIT 1) as professional_id,
   (SELECT id FROM services LIMIT 1) as service_id,
@@ -456,7 +468,7 @@ INSERT INTO bookings (
   total_amount,
   final_amount
 )
-SELECT 
+SELECT
   (SELECT id FROM profiles WHERE role = 'customer' LIMIT 1),
   (SELECT id FROM profiles WHERE role = 'professional' LIMIT 1),
   (SELECT id FROM services LIMIT 1),
@@ -499,7 +511,7 @@ Or use the provided types in `lib/types/database.ts` which match the schema.
 ```sql
 -- Replace 'professional-uuid' with actual professional UUID
 -- Or use auth.uid() if you're the professional
-SELECT 
+SELECT
   ps.*,
   s.name as service_name,
   s.category
@@ -512,7 +524,7 @@ WHERE ps.professional_id = auth.uid()  -- Current user's services
 **Or with explicit UUID:**
 
 ```sql
-SELECT 
+SELECT
   ps.*,
   s.name as service_name,
   s.category
@@ -526,7 +538,7 @@ WHERE ps.professional_id = '00000000-0000-0000-0000-000000000000'::uuid
 
 ```sql
 -- Get bookings for the current authenticated user
-SELECT 
+SELECT
   b.*,
   s.name as service_name,
   p.full_name as professional_name
@@ -540,7 +552,7 @@ ORDER BY b.scheduled_at DESC;
 **Or with explicit UUID:**
 
 ```sql
-SELECT 
+SELECT
   b.*,
   s.name as service_name,
   p.full_name as professional_name
@@ -580,7 +592,7 @@ ORDER BY start_time;
 
 ```sql
 -- Get reviews for the current professional user
-SELECT 
+SELECT
   r.*,
   p.full_name as customer_name,
   s.name as service_name
@@ -595,7 +607,7 @@ ORDER BY r.created_at DESC;
 **Or with explicit UUID:**
 
 ```sql
-SELECT 
+SELECT
   r.*,
   p.full_name as customer_name,
   s.name as service_name
@@ -614,41 +626,45 @@ ORDER BY r.created_at DESC;
 If you're having issues with RLS policies:
 
 1. Check that RLS is enabled:
+
    ```sql
    SELECT tablename, rowsecurity FROM pg_tables WHERE schemaname = 'public';
    ```
 
 2. Verify your user is authenticated:
+
    ```sql
    SELECT auth.uid();
    ```
 
 3. Test a policy directly:
    ```sql
--- Note: auth.uid() returns NULL in SQL Editor
--- Use this instead to test RLS policies:
-SELECT * FROM profiles WHERE id = (SELECT id FROM auth.users LIMIT 1);
+   -- Note: auth.uid() returns NULL in SQL Editor
+   -- Use this instead to test RLS policies:
+   SELECT * FROM profiles WHERE id = (SELECT id FROM auth.users LIMIT 1);
    ```
 
 ### Triggers Not Firing
 
 Check if triggers exist:
+
 ```sql
-SELECT trigger_name, event_object_table 
-FROM information_schema.triggers 
+SELECT trigger_name, event_object_table
+FROM information_schema.triggers
 WHERE trigger_schema = 'public';
 ```
 
 ### Indexes Not Being Used
 
 Use `EXPLAIN ANALYZE` to check query plans:
+
 ```sql
 -- Replace '550e8400-e29b-41d4-a716-446655440000' with an actual UUID
 EXPLAIN ANALYZE SELECT * FROM bookings WHERE customer_id = '550e8400-e29b-41d4-a716-446655440000'::uuid;
 
 -- Or use a subquery to get a real UUID:
-EXPLAIN ANALYZE 
-SELECT * FROM bookings 
+EXPLAIN ANALYZE
+SELECT * FROM bookings
 WHERE customer_id = (SELECT id FROM profiles WHERE role = 'customer' LIMIT 1);
 
 ```

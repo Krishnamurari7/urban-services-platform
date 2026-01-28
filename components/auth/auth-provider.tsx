@@ -50,7 +50,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Get initial session - use getSession() to read from cookies immediately
     const initializeAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         if (mounted) {
           const currentUser = session?.user ?? null;
           setUser(currentUser);
@@ -59,7 +61,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             try {
               await Promise.race([
                 fetchUserRole(currentUser.id),
-                new Promise<void>((resolve) => setTimeout(() => resolve(), 5000))
+                new Promise<void>((resolve) =>
+                  setTimeout(() => resolve(), 5000)
+                ),
               ]);
             } catch (roleError) {
               console.error("Error fetching role:", roleError);
@@ -85,20 +89,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!mounted) return;
-      
+
       const currentUser = session?.user ?? null;
       setUser(currentUser);
-      
+
       // Set loading to false immediately for auth state change
       // Role fetch can happen in background
       setLoading(false);
-      
+
       if (currentUser) {
         // Fetch role with timeout to prevent blocking
         try {
           await Promise.race([
             fetchUserRole(currentUser.id),
-            new Promise<void>((resolve) => setTimeout(() => resolve(), 3000))
+            new Promise<void>((resolve) => setTimeout(() => resolve(), 3000)),
           ]);
         } catch (roleError) {
           console.error("Error fetching role:", roleError);

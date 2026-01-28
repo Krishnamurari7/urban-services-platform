@@ -58,7 +58,7 @@ export function ServiceForm({ service }: { service?: Service }) {
       <Button
         onClick={() => setIsOpen(true)}
         variant={service ? "ghost" : "default"}
-        size={service ? "sm" : "default"}
+         size={service ? "sm" : "md"}
       >
         {service ? "Edit" : "Add Service"}
       </Button>
@@ -67,12 +67,16 @@ export function ServiceForm({ service }: { service?: Service }) {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <CardHeader>
-              <CardTitle>{service ? "Edit Service" : "Create New Service"}</CardTitle>
+              <CardTitle>
+                {service ? "Edit Service" : "Create New Service"}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Service Name</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Service Name
+                  </label>
                   <input
                     type="text"
                     name="name"
@@ -83,7 +87,9 @@ export function ServiceForm({ service }: { service?: Service }) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Description</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Description
+                  </label>
                   <textarea
                     name="description"
                     defaultValue={service?.description || ""}
@@ -94,7 +100,9 @@ export function ServiceForm({ service }: { service?: Service }) {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Category</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Category
+                    </label>
                     <input
                       type="text"
                       name="category"
@@ -105,7 +113,9 @@ export function ServiceForm({ service }: { service?: Service }) {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Subcategory</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Subcategory
+                    </label>
                     <input
                       type="text"
                       name="subcategory"
@@ -117,7 +127,9 @@ export function ServiceForm({ service }: { service?: Service }) {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Base Price (₹)</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Base Price (₹)
+                    </label>
                     <input
                       type="number"
                       name="base_price"
@@ -130,7 +142,9 @@ export function ServiceForm({ service }: { service?: Service }) {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Duration (minutes)</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Duration (minutes)
+                    </label>
                     <input
                       type="number"
                       name="duration_minutes"
@@ -143,7 +157,9 @@ export function ServiceForm({ service }: { service?: Service }) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Image URL</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Image URL
+                  </label>
                   <input
                     type="url"
                     name="image_url"
@@ -153,7 +169,9 @@ export function ServiceForm({ service }: { service?: Service }) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Status</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Status
+                  </label>
                   <select
                     name="status"
                     defaultValue={service?.status || "active"}

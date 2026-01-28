@@ -3,7 +3,13 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -106,7 +112,9 @@ export default function CustomerDashboard() {
       });
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
-      setError("Failed to load dashboard data. Please try refreshing the page.");
+      setError(
+        "Failed to load dashboard data. Please try refreshing the page."
+      );
     } finally {
       setLoading(false);
       hasFetchedRef.current = true;
@@ -149,7 +157,9 @@ export default function CustomerDashboard() {
       if (!hasFetchedRef.current) {
         console.warn("Dashboard loading timeout - forcing loading to false");
         setLoading(false);
-        setError("Loading is taking longer than expected. Please refresh the page.");
+        setError(
+          "Loading is taking longer than expected. Please refresh the page."
+        );
       }
     }, 10000); // 10 second timeout
 
@@ -221,14 +231,14 @@ export default function CustomerDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Bookings
+            </CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalBookings}</div>
-            <p className="text-xs text-muted-foreground">
-              All time bookings
-            </p>
+            <p className="text-xs text-muted-foreground">All time bookings</p>
           </CardContent>
         </Card>
 
@@ -239,9 +249,7 @@ export default function CustomerDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.upcomingBookings}</div>
-            <p className="text-xs text-muted-foreground">
-              Scheduled services
-            </p>
+            <p className="text-xs text-muted-foreground">Scheduled services</p>
           </CardContent>
         </Card>
 
@@ -252,9 +260,7 @@ export default function CustomerDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.completedBookings}</div>
-            <p className="text-xs text-muted-foreground">
-              Finished services
-            </p>
+            <p className="text-xs text-muted-foreground">Finished services</p>
           </CardContent>
         </Card>
 
@@ -267,9 +273,7 @@ export default function CustomerDashboard() {
             <div className="text-2xl font-bold">
               ₹{stats.totalSpent.toFixed(2)}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Lifetime spending
-            </p>
+            <p className="text-xs text-muted-foreground">Lifetime spending</p>
           </CardContent>
         </Card>
       </div>
@@ -311,21 +315,24 @@ export default function CustomerDashboard() {
                   <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold">Booking #{booking.id.slice(0, 8)}</h3>
+                        <h3 className="font-semibold">
+                          Booking #{booking.id.slice(0, 8)}
+                        </h3>
                         <Badge
                           variant={
                             booking.status === "completed"
                               ? "default"
                               : booking.status === "cancelled"
-                              ? "destructive"
-                              : "secondary"
+                                ? "destructive"
+                                : "secondary"
                           }
                         >
                           {booking.status}
                         </Badge>
                       </div>
                       <p className="text-sm text-gray-600">
-                        Scheduled: {new Date(booking.scheduled_at).toLocaleDateString()}
+                        Scheduled:{" "}
+                        {new Date(booking.scheduled_at).toLocaleDateString()}
                       </p>
                       <p className="text-sm font-medium mt-1">
                         ₹{Number(booking.final_amount).toFixed(2)}

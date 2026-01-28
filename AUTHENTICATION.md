@@ -5,23 +5,27 @@ This document describes the complete authentication system implemented for the U
 ## Features Implemented
 
 ### ✅ Email + Password Authentication
+
 - User registration with role selection (customer/professional)
 - Email/password login
 - Secure session handling with Supabase Auth
 - Automatic profile creation via database trigger
 
 ### ✅ Google OAuth Authentication
+
 - One-click sign in with Google
 - Automatic profile creation with role from metadata
 - Seamless OAuth callback handling
 
 ### ✅ Role-Based Access Control
+
 - Roles stored in `profiles` table (customer, professional, admin)
 - Automatic profile creation on user signup
 - Server-side and client-side role checking
 - Middleware-based route protection
 
 ### ✅ Secure Session Handling
+
 - Server-side session management with `@supabase/ssr`
 - Automatic session refresh in middleware
 - Secure cookie handling
@@ -32,11 +36,13 @@ This document describes the complete authentication system implemented for the U
 ### Database Layer
 
 **Profiles Table**
+
 - Stores user role and profile information
 - Linked to `auth.users` via foreign key
 - Auto-created via database trigger on user signup
 
 **Auto-Create Profile Trigger**
+
 - Located in: `supabase/migrations/004_auto_create_profile_trigger.sql`
 - Automatically creates profile when new user signs up
 - Extracts role from user metadata (defaults to 'customer')
@@ -44,6 +50,7 @@ This document describes the complete authentication system implemented for the U
 ### Server-Side Authentication
 
 **Session Management** (`lib/auth/session.ts`)
+
 - `getSession()` - Get current session with role
 - `getCurrentUser()` - Get current user
 - `getUserRole()` - Get user role from profiles table
@@ -52,6 +59,7 @@ This document describes the complete authentication system implemented for the U
 - `requireRole()` - Require specific role (throws if not)
 
 **Auth Actions** (`lib/auth/actions.ts`)
+
 - `signIn(email, password)` - Email/password login
 - `signUp(email, password, fullName, role)` - User registration
 - `signInWithGoogle()` - Google OAuth sign in
@@ -61,12 +69,14 @@ This document describes the complete authentication system implemented for the U
 ### Client-Side Authentication
 
 **Auth Provider** (`components/auth/auth-provider.tsx`)
+
 - Provides auth context to entire app
 - Tracks user, role, loading state, and authentication status
 - Automatically fetches role from profiles table
 - Listens for auth state changes
 
 **Protected Route Component** (`components/auth/protected-route.tsx`)
+
 - Client-side route protection
 - Optional role-based access control
 - Loading states and error handling
@@ -75,6 +85,7 @@ This document describes the complete authentication system implemented for the U
 ### Middleware Protection
 
 **Route Protection** (`middleware.ts`)
+
 - Automatically refreshes user sessions
 - Fetches user role from profiles table
 - Protects routes based on authentication
@@ -177,18 +188,21 @@ export default function LoginPage() {
 ## Route Protection
 
 ### Public Routes
+
 - `/` - Home page
 - `/about` - About page
 - `/login` - Login page
 - `/register` - Registration page
 
 ### Protected Routes (Require Authentication)
+
 - `/dashboard` - User dashboard
 - `/bookings` - Bookings management
 - `/services` - Services management
 - `/profile` - User profile
 
 ### Admin-Only Routes
+
 - `/users` - User management (requires admin role)
 
 ## Environment Variables
@@ -204,6 +218,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ## Setup Instructions
 
 1. **Install Dependencies**
+
    ```bash
    npm install
    ```
@@ -239,12 +254,14 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ## Files Modified/Created
 
 ### New Files
+
 - `supabase/migrations/004_auto_create_profile_trigger.sql` - Auto-create profile trigger
 - `app/auth/callback/route.ts` - OAuth callback handler
 - `components/auth/register-form.tsx` - Registration form
 - `AUTHENTICATION.md` - This documentation
 
 ### Modified Files
+
 - `lib/auth/actions.ts` - Added Google OAuth and role handling
 - `lib/auth/session.ts` - Updated to fetch role from profiles table
 - `components/auth/auth-provider.tsx` - Added role tracking

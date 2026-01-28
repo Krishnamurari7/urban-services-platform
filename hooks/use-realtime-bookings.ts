@@ -33,7 +33,9 @@ export function useRealtimeBookings({
         query = query.eq("professional_id", userId);
       }
 
-      const { data, error } = await query.order("created_at", { ascending: false });
+      const { data, error } = await query.order("created_at", {
+        ascending: false,
+      });
 
       if (!error && data) {
         setBookings(data as Booking[]);
@@ -63,11 +65,15 @@ export function useRealtimeBookings({
           } else if (payload.eventType === "UPDATE") {
             setBookings((prev) =>
               prev.map((booking) =>
-                booking.id === payload.new.id ? (payload.new as Booking) : booking
+                booking.id === payload.new.id
+                  ? (payload.new as Booking)
+                  : booking
               )
             );
           } else if (payload.eventType === "DELETE") {
-            setBookings((prev) => prev.filter((booking) => booking.id !== payload.old.id));
+            setBookings((prev) =>
+              prev.filter((booking) => booking.id !== payload.old.id)
+            );
           }
         }
       )

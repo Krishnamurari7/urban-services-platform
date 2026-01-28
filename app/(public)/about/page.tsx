@@ -6,7 +6,6 @@ import {
   Heart,
   Award,
   TrendingUp,
-  Clock,
   CheckCircle2,
 } from "lucide-react";
 
@@ -15,30 +14,50 @@ export default function AboutPage() {
     {
       icon: <Shield className="h-8 w-8" />,
       title: "Trust & Safety",
-      description: "Every professional is verified and background checked for your peace of mind.",
+      description:
+        "Every professional is verified and background checked for your peace of mind.",
     },
     {
       icon: <Users className="h-8 w-8" />,
       title: "Customer First",
-      description: "Your satisfaction is our top priority. We're here to serve you better every day.",
+      description:
+        "Your satisfaction is our top priority. We're here to serve you better every day.",
     },
     {
       icon: <Target className="h-8 w-8" />,
       title: "Excellence",
-      description: "We maintain the highest standards of quality in every service we provide.",
+      description:
+        "We maintain the highest standards of quality in every service we provide.",
     },
     {
       icon: <Heart className="h-8 w-8" />,
       title: "Community",
-      description: "Building connections between professionals and customers in your neighborhood.",
+      description:
+        "Building connections between professionals and customers in your neighborhood.",
     },
   ];
 
   const stats = [
-    { label: "Happy Customers", value: "10,000+", icon: <Users className="h-6 w-6" /> },
-    { label: "Verified Professionals", value: "500+", icon: <Shield className="h-6 w-6" /> },
-    { label: "Services Completed", value: "50,000+", icon: <CheckCircle2 className="h-6 w-6" /> },
-    { label: "Average Rating", value: "4.8★", icon: <Award className="h-6 w-6" /> },
+    {
+      label: "Happy Customers",
+      value: "10,000+",
+      icon: <Users className="h-6 w-6" />,
+    },
+    {
+      label: "Verified Professionals",
+      value: "500+",
+      icon: <Shield className="h-6 w-6" />,
+    },
+    {
+      label: "Services Completed",
+      value: "50,000+",
+      icon: <CheckCircle2 className="h-6 w-6" />,
+    },
+    {
+      label: "Average Rating",
+      value: "4.8★",
+      icon: <Award className="h-6 w-6" />,
+    },
   ];
 
   return (
@@ -55,8 +74,9 @@ export default function AboutPage() {
               About <span className="text-primary">vera company</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-              We're revolutionizing the way people connect with professional services,
-              making it easier, safer, and more convenient than ever before.
+              We're revolutionizing the way people connect with professional
+              services, making it easier, safer, and more convenient than ever
+              before.
             </p>
           </div>
         </div>
@@ -73,20 +93,22 @@ export default function AboutPage() {
             </div>
             <div className="prose prose-lg mx-auto dark:prose-invert">
               <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                vera company was founded with a simple mission: to connect people with
-                trusted professionals who can help them with their everyday needs. We
-                recognized that finding reliable service providers was often a challenge,
-                filled with uncertainty and inconvenience.
+                vera company was founded with a simple mission: to connect
+                people with trusted professionals who can help them with their
+                everyday needs. We recognized that finding reliable service
+                providers was often a challenge, filled with uncertainty and
+                inconvenience.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                Today, we've built a platform that brings together verified professionals
-                and customers in a seamless, secure environment. Our commitment to quality,
-                safety, and customer satisfaction has made us a trusted name in the service
-                industry.
+                Today, we've built a platform that brings together verified
+                professionals and customers in a seamless, secure environment.
+                Our commitment to quality, safety, and customer satisfaction has
+                made us a trusted name in the service industry.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                We're proud to serve thousands of customers and hundreds of professionals,
-                creating opportunities and solving problems every single day.
+                We're proud to serve thousands of customers and hundreds of
+                professionals, creating opportunities and solving problems every
+                single day.
               </p>
             </div>
           </div>
@@ -104,7 +126,9 @@ export default function AboutPage() {
                     {stat.icon}
                   </div>
                   <div className="text-3xl font-bold mb-2">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {stat.label}
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -125,13 +149,18 @@ export default function AboutPage() {
           </div>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {values.map((value, index) => (
-              <Card key={index} className="group transition-all hover:shadow-lg hover:-translate-y-1">
+              <Card
+                key={index}
+                className="group transition-all hover:shadow-lg hover:-translate-y-1"
+              >
                 <CardContent className="p-6 text-center">
                   <div className="mb-4 flex justify-center text-primary transition-transform group-hover:scale-110">
                     {value.icon}
                   </div>
                   <h3 className="mb-2 font-semibold text-lg">{value.title}</h3>
-                  <p className="text-sm text-muted-foreground">{value.description}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {value.description}
+                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -151,9 +180,10 @@ export default function AboutPage() {
                     <h3 className="text-2xl font-bold">Our Mission</h3>
                   </div>
                   <p className="text-muted-foreground leading-relaxed">
-                    To make professional services accessible, reliable, and convenient for
-                    everyone, while creating meaningful opportunities for skilled professionals
-                    to grow their businesses.
+                    To make professional services accessible, reliable, and
+                    convenient for everyone, while creating meaningful
+                    opportunities for skilled professionals to grow their
+                    businesses.
                   </p>
                 </CardContent>
               </Card>
@@ -164,9 +194,10 @@ export default function AboutPage() {
                     <h3 className="text-2xl font-bold">Our Vision</h3>
                   </div>
                   <p className="text-muted-foreground leading-relaxed">
-                    To become the most trusted platform for professional services, recognized
-                    for our commitment to quality, innovation, and customer satisfaction across
-                    all communities we serve.
+                    To become the most trusted platform for professional
+                    services, recognized for our commitment to quality,
+                    innovation, and customer satisfaction across all communities
+                    we serve.
                   </p>
                 </CardContent>
               </Card>
@@ -183,8 +214,8 @@ export default function AboutPage() {
               Join Us Today
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Whether you're looking for services or want to offer them, we'd love to have you
-              as part of our community.
+              Whether you're looking for services or want to offer them, we'd
+              love to have you as part of our community.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <a

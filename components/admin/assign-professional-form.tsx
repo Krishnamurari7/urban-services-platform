@@ -28,7 +28,8 @@ export function AssignProfessionalForm({
 }: AssignProfessionalFormProps) {
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProfessionalId, setSelectedProfessionalId] = useState<string>("");
+  const [selectedProfessionalId, setSelectedProfessionalId] =
+    useState<string>("");
   const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
   const supabase = createClient();
@@ -52,7 +53,9 @@ export function AssignProfessionalForm({
         return;
       }
 
-      const professionalIds = professionalServices.map((ps) => ps.professional_id);
+      const professionalIds = professionalServices.map(
+        (ps) => ps.professional_id
+      );
 
       // Get professional profiles
       const { data: professionalsData } = await supabase
@@ -152,7 +155,11 @@ export function AssignProfessionalForm({
               <option key={prof.id} value={prof.id}>
                 {prof.full_name}
                 {prof.rating_average && (
-                  <> - ⭐ {prof.rating_average.toFixed(1)} ({prof.total_reviews} reviews)</>
+                  <>
+                    {" "}
+                    - ⭐ {prof.rating_average.toFixed(1)} ({prof.total_reviews}{" "}
+                    reviews)
+                  </>
                 )}
               </option>
             ))}

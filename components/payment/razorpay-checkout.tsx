@@ -55,7 +55,11 @@ export function RazorpayCheckout({
       order_id: orderId,
       handler: function (response: any) {
         // Verify payment signature on server
-        onSuccess(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature);
+        onSuccess(
+          response.razorpay_payment_id,
+          response.razorpay_order_id,
+          response.razorpay_signature
+        );
       },
       prefill: {
         name: customerName,

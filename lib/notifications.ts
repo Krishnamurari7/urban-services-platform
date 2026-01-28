@@ -19,7 +19,9 @@ export interface NotificationData {
  * - SMS: Twilio, AWS SNS
  * - Push: Firebase Cloud Messaging
  */
-export async function sendNotification(data: NotificationData): Promise<{ success: boolean; error?: string }> {
+export async function sendNotification(
+  data: NotificationData
+): Promise<{ success: boolean; error?: string }> {
   try {
     // TODO: Integrate with actual notification service
     // For now, log the notification

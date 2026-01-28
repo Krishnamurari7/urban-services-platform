@@ -32,11 +32,7 @@ export default function AdminLayout({
   );
 }
 
-function AdminLayoutContent({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
@@ -46,7 +42,10 @@ function AdminLayoutContent({
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center justify-center h-16 border-b border-gray-200 px-4">
-            <Link href="/admin/dashboard" className="flex items-center space-x-2">
+            <Link
+              href="/admin/dashboard"
+              className="flex items-center space-x-2"
+            >
               <Image
                 src="/logo.png"
                 alt="VERA COMPANY"
@@ -54,7 +53,9 @@ function AdminLayoutContent({
                 height={32}
                 className="object-contain"
               />
-              <span className="text-sm font-bold text-gray-900">Admin Panel</span>
+              <span className="text-sm font-bold text-gray-900">
+                Admin Panel
+              </span>
             </Link>
           </div>
 
@@ -83,11 +84,7 @@ function AdminLayoutContent({
           {/* Logout */}
           <div className="p-4 border-t border-gray-200">
             <form action={signOut}>
-              <Button
-                type="submit"
-                variant="outline"
-                className="w-full"
-              >
+              <Button type="submit" variant="outline" className="w-full">
                 Sign Out
               </Button>
             </form>

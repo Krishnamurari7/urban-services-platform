@@ -3,19 +3,25 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Profile } from "@/lib/types/database";
-import { 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
-  FileText, 
+import {
+  CheckCircle,
+  XCircle,
+  Clock,
+  FileText,
   User,
   Award,
   Shield,
-  AlertCircle
+  AlertCircle,
 } from "lucide-react";
 
 interface VerificationStatus {
@@ -28,12 +34,13 @@ interface VerificationStatus {
 export function VerificationSection() {
   const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [verificationStatus, setVerificationStatus] = useState<VerificationStatus>({
-    profile: false,
-    documents: false,
-    bankAccount: false,
-    overall: "pending",
-  });
+  const [verificationStatus, setVerificationStatus] =
+    useState<VerificationStatus>({
+      profile: false,
+      documents: false,
+      bankAccount: false,
+      overall: "pending",
+    });
   const [loading, setLoading] = useState(true);
   const [documentCount, setDocumentCount] = useState(0);
   const [approvedDocuments, setApprovedDocuments] = useState(0);
@@ -70,7 +77,8 @@ export function VerificationSection() {
         .eq("professional_id", user.id);
 
       const totalDocs = documents?.length || 0;
-      const approvedDocs = documents?.filter((d) => d.status === "approved").length || 0;
+      const approvedDocs =
+        documents?.filter((d) => d.status === "approved").length || 0;
       setDocumentCount(totalDocs);
       setApprovedDocuments(approvedDocs);
 
@@ -81,7 +89,8 @@ export function VerificationSection() {
         .eq("professional_id", user.id);
 
       const totalAccounts = bankAccounts?.length || 0;
-      const hasVerifiedAccount = bankAccounts?.some((a) => a.is_verified) || false;
+      const hasVerifiedAccount =
+        bankAccounts?.some((a) => a.is_verified) || false;
       setBankAccountCount(totalAccounts);
       setVerifiedBankAccount(hasVerifiedAccount);
 
@@ -149,13 +158,17 @@ export function VerificationSection() {
             <Shield className="h-5 w-5" />
             Verification Status
           </CardTitle>
-          <CardDescription>Your professional verification status</CardDescription>
+          <CardDescription>
+            Your professional verification status
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-2xl font-bold mb-2">
-                {verificationStatus.overall === "verified" ? "Verified Professional" : "Verification Pending"}
+                {verificationStatus.overall === "verified"
+                  ? "Verified Professional"
+                  : "Verification Pending"}
               </h3>
               <p className="text-gray-600">
                 {verificationStatus.overall === "verified"
@@ -200,8 +213,8 @@ export function VerificationSection() {
                     {approvedDocuments > 0
                       ? `${approvedDocuments} document(s) approved`
                       : documentCount > 0
-                      ? `${documentCount} document(s) pending approval`
-                      : "Upload verification documents"}
+                        ? `${documentCount} document(s) pending approval`
+                        : "Upload verification documents"}
                   </p>
                 </div>
               </div>
@@ -217,8 +230,8 @@ export function VerificationSection() {
                     {verifiedBankAccount
                       ? "Bank account verified"
                       : bankAccountCount > 0
-                      ? "Bank account pending verification"
-                      : "Add and verify your bank account"}
+                        ? "Bank account pending verification"
+                        : "Add and verify your bank account"}
                   </p>
                 </div>
               </div>
@@ -235,7 +248,9 @@ export function VerificationSection() {
             <User className="h-5 w-5" />
             Profile Completeness
           </CardTitle>
-          <CardDescription>Required information for verification</CardDescription>
+          <CardDescription>
+            Required information for verification
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -289,7 +304,11 @@ export function VerificationSection() {
             </div>
           </div>
           <div className="mt-4 pt-4 border-t">
-            <Button variant="outline" className="w-full" onClick={() => window.location.href = "/professional/profile"}>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => (window.location.href = "/professional/profile")}
+            >
               <User className="h-4 w-4 mr-2" />
               Complete Profile
             </Button>
@@ -319,7 +338,9 @@ export function VerificationSection() {
               <FileText className="h-6 w-6 mb-2" />
               <span className="font-medium">Upload Documents</span>
               <span className="text-xs text-gray-500 mt-1">
-                {documentCount > 0 ? `${documentCount} uploaded` : "No documents"}
+                {documentCount > 0
+                  ? `${documentCount} uploaded`
+                  : "No documents"}
               </span>
             </Button>
             <Button
@@ -333,7 +354,9 @@ export function VerificationSection() {
               <Shield className="h-6 w-6 mb-2" />
               <span className="font-medium">Add Bank Account</span>
               <span className="text-xs text-gray-500 mt-1">
-                {bankAccountCount > 0 ? `${bankAccountCount} account(s)` : "No accounts"}
+                {bankAccountCount > 0
+                  ? `${bankAccountCount} account(s)`
+                  : "No accounts"}
               </span>
             </Button>
           </div>

@@ -28,11 +28,13 @@ This directory contains helper SQL files for common database operations and quer
 ### Method 2: Using Supabase CLI
 
 1. **Install Supabase CLI** (if not already installed)
+
    ```bash
    npm install -g supabase
    ```
 
 2. **Link to Your Project**
+
    ```bash
    supabase link --project-ref your-project-ref
    ```
@@ -56,7 +58,9 @@ You can copy individual queries from helper files and run them as needed:
 ## Available Helper Files
 
 ### `get_uuids.sql`
+
 Contains queries to retrieve UUIDs from various tables:
+
 - Get current user UUID
 - List all user UUIDs
 - Get customer/professional UUIDs
@@ -64,9 +68,10 @@ Contains queries to retrieve UUIDs from various tables:
 - Quick reference queries
 
 **Usage Example:**
+
 ```sql
 -- Copy and paste this into SQL Editor
-SELECT 
+SELECT
   auth.uid() as current_user_id,
   (SELECT email FROM auth.users WHERE id = auth.uid()) as current_user_email;
 ```
@@ -79,6 +84,7 @@ SELECT
 4. **Document usage** in comments at the top of the file
 
 **Example Helper File Structure:**
+
 ```sql
 -- ============================================
 -- Helper: Description of what this file does
@@ -156,16 +162,19 @@ SELECT * FROM get_user_profile(auth.uid());
 ## Troubleshooting
 
 ### Query Not Running
+
 - Check for syntax errors
 - Ensure you're connected to the correct project
 - Verify table names and column names are correct
 
 ### Permission Errors
+
 - Check RLS policies
 - Ensure you're authenticated (for queries using `auth.uid()`)
 - Verify your user has the necessary permissions
 
 ### UUID Errors
+
 - Always use proper UUID format or `auth.uid()`
 - Cast strings to UUID: `'uuid-string'::uuid`
 - Use `gen_random_uuid()` to generate new UUIDs

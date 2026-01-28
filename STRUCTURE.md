@@ -99,6 +99,7 @@ urban-services-platform/
 ## Route Groups
 
 Route groups in Next.js App Router are created using parentheses `(groupName)`. They allow you to:
+
 - Organize routes without affecting the URL structure
 - Apply different layouts to different route groups
 - Share layouts between multiple routes
@@ -116,6 +117,7 @@ Route groups in Next.js App Router are created using parentheses `(groupName)`. 
 ## Component Organization
 
 Components are organized by feature/domain:
+
 - `ui/` - Reusable, generic UI components
 - `layout/` - Layout-related components (header, footer, sidebar)
 - `auth/` - Authentication-related components
@@ -134,6 +136,7 @@ Components are organized by feature/domain:
 ## Route Protection
 
 Update `middleware.ts` to protect routes based on user roles:
+
 - `(customer)/*` - Requires customer role
 - `(professional)/*` - Requires professional role
 - `(admin)/*` - Requires admin role

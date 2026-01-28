@@ -8,7 +8,11 @@ import type { UserRole } from "@/lib/types/auth";
 /**
  * Sign in with email and password
  */
-export async function signIn(email: string, password: string, redirectTo?: string) {
+export async function signIn(
+  email: string,
+  password: string,
+  redirectTo?: string
+) {
   const supabase = await createClient();
 
   const { data, error } = await supabase.auth.signInWithPassword({
@@ -32,10 +36,14 @@ export async function signIn(email: string, password: string, redirectTo?: strin
     .single();
 
   revalidatePath("/", "layout");
-  
+
   // Use redirect parameter if provided and valid, otherwise redirect based on role
   let redirectPath: string;
-  if (redirectTo && redirectTo.startsWith("/") && !redirectTo.startsWith("//")) {
+  if (
+    redirectTo &&
+    redirectTo.startsWith("/") &&
+    !redirectTo.startsWith("//")
+  ) {
     // Validate redirect path is safe (starts with /, no protocol-relative URLs)
     redirectPath = redirectTo;
   } else {
@@ -71,7 +79,9 @@ export async function signUp(
     console.error("Auth signup error:", error);
     // Provide more user-friendly error messages
     if (error.message.includes("already registered")) {
-      return { error: "This email is already registered. Please sign in instead." };
+      return {
+        error: "This email is already registered. Please sign in instead.",
+      };
     }
     if (error.message.includes("password")) {
       return { error: "Password is too weak. Please use a stronger password." };
@@ -79,7 +89,9 @@ export async function signUp(
     if (error.message.includes("email")) {
       return { error: "Invalid email address. Please check and try again." };
     }
-    return { error: error.message || "Failed to create account. Please try again." };
+    return {
+      error: error.message || "Failed to create account. Please try again.",
+    };
   }
 
   if (!data.user) {
@@ -100,15 +112,13 @@ export async function signUp(
   if (!profile) {
     console.warn("Profile was not created by trigger for user:", data.user.id);
     // Try to create profile manually as fallback
-    const { error: profileError } = await supabase
-      .from("profiles")
-      .insert({
-        id: data.user.id,
-        role: role,
-        full_name: fullName,
-        is_active: true,
-        is_verified: false,
-      });
+    const { error: profileError } = await supabase.from("profiles").insert({
+      id: data.user.id,
+      role: role,
+      full_name: fullName,
+      is_active: true,
+      is_verified: false,
+    });
 
     if (profileError) {
       console.error("Failed to create profile manually:", profileError);
@@ -172,7 +182,11 @@ export async function sendOTP(phone: string) {
 /**
  * Verify OTP and sign in
  */
-export async function verifyOTP(phone: string, token: string, redirectTo?: string) {
+export async function verifyOTP(
+  phone: string,
+  token: string,
+  redirectTo?: string
+) {
   const supabase = await createClient();
 
   // Format phone number
@@ -203,7 +217,11 @@ export async function verifyOTP(phone: string, token: string, redirectTo?: strin
 
   // Use redirect parameter if provided and valid, otherwise redirect based on role
   let redirectPath: string;
-  if (redirectTo && redirectTo.startsWith("/") && !redirectTo.startsWith("//")) {
+  if (
+    redirectTo &&
+    redirectTo.startsWith("/") &&
+    !redirectTo.startsWith("//")
+  ) {
     redirectPath = redirectTo;
   } else {
     redirectPath = getRoleBasedRedirect(profile?.role || "customer");

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 async function getPayments() {
   const supabase = await createClient();
-  
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -49,19 +49,20 @@ async function getPayments() {
     .limit(100);
 
   // Calculate commission (assuming 10% service fee)
-  const totalRevenue = payments?.reduce(
-    (sum, p) => sum + (p.amount || 0),
-    0
-  ) || 0;
-  
-  const totalCommission = payments?.reduce(
-    (sum, p) => sum + ((p.booking as any)?.service_fee || 0),
-    0
-  ) || 0;
+  const totalRevenue =
+    payments?.reduce((sum, p) => sum + (p.amount || 0), 0) || 0;
 
-  const completedPayments = payments?.filter((p) => p.status === "completed") || [];
+  const totalCommission =
+    payments?.reduce(
+      (sum, p) => sum + ((p.booking as any)?.service_fee || 0),
+      0
+    ) || 0;
+
+  const completedPayments =
+    payments?.filter((p) => p.status === "completed") || [];
   const pendingPayments = payments?.filter((p) => p.status === "pending") || [];
-  const refundedPayments = payments?.filter((p) => p.status === "refunded") || [];
+  const refundedPayments =
+    payments?.filter((p) => p.status === "refunded") || [];
 
   return {
     payments: payments || [],
@@ -81,8 +82,12 @@ export default async function AdminPaymentsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Payments & Commission</h1>
-        <p className="text-gray-600 mt-1">Track payments and platform commission</p>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Payments & Commission
+        </h1>
+        <p className="text-gray-600 mt-1">
+          Track payments and platform commission
+        </p>
       </div>
 
       {/* Stats */}
@@ -93,18 +98,24 @@ export default async function AdminPaymentsPage() {
             <span className="text-2xl">💰</span>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₹{stats.totalRevenue.toLocaleString()}</div>
+            <div className="text-2xl font-bold">
+              ₹{stats.totalRevenue.toLocaleString()}
+            </div>
             <p className="text-xs text-gray-500 mt-1">All time</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Platform Commission</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Platform Commission
+            </CardTitle>
             <span className="text-2xl">💵</span>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₹{stats.totalCommission.toLocaleString()}</div>
+            <div className="text-2xl font-bold">
+              ₹{stats.totalCommission.toLocaleString()}
+            </div>
             <p className="text-xs text-gray-500 mt-1">Service fees collected</p>
           </CardContent>
         </Card>
@@ -160,7 +171,9 @@ export default async function AdminPaymentsPage() {
                       <td className="p-2 text-sm font-mono">
                         {payment.transaction_id || payment.id.substring(0, 8)}
                       </td>
-                      <td className="p-2">{booking?.customer?.full_name || "N/A"}</td>
+                      <td className="p-2">
+                        {booking?.customer?.full_name || "N/A"}
+                      </td>
                       <td className="p-2">{booking?.service?.name || "N/A"}</td>
                       <td className="p-2 font-medium">₹{payment.amount}</td>
                       <td className="p-2 text-sm text-gray-600">
@@ -177,10 +190,10 @@ export default async function AdminPaymentsPage() {
                             payment.status === "completed"
                               ? "bg-green-100 text-green-700"
                               : payment.status === "refunded"
-                              ? "bg-red-100 text-red-700"
-                              : payment.status === "failed"
-                              ? "bg-red-100 text-red-700"
-                              : "bg-yellow-100 text-yellow-700"
+                                ? "bg-red-100 text-red-700"
+                                : payment.status === "failed"
+                                  ? "bg-red-100 text-red-700"
+                                  : "bg-yellow-100 text-yellow-700"
                           }`}
                         >
                           {payment.status}

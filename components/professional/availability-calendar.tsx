@@ -3,7 +3,13 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { AvailabilitySlot } from "@/lib/types/database";
@@ -21,7 +27,9 @@ export function AvailabilityCalendar() {
   const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [formData, setFormData] = useState<SlotFormData>({
     start_time: "",
     end_time: "",
@@ -63,20 +71,20 @@ export function AvailabilityCalendar() {
     setSubmitting(true);
     try {
       const supabase = createClient();
-      
+
       const startDateTime = `${selectedDate}T${formData.start_time}`;
       const endDateTime = `${selectedDate}T${formData.end_time}`;
 
-      const { error } = await supabase
-        .from("availability_slots")
-        .insert({
-          professional_id: user.id,
-          start_time: startDateTime,
-          end_time: endDateTime,
-          status: "available",
-          is_recurring: formData.is_recurring,
-          recurrence_pattern: formData.is_recurring ? formData.recurrence_pattern || "weekly" : null,
-        });
+      const { error } = await supabase.from("availability_slots").insert({
+        professional_id: user.id,
+        start_time: startDateTime,
+        end_time: endDateTime,
+        status: "available",
+        is_recurring: formData.is_recurring,
+        recurrence_pattern: formData.is_recurring
+          ? formData.recurrence_pattern || "weekly"
+          : null,
+      });
 
       if (error) throw error;
 
@@ -97,7 +105,11 @@ export function AvailabilityCalendar() {
   };
 
   const handleDelete = async (slotId: string) => {
-    if (!user || !confirm("Are you sure you want to delete this availability slot?")) return;
+    if (
+      !user ||
+      !confirm("Are you sure you want to delete this availability slot?")
+    )
+      return;
 
     try {
       const supabase = createClient();
@@ -129,14 +141,17 @@ export function AvailabilityCalendar() {
   };
 
   // Group slots by date
-  const slotsByDate = slots.reduce((acc, slot) => {
-    const date = new Date(slot.start_time).toISOString().split("T")[0];
-    if (!acc[date]) {
-      acc[date] = [];
-    }
-    acc[date].push(slot);
-    return acc;
-  }, {} as Record<string, AvailabilitySlot[]>);
+  const slotsByDate = slots.reduce(
+    (acc, slot) => {
+      const date = new Date(slot.start_time).toISOString().split("T")[0];
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(slot);
+      return acc;
+    },
+    {} as Record<string, AvailabilitySlot[]>
+  );
 
   if (loading) {
     return (
@@ -165,7 +180,10 @@ export function AvailabilityCalendar() {
         </CardHeader>
         <CardContent>
           {showForm && (
-            <form onSubmit={handleSubmit} className="mb-6 p-4 border rounded-lg space-y-4">
+            <form
+              onSubmit={handleSubmit}
+              className="mb-6 p-4 border rounded-lg space-y-4"
+            >
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Date</label>
@@ -178,21 +196,29 @@ export function AvailabilityCalendar() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Start Time</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Start Time
+                  </label>
                   <input
                     type="time"
                     value={formData.start_time}
-                    onChange={(e) => setFormData({ ...formData, start_time: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, start_time: e.target.value })
+                    }
                     className="w-full px-3 py-2 border rounded-md"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">End Time</label>
+                  <label className="block text-sm font-medium mb-1">
+                    End Time
+                  </label>
                   <input
                     type="time"
                     value={formData.end_time}
-                    onChange={(e) => setFormData({ ...formData, end_time: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, end_time: e.target.value })
+                    }
                     className="w-full px-3 py-2 border rounded-md"
                     required
                   />
@@ -203,7 +229,9 @@ export function AvailabilityCalendar() {
                   type="checkbox"
                   id="recurring"
                   checked={formData.is_recurring}
-                  onChange={(e) => setFormData({ ...formData, is_recurring: e.target.checked })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, is_recurring: e.target.checked })
+                  }
                   className="rounded"
                 />
                 <label htmlFor="recurring" className="text-sm">
@@ -214,7 +242,11 @@ export function AvailabilityCalendar() {
                 <Button type="submit" disabled={submitting}>
                   {submitting ? "Adding..." : "Add Slot"}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowForm(false)}
+                >
                   Cancel
                 </Button>
               </div>
@@ -253,18 +285,26 @@ export function AvailabilityCalendar() {
                             <Clock className="h-4 w-4 text-gray-400" />
                             <div>
                               <p className="font-medium">
-                                {new Date(slot.start_time).toLocaleTimeString("en-US", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}{" "}
+                                {new Date(slot.start_time).toLocaleTimeString(
+                                  "en-US",
+                                  {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )}{" "}
                                 -{" "}
-                                {new Date(slot.end_time).toLocaleTimeString("en-US", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
+                                {new Date(slot.end_time).toLocaleTimeString(
+                                  "en-US",
+                                  {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )}
                               </p>
                               {slot.is_recurring && (
-                                <p className="text-xs text-gray-500">Recurring weekly</p>
+                                <p className="text-xs text-gray-500">
+                                  Recurring weekly
+                                </p>
                               )}
                             </div>
                           </div>

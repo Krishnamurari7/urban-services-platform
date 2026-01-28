@@ -3,12 +3,24 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import type { Booking, Service, Profile, Address, Payment } from "@/lib/types/database";
+import type {
+  Booking,
+  Service,
+  Profile,
+  Address,
+  Payment,
+} from "@/lib/types/database";
 import { cancelBooking } from "./actions";
 import {
   Calendar,
@@ -53,13 +65,15 @@ export default function BookingDetailPage() {
 
       const { data, error } = await supabase
         .from("bookings")
-        .select(`
+        .select(
+          `
           *,
           service:services(*),
           professional:profiles!bookings_professional_id_fkey(*),
           address:addresses(*),
           payment:payments(*)
-        `)
+        `
+        )
         .eq("id", bookingId)
         .eq("customer_id", user.id)
         .single();
@@ -108,7 +122,9 @@ export default function BookingDetailPage() {
       await fetchBookingDetails();
     } catch (error) {
       console.error("Error cancelling booking:", error);
-      alert(`Failed to cancel booking: ${error instanceof Error ? error.message : "Please try again."}`);
+      alert(
+        `Failed to cancel booking: ${error instanceof Error ? error.message : "Please try again."}`
+      );
     } finally {
       setCancelling(false);
     }
@@ -147,7 +163,8 @@ export default function BookingDetailPage() {
           <CardContent className="p-12 text-center">
             <h2 className="text-xl font-semibold mb-2">Booking not found</h2>
             <p className="text-gray-600 mb-4">
-              The booking you're looking for doesn't exist or you don't have access to it.
+              The booking you're looking for doesn't exist or you don't have
+              access to it.
             </p>
             <Link href="/customer/bookings">
               <Button>Back to Bookings</Button>
@@ -170,7 +187,10 @@ export default function BookingDetailPage() {
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
           <h1 className="text-3xl font-bold">Booking Details</h1>
-          <Badge variant={getStatusBadgeVariant(booking.status)} className="text-sm">
+          <Badge
+            variant={getStatusBadgeVariant(booking.status)}
+            className="text-sm"
+          >
             {booking.status.replace("_", " ").toUpperCase()}
           </Badge>
         </div>
@@ -190,14 +210,18 @@ export default function BookingDetailPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <h3 className="font-semibold text-lg mb-1">{booking.service.name}</h3>
+                <h3 className="font-semibold text-lg mb-1">
+                  {booking.service.name}
+                </h3>
                 <p className="text-gray-600">{booking.service.description}</p>
                 <Badge className="mt-2">{booking.service.category}</Badge>
               </div>
               <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                 <div>
                   <p className="text-sm text-gray-500">Duration</p>
-                  <p className="font-semibold">{booking.service.duration_minutes} minutes</p>
+                  <p className="font-semibold">
+                    {booking.service.duration_minutes} minutes
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Base Price</p>
@@ -219,26 +243,32 @@ export default function BookingDetailPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <h3 className="font-semibold text-lg mb-1">{booking.professional.full_name}</h3>
+                <h3 className="font-semibold text-lg mb-1">
+                  {booking.professional.full_name}
+                </h3>
                 <div className="flex items-center gap-4 mt-2">
                   <div>
                     <p className="text-sm text-gray-500">Rating</p>
                     <p className="font-semibold">
-                      {Number(booking.professional.rating_average).toFixed(1)} ⭐ (
-                      {booking.professional.total_reviews} reviews)
+                      {Number(booking.professional.rating_average).toFixed(1)}{" "}
+                      ⭐ ({booking.professional.total_reviews} reviews)
                     </p>
                   </div>
                   {booking.professional.experience_years && (
                     <div>
                       <p className="text-sm text-gray-500">Experience</p>
-                      <p className="font-semibold">{booking.professional.experience_years} years</p>
+                      <p className="font-semibold">
+                        {booking.professional.experience_years} years
+                      </p>
                     </div>
                   )}
                 </div>
                 {booking.professional.phone && (
                   <div className="flex items-center gap-2 mt-2">
                     <Phone className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm">{booking.professional.phone}</span>
+                    <span className="text-sm">
+                      {booking.professional.phone}
+                    </span>
                   </div>
                 )}
               </div>
@@ -258,7 +288,9 @@ export default function BookingDetailPage() {
                 <div className="flex items-start gap-3">
                   <Calendar className="h-5 w-5 text-gray-400 mt-0.5" />
                   <div>
-                    <p className="text-sm text-gray-500">Scheduled Date & Time</p>
+                    <p className="text-sm text-gray-500">
+                      Scheduled Date & Time
+                    </p>
                     <p className="font-semibold">
                       {new Date(booking.scheduled_at).toLocaleString("en-US", {
                         weekday: "long",
@@ -295,10 +327,12 @@ export default function BookingDetailPage() {
                     <p className="font-semibold">{booking.address.label}</p>
                     <p className="text-gray-600">
                       {booking.address.address_line1}
-                      {booking.address.address_line2 && `, ${booking.address.address_line2}`}
+                      {booking.address.address_line2 &&
+                        `, ${booking.address.address_line2}`}
                     </p>
                     <p className="text-gray-600">
-                      {booking.address.city}, {booking.address.state} {booking.address.postal_code}
+                      {booking.address.city}, {booking.address.state}{" "}
+                      {booking.address.postal_code}
                     </p>
                   </div>
                 </div>
@@ -331,7 +365,8 @@ export default function BookingDetailPage() {
                 <p className="text-gray-700">{booking.cancellation_reason}</p>
                 {booking.cancelled_at && (
                   <p className="text-sm text-gray-500 mt-2">
-                    Cancelled on: {new Date(booking.cancelled_at).toLocaleString()}
+                    Cancelled on:{" "}
+                    {new Date(booking.cancelled_at).toLocaleString()}
                   </p>
                 )}
               </CardContent>
@@ -382,8 +417,8 @@ export default function BookingDetailPage() {
                       booking.payment.status === "completed"
                         ? "default"
                         : booking.payment.status === "failed"
-                        ? "destructive"
-                        : "outline"
+                          ? "destructive"
+                          : "outline"
                     }
                   >
                     {booking.payment.status}
@@ -402,7 +437,8 @@ export default function BookingDetailPage() {
               <CardTitle>Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              {(booking.status === "pending" || booking.status === "confirmed") && (
+              {(booking.status === "pending" ||
+                booking.status === "confirmed") && (
                 <Button
                   variant="outline"
                   className="w-full"
@@ -413,7 +449,10 @@ export default function BookingDetailPage() {
                 </Button>
               )}
               {booking.status === "completed" && (
-                <Link href={`/customer/bookings/${booking.id}/review`} className="block">
+                <Link
+                  href={`/customer/bookings/${booking.id}/review`}
+                  className="block"
+                >
                   <Button className="w-full">Leave a Review</Button>
                 </Link>
               )}

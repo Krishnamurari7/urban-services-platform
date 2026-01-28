@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Star, ArrowRight } from "lucide-react";
 import Image from "next/image";
@@ -40,15 +45,22 @@ export function ServiceCard({
             />
           ) : (
             <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
-              <span className="text-5xl font-bold text-primary/30 transition-transform duration-300 group-hover:scale-110">{name[0]}</span>
+              <span className="text-5xl font-bold text-primary/30 transition-transform duration-300 group-hover:scale-110">
+                {name[0]}
+              </span>
             </div>
           )}
-          <Badge className="absolute right-3 top-3 capitalize shadow-md" variant="secondary">
+          <Badge
+            className="absolute right-3 top-3 capitalize shadow-md"
+            variant="secondary"
+          >
             {category}
           </Badge>
         </div>
         <CardHeader className="pb-3">
-          <h3 className="line-clamp-1 text-lg font-semibold group-hover:text-primary transition-colors">{name}</h3>
+          <h3 className="line-clamp-1 text-lg font-semibold group-hover:text-primary transition-colors">
+            {name}
+          </h3>
           {description && (
             <p className="line-clamp-2 text-sm text-muted-foreground mt-1">
               {description}
@@ -58,7 +70,9 @@ export function ServiceCard({
         <CardContent className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-baseline gap-1">
-              <span className="text-xs text-muted-foreground">Starting from</span>
+              <span className="text-xs text-muted-foreground">
+                Starting from
+              </span>
               <span className="text-2xl font-bold">₹{basePrice}</span>
             </div>
             <div className="flex items-center gap-1 text-sm text-muted-foreground bg-muted px-2 py-1 rounded-md">
@@ -70,10 +84,12 @@ export function ServiceCard({
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
                 <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <span className="text-sm font-semibold">{rating.toFixed(1)}</span>
+                <span className="text-sm font-semibold">
+                  {rating.toFixed(1)}
+                </span>
               </div>
               <span className="text-sm text-muted-foreground">
-                ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
+                ({reviewCount} {reviewCount === 1 ? "review" : "reviews"})
               </span>
             </div>
           )}

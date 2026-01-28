@@ -3,15 +3,40 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useRouter, useSearchParams } from "next/navigation";
-import type { Service, Address, Profile, ProfessionalService } from "@/lib/types/database";
-import { Check, ChevronLeft, ChevronRight, Calendar, MapPin, CreditCard, Package } from "lucide-react";
+import type {
+  Service,
+  Address,
+  Profile,
+  ProfessionalService,
+} from "@/lib/types/database";
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+  MapPin,
+  CreditCard,
+  Package,
+} from "lucide-react";
 
-type BookingStep = "service" | "professional" | "datetime" | "address" | "review" | "payment";
+type BookingStep =
+  | "service"
+  | "professional"
+  | "datetime"
+  | "address"
+  | "review"
+  | "payment";
 
 interface BookingFormData {
   serviceId: string;
@@ -32,7 +57,9 @@ export default function BookServicePage() {
   const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState<BookingStep>("service");
   const [services, setServices] = useState<Service[]>([]);
-  const [professionals, setProfessionals] = useState<(Profile & { professionalService?: ProfessionalService })[]>([]);
+  const [professionals, setProfessionals] = useState<
+    (Profile & { professionalService?: ProfessionalService })[]
+  >([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -50,12 +77,28 @@ export default function BookServicePage() {
   });
 
   const steps: { id: BookingStep; label: string; icon: React.ReactNode }[] = [
-    { id: "service", label: "Select Service", icon: <Package className="h-4 w-4" /> },
-    { id: "professional", label: "Choose Professional", icon: <Check className="h-4 w-4" /> },
-    { id: "datetime", label: "Date & Time", icon: <Calendar className="h-4 w-4" /> },
+    {
+      id: "service",
+      label: "Select Service",
+      icon: <Package className="h-4 w-4" />,
+    },
+    {
+      id: "professional",
+      label: "Choose Professional",
+      icon: <Check className="h-4 w-4" />,
+    },
+    {
+      id: "datetime",
+      label: "Date & Time",
+      icon: <Calendar className="h-4 w-4" />,
+    },
     { id: "address", label: "Address", icon: <MapPin className="h-4 w-4" /> },
     { id: "review", label: "Review", icon: <Check className="h-4 w-4" /> },
-    { id: "payment", label: "Payment", icon: <CreditCard className="h-4 w-4" /> },
+    {
+      id: "payment",
+      label: "Payment",
+      icon: <CreditCard className="h-4 w-4" />,
+    },
   ];
 
   useEffect(() => {
@@ -74,7 +117,8 @@ export default function BookServicePage() {
           ...prev,
           serviceId: service.id,
           totalAmount: Number(service.base_price),
-          finalAmount: Number(service.base_price) + prev.serviceFee - prev.discountAmount,
+          finalAmount:
+            Number(service.base_price) + prev.serviceFee - prev.discountAmount,
         }));
         fetchProfessionals(service.id);
         setCurrentStep("professional");
@@ -135,7 +179,9 @@ export default function BookServicePage() {
       }
 
       // Get professional IDs
-      const professionalIds = professionalServices.map((ps) => ps.professional_id);
+      const professionalIds = professionalServices.map(
+        (ps) => ps.professional_id
+      );
 
       // Fetch professional profiles
       const { data: professionalsData, error: profError } = await supabase
@@ -171,13 +217,16 @@ export default function BookServicePage() {
       ...prev,
       serviceId: service.id,
       totalAmount: Number(service.base_price),
-      finalAmount: Number(service.base_price) + prev.serviceFee - prev.discountAmount,
+      finalAmount:
+        Number(service.base_price) + prev.serviceFee - prev.discountAmount,
     }));
     fetchProfessionals(service.id);
     setCurrentStep("professional");
   };
 
-  const handleProfessionalSelect = (professional: Profile & { professionalService?: ProfessionalService }) => {
+  const handleProfessionalSelect = (
+    professional: Profile & { professionalService?: ProfessionalService }
+  ) => {
     const price = professional.professionalService
       ? Number(professional.professionalService.price)
       : formData.totalAmount;
@@ -277,15 +326,20 @@ export default function BookServicePage() {
             });
 
             if (verifyResponse.ok) {
-              router.push(`/customer/bookings/${bookingData.id}?payment=success`);
+              router.push(
+                `/customer/bookings/${bookingData.id}?payment=success`
+              );
             } else {
               const errorData = await verifyResponse.json();
               alert(`Payment verification failed: ${errorData.error}`);
-              router.push(`/customer/bookings/${bookingData.id}?payment=failed`);
+              router.push(
+                `/customer/bookings/${bookingData.id}?payment=failed`
+              );
             }
           },
           prefill: {
-            name: user.user_metadata?.full_name || user.email?.split("@")[0] || "",
+            name:
+              user.user_metadata?.full_name || user.email?.split("@")[0] || "",
             email: user.email || "",
           },
           theme: {
@@ -293,7 +347,9 @@ export default function BookServicePage() {
           },
           modal: {
             ondismiss: function () {
-              alert("Payment cancelled. Booking created but payment is pending.");
+              alert(
+                "Payment cancelled. Booking created but payment is pending."
+              );
               router.push(`/customer/bookings/${bookingData.id}`);
             },
           },
@@ -326,15 +382,22 @@ export default function BookServicePage() {
               });
 
               if (verifyResponse.ok) {
-                router.push(`/customer/bookings/${bookingData.id}?payment=success`);
+                router.push(
+                  `/customer/bookings/${bookingData.id}?payment=success`
+                );
               } else {
                 const errorData = await verifyResponse.json();
                 alert(`Payment verification failed: ${errorData.error}`);
-                router.push(`/customer/bookings/${bookingData.id}?payment=failed`);
+                router.push(
+                  `/customer/bookings/${bookingData.id}?payment=failed`
+                );
               }
             },
             prefill: {
-              name: user.user_metadata?.full_name || user.email?.split("@")[0] || "",
+              name:
+                user.user_metadata?.full_name ||
+                user.email?.split("@")[0] ||
+                "",
               email: user.email || "",
             },
             theme: {
@@ -342,7 +405,9 @@ export default function BookServicePage() {
             },
             modal: {
               ondismiss: function () {
-                alert("Payment cancelled. Booking created but payment is pending.");
+                alert(
+                  "Payment cancelled. Booking created but payment is pending."
+                );
                 router.push(`/customer/bookings/${bookingData.id}`);
               },
             },
@@ -355,7 +420,9 @@ export default function BookServicePage() {
       }
     } catch (error: any) {
       console.error("Error processing payment:", error);
-      alert(`Failed to process payment: ${error.message || "Please try again."}`);
+      alert(
+        `Failed to process payment: ${error.message || "Please try again."}`
+      );
     } finally {
       setSubmitting(false);
     }
@@ -366,9 +433,12 @@ export default function BookServicePage() {
     await handlePayment();
   };
 
-  const getSelectedService = () => services.find((s) => s.id === formData.serviceId);
-  const getSelectedProfessional = () => professionals.find((p) => p.id === formData.professionalId);
-  const getSelectedAddress = () => addresses.find((a) => a.id === formData.addressId);
+  const getSelectedService = () =>
+    services.find((s) => s.id === formData.serviceId);
+  const getSelectedProfessional = () =>
+    professionals.find((p) => p.id === formData.professionalId);
+  const getSelectedAddress = () =>
+    addresses.find((a) => a.id === formData.addressId);
 
   if (authLoading || loading) {
     return (
@@ -398,13 +468,15 @@ export default function BookServicePage() {
                       isActive
                         ? "bg-blue-600 text-white border-blue-600"
                         : isCompleted
-                        ? "bg-green-500 text-white border-green-500"
-                        : "bg-white border-gray-300 text-gray-400"
+                          ? "bg-green-500 text-white border-green-500"
+                          : "bg-white border-gray-300 text-gray-400"
                     }`}
                   >
                     {isCompleted ? <Check className="h-5 w-5" /> : step.icon}
                   </div>
-                  <span className={`text-xs mt-2 ${isActive ? "font-semibold" : ""}`}>
+                  <span
+                    className={`text-xs mt-2 ${isActive ? "font-semibold" : ""}`}
+                  >
                     {step.label}
                   </span>
                 </div>
@@ -435,10 +507,14 @@ export default function BookServicePage() {
                     className="p-4 border rounded-lg cursor-pointer hover:border-blue-500 hover:shadow-md transition-all"
                   >
                     <h3 className="font-semibold mb-2">{service.name}</h3>
-                    <p className="text-sm text-gray-600 mb-2">{service.description}</p>
+                    <p className="text-sm text-gray-600 mb-2">
+                      {service.description}
+                    </p>
                     <div className="flex items-center justify-between">
                       <Badge>{service.category}</Badge>
-                      <span className="font-bold">₹{Number(service.base_price).toFixed(2)}</span>
+                      <span className="font-bold">
+                        ₹{Number(service.base_price).toFixed(2)}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -450,7 +526,9 @@ export default function BookServicePage() {
             <div>
               <CardTitle className="mb-4">Choose a Professional</CardTitle>
               {professionals.length === 0 ? (
-                <p className="text-gray-500">No professionals available for this service.</p>
+                <p className="text-gray-500">
+                  No professionals available for this service.
+                </p>
               ) : (
                 <div className="space-y-4">
                   {professionals.map((professional) => (
@@ -461,9 +539,12 @@ export default function BookServicePage() {
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="font-semibold">{professional.full_name}</h3>
+                          <h3 className="font-semibold">
+                            {professional.full_name}
+                          </h3>
                           <p className="text-sm text-gray-600">
-                            Rating: {Number(professional.rating_average).toFixed(1)} (
+                            Rating:{" "}
+                            {Number(professional.rating_average).toFixed(1)} (
                             {professional.total_reviews} reviews)
                           </p>
                           {professional.experience_years && (
@@ -476,10 +557,14 @@ export default function BookServicePage() {
                           <p className="font-bold text-lg">
                             ₹
                             {professional.professionalService
-                              ? Number(professional.professionalService.price).toFixed(2)
+                              ? Number(
+                                  professional.professionalService.price
+                                ).toFixed(2)
                               : getSelectedService()
-                              ? Number(getSelectedService()!.base_price).toFixed(2)
-                              : "0.00"}
+                                ? Number(
+                                    getSelectedService()!.base_price
+                                  ).toFixed(2)
+                                : "0.00"}
                           </p>
                         </div>
                       </div>
@@ -503,11 +588,18 @@ export default function BookServicePage() {
               <CardTitle className="mb-4">Select Date & Time</CardTitle>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Date & Time</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Date & Time
+                  </label>
                   <Input
                     type="datetime-local"
                     value={formData.scheduledAt}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, scheduledAt: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        scheduledAt: e.target.value,
+                      }))
+                    }
                     min={new Date().toISOString().slice(0, 16)}
                   />
                 </div>
@@ -520,7 +612,10 @@ export default function BookServicePage() {
                     rows={4}
                     value={formData.specialInstructions}
                     onChange={(e) =>
-                      setFormData((prev) => ({ ...prev, specialInstructions: e.target.value }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        specialInstructions: e.target.value,
+                      }))
                     }
                     placeholder="Any special requirements or instructions..."
                   />
@@ -571,7 +666,9 @@ export default function BookServicePage() {
                       key={address.id}
                       onClick={() => handleAddressSelect(address.id)}
                       className={`p-4 border rounded-lg cursor-pointer hover:border-blue-500 hover:shadow-md transition-all ${
-                        formData.addressId === address.id ? "border-blue-500 bg-blue-50" : ""
+                        formData.addressId === address.id
+                          ? "border-blue-500 bg-blue-50"
+                          : ""
                       }`}
                     >
                       <div className="flex items-start justify-between">
@@ -584,10 +681,12 @@ export default function BookServicePage() {
                           </div>
                           <p className="text-sm text-gray-600">
                             {address.address_line1}
-                            {address.address_line2 && `, ${address.address_line2}`}
+                            {address.address_line2 &&
+                              `, ${address.address_line2}`}
                           </p>
                           <p className="text-sm text-gray-600">
-                            {address.city}, {address.state} {address.postal_code}
+                            {address.city}, {address.state}{" "}
+                            {address.postal_code}
                           </p>
                         </div>
                       </div>
@@ -623,7 +722,8 @@ export default function BookServicePage() {
                     <strong>Service:</strong> {getSelectedService()?.name}
                   </p>
                   <p className="text-sm text-gray-600">
-                    <strong>Professional:</strong> {getSelectedProfessional()?.full_name}
+                    <strong>Professional:</strong>{" "}
+                    {getSelectedProfessional()?.full_name}
                   </p>
                   <p className="text-sm text-gray-600">
                     <strong>Date & Time:</strong>{" "}
@@ -650,7 +750,9 @@ export default function BookServicePage() {
                 {formData.specialInstructions && (
                   <div className="border-b pb-4">
                     <h3 className="font-semibold mb-2">Special Instructions</h3>
-                    <p className="text-sm text-gray-600">{formData.specialInstructions}</p>
+                    <p className="text-sm text-gray-600">
+                      {formData.specialInstructions}
+                    </p>
                   </div>
                 )}
 
@@ -683,7 +785,10 @@ export default function BookServicePage() {
                   <ChevronLeft className="h-4 w-4 mr-2" />
                   Back
                 </Button>
-                <Button onClick={() => setCurrentStep("payment")} className="ml-auto">
+                <Button
+                  onClick={() => setCurrentStep("payment")}
+                  className="ml-auto"
+                >
                   Proceed to Payment
                   <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
@@ -700,11 +805,15 @@ export default function BookServicePage() {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Service Amount:</span>
-                      <span className="font-semibold">₹{formData.totalAmount.toFixed(2)}</span>
+                      <span className="font-semibold">
+                        ₹{formData.totalAmount.toFixed(2)}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Service Fee:</span>
-                      <span className="font-semibold">₹{formData.serviceFee.toFixed(2)}</span>
+                      <span className="font-semibold">
+                        ₹{formData.serviceFee.toFixed(2)}
+                      </span>
                     </div>
                     {formData.discountAmount > 0 && (
                       <div className="flex justify-between text-green-600">
@@ -723,13 +832,24 @@ export default function BookServicePage() {
 
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <p className="text-sm text-blue-800">
-                    <strong>Secure Payment:</strong> You will be redirected to Razorpay's secure payment gateway to complete your payment.
+                    <strong>Secure Payment:</strong> You will be redirected to
+                    Razorpay's secure payment gateway to complete your payment.
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
                   </svg>
                   <span>Your payment information is secure and encrypted</span>
                 </div>
@@ -743,7 +863,11 @@ export default function BookServicePage() {
                   <ChevronLeft className="h-4 w-4 mr-2" />
                   Back
                 </Button>
-                <Button onClick={handleSubmit} disabled={submitting} className="ml-auto">
+                <Button
+                  onClick={handleSubmit}
+                  disabled={submitting}
+                  className="ml-auto"
+                >
                   {submitting ? "Processing..." : "Proceed to Payment"}
                 </Button>
               </div>

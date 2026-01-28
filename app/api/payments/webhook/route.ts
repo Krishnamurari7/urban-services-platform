@@ -9,14 +9,14 @@ export async function POST(request: NextRequest) {
     const signature = request.headers.get("x-razorpay-signature");
 
     if (!signature) {
-      return NextResponse.json(
-        { error: "Missing signature" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing signature" }, { status: 400 });
     }
 
     // Verify webhook signature
-    const keySecret = process.env.RAZORPAY_WEBHOOK_SECRET || process.env.RAZORPAY_KEY_SECRET || "";
+    const keySecret =
+      process.env.RAZORPAY_WEBHOOK_SECRET ||
+      process.env.RAZORPAY_KEY_SECRET ||
+      "";
     const expectedSignature = crypto
       .createHmac("sha256", keySecret)
       .update(body)
@@ -24,17 +24,17 @@ export async function POST(request: NextRequest) {
 
     if (expectedSignature !== signature) {
       console.error("Invalid webhook signature");
-      return NextResponse.json(
-        { error: "Invalid signature" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 
     const event = JSON.parse(body);
     const { event: eventType, payload } = event;
 
     // Handle payment events
-    if (eventType === "payment.authorized" || eventType === "payment.captured") {
+    if (
+      eventType === "payment.authorized" ||
+      eventType === "payment.captured"
+    ) {
       const payment = payload.payment.entity;
       const orderId = payment.order_id;
       const paymentId = payment.id;

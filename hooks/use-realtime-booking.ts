@@ -9,7 +9,10 @@ interface UseRealtimeBookingOptions {
   enabled?: boolean;
 }
 
-export function useRealtimeBooking({ bookingId, enabled = true }: UseRealtimeBookingOptions) {
+export function useRealtimeBooking({
+  bookingId,
+  enabled = true,
+}: UseRealtimeBookingOptions) {
   const [booking, setBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
 

@@ -7,7 +7,7 @@ import { approveProfessional, rejectProfessional } from "../actions";
 
 async function getProfessional(id: string) {
   const supabase = await createClient();
-  
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -97,9 +97,12 @@ export default async function ProfessionalDetailPage({
   }
 
   const profData = professional as any;
-  const pendingDocs = profData.documents?.filter((d: any) => d.status === "pending") || [];
-  const approvedDocs = profData.documents?.filter((d: any) => d.status === "approved") || [];
-  const rejectedDocs = profData.documents?.filter((d: any) => d.status === "rejected") || [];
+  const pendingDocs =
+    profData.documents?.filter((d: any) => d.status === "pending") || [];
+  const approvedDocs =
+    profData.documents?.filter((d: any) => d.status === "approved") || [];
+  const rejectedDocs =
+    profData.documents?.filter((d: any) => d.status === "rejected") || [];
 
   return (
     <div className="space-y-6">
@@ -126,15 +129,21 @@ export default async function ProfessionalDetailPage({
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Full Name</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Full Name
+                  </label>
                   <p className="mt-1 font-medium">{profData.full_name}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Phone</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Phone
+                  </label>
                   <p className="mt-1">{profData.phone || "N/A"}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Status</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Status
+                  </label>
                   <div className="mt-1">
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${
@@ -150,7 +159,9 @@ export default async function ProfessionalDetailPage({
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Rating</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Rating
+                  </label>
                   <p className="mt-1">
                     {profData.rating_average
                       ? `${profData.rating_average.toFixed(1)} ⭐ (${profData.total_reviews} reviews)`
@@ -159,26 +170,34 @@ export default async function ProfessionalDetailPage({
                 </div>
                 {profData.experience_years && (
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Experience</label>
+                    <label className="text-sm font-medium text-gray-500">
+                      Experience
+                    </label>
                     <p className="mt-1">{profData.experience_years} years</p>
                   </div>
                 )}
                 {profData.hourly_rate && (
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Hourly Rate</label>
+                    <label className="text-sm font-medium text-gray-500">
+                      Hourly Rate
+                    </label>
                     <p className="mt-1">₹{profData.hourly_rate}</p>
                   </div>
                 )}
               </div>
               {profData.bio && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Bio</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Bio
+                  </label>
                   <p className="mt-1 text-sm">{profData.bio}</p>
                 </div>
               )}
               {profData.skills && profData.skills.length > 0 && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Skills</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Skills
+                  </label>
                   <div className="mt-1 flex flex-wrap gap-2">
                     {profData.skills.map((skill: string, idx: number) => (
                       <span
@@ -204,7 +223,9 @@ export default async function ProfessionalDetailPage({
             <CardContent className="space-y-4">
               {pendingDocs.length > 0 && (
                 <div>
-                  <h4 className="font-medium text-yellow-700 mb-2">Pending Review</h4>
+                  <h4 className="font-medium text-yellow-700 mb-2">
+                    Pending Review
+                  </h4>
                   <div className="space-y-2">
                     {pendingDocs.map((doc: any) => (
                       <div
@@ -213,7 +234,9 @@ export default async function ProfessionalDetailPage({
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-medium capitalize">{doc.document_type}</p>
+                            <p className="font-medium capitalize">
+                              {doc.document_type}
+                            </p>
                             <a
                               href={doc.file_url}
                               target="_blank"
@@ -241,7 +264,9 @@ export default async function ProfessionalDetailPage({
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-medium capitalize">{doc.document_type}</p>
+                            <p className="font-medium capitalize">
+                              {doc.document_type}
+                            </p>
                             <a
                               href={doc.file_url}
                               target="_blank"
@@ -272,7 +297,9 @@ export default async function ProfessionalDetailPage({
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-medium capitalize">{doc.document_type}</p>
+                            <p className="font-medium capitalize">
+                              {doc.document_type}
+                            </p>
                             <a
                               href={doc.file_url}
                               target="_blank"
@@ -307,7 +334,9 @@ export default async function ProfessionalDetailPage({
           {profData.services && profData.services.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle>Services Offered ({profData.services.length})</CardTitle>
+                <CardTitle>
+                  Services Offered ({profData.services.length})
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
@@ -318,12 +347,16 @@ export default async function ProfessionalDetailPage({
                     >
                       <div>
                         <p className="font-medium">{ps.service?.name}</p>
-                        <p className="text-sm text-gray-500">{ps.service?.category}</p>
+                        <p className="text-sm text-gray-500">
+                          {ps.service?.category}
+                        </p>
                       </div>
                       <div className="text-right">
                         <p className="font-medium">₹{ps.price}</p>
                         {ps.duration_minutes && (
-                          <p className="text-xs text-gray-500">{ps.duration_minutes} min</p>
+                          <p className="text-xs text-gray-500">
+                            {ps.duration_minutes} min
+                          </p>
                         )}
                       </div>
                     </div>
@@ -357,7 +390,9 @@ export default async function ProfessionalDetailPage({
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-600">{account.account_holder_name}</p>
+                      <p className="text-sm text-gray-600">
+                        {account.account_holder_name}
+                      </p>
                       <p className="text-xs text-gray-500 capitalize">
                         {account.account_type} Account
                       </p>
@@ -378,14 +413,22 @@ export default async function ProfessionalDetailPage({
                 <CardTitle>Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <form action={approveProfessional}>
-                  <input type="hidden" name="professionalId" value={profData.id} />
+                <form action={async (formData) => { await approveProfessional(formData); }}>
+                  <input
+                    type="hidden"
+                    name="professionalId"
+                    value={profData.id}
+                  />
                   <Button type="submit" variant="default" className="w-full">
                     Approve Professional
                   </Button>
                 </form>
-                <form action={rejectProfessional}>
-                  <input type="hidden" name="professionalId" value={profData.id} />
+                <form action={async (formData) => { await rejectProfessional(formData); }}>
+                  <input
+                    type="hidden"
+                    name="professionalId"
+                    value={profData.id}
+                  />
                   <Button type="submit" variant="outline" className="w-full">
                     Reject Professional
                   </Button>

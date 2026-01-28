@@ -42,11 +42,7 @@ export default function CustomerLayout({
   );
 }
 
-function CustomerLayoutContent({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function CustomerLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user } = useAuth();
   const router = useRouter();
@@ -68,7 +64,9 @@ function CustomerLayoutContent({
           <div className="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto">
             <nav className="flex-1 px-2 space-y-1">
               {navigation.map((item) => {
-                const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+                const isActive =
+                  pathname === item.href ||
+                  pathname.startsWith(item.href + "/");
                 return (
                   <Link
                     key={item.name}
@@ -83,7 +81,9 @@ function CustomerLayoutContent({
                     <item.icon
                       className={cn(
                         "mr-3 h-5 w-5 flex-shrink-0",
-                        isActive ? "text-blue-500" : "text-gray-400 group-hover:text-gray-500"
+                        isActive
+                          ? "text-blue-500"
+                          : "text-gray-400 group-hover:text-gray-500"
                       )}
                     />
                     {item.name}
@@ -132,7 +132,8 @@ function CustomerLayoutContent({
         {mobileMenuOpen && (
           <div className="px-2 pt-2 pb-3 space-y-1 border-t border-gray-200">
             {navigation.map((item) => {
-              const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+              const isActive =
+                pathname === item.href || pathname.startsWith(item.href + "/");
               return (
                 <Link
                   key={item.name}

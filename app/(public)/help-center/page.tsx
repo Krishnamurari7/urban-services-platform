@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search, HelpCircle, MessageSquare, Book, Phone, Mail } from "lucide-react";
+import {
+  Search,
+  HelpCircle,
+  MessageSquare,
+  Book,
+  Phone,
+  Mail,
+} from "lucide-react";
 import Link from "next/link";
 
 export default function HelpCenterPage() {
@@ -125,9 +132,14 @@ export default function HelpCenterPage() {
           <div className="mx-auto max-w-4xl">
             <div className="grid gap-4 md:grid-cols-2">
               {popularArticles.map((article, index) => (
-                <Card key={index} className="group transition-all hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                <Card
+                  key={index}
+                  className="group transition-all hover:shadow-lg hover:-translate-y-1 cursor-pointer"
+                >
                   <CardContent className="p-6">
-                    <div className="mb-2 text-sm font-medium text-primary">{article.category}</div>
+                    <div className="mb-2 text-sm font-medium text-primary">
+                      {article.category}
+                    </div>
                     <h3 className="text-lg font-semibold">{article.title}</h3>
                   </CardContent>
                 </Card>
@@ -151,20 +163,30 @@ export default function HelpCenterPage() {
           <div className="mx-auto max-w-6xl">
             <div className="grid gap-6 md:grid-cols-2">
               {categories.map((category, index) => (
-                <Card key={index} className="group transition-all hover:shadow-lg hover:-translate-y-1">
+                <Card
+                  key={index}
+                  className="group transition-all hover:shadow-lg hover:-translate-y-1"
+                >
                   <CardContent className="p-6">
                     <div className="mb-4 flex items-center gap-3">
                       <div className="rounded-lg bg-primary/10 p-3 text-primary">
                         {category.icon}
                       </div>
                       <div>
-                        <h3 className="text-xl font-semibold">{category.title}</h3>
-                        <p className="text-sm text-muted-foreground">{category.description}</p>
+                        <h3 className="text-xl font-semibold">
+                          {category.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          {category.description}
+                        </p>
                       </div>
                     </div>
                     <ul className="mt-4 space-y-2">
                       {category.articles.map((article, articleIndex) => (
-                        <li key={articleIndex} className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                        <li
+                          key={articleIndex}
+                          className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                        >
                           → {article}
                         </li>
                       ))}
@@ -193,7 +215,9 @@ export default function HelpCenterPage() {
                   <CardContent className="p-6 text-center">
                     <Mail className="mx-auto mb-3 h-8 w-8 text-primary" />
                     <h3 className="font-semibold mb-1">Email Us</h3>
-                    <p className="text-sm text-muted-foreground">support@veracompany.com</p>
+                    <p className="text-sm text-muted-foreground">
+                      support@veracompany.com
+                    </p>
                   </CardContent>
                 </Card>
               </Link>
@@ -202,7 +226,9 @@ export default function HelpCenterPage() {
                   <CardContent className="p-6 text-center">
                     <Phone className="mx-auto mb-3 h-8 w-8 text-primary" />
                     <h3 className="font-semibold mb-1">Call Us</h3>
-                    <p className="text-sm text-muted-foreground">+91 1800-XXX-XXXX</p>
+                    <p className="text-sm text-muted-foreground">
+                      +91 1800-XXX-XXXX
+                    </p>
                   </CardContent>
                 </Card>
               </Link>

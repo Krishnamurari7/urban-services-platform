@@ -3,7 +3,13 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Upload, CheckCircle, XCircle, Loader2 } from "lucide-react";
@@ -96,7 +102,7 @@ export function DocumentVerification() {
       // Upload file to Supabase Storage
       const fileExt = formData.file.name.split(".").pop();
       const fileName = `${user.id}/${formData.document_type}_${Date.now()}.${fileExt}`;
-      
+
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from("professional-documents")
         .upload(fileName, formData.file, {
@@ -106,18 +112,21 @@ export function DocumentVerification() {
 
       if (uploadError) {
         console.error("Upload error:", uploadError);
-        
+
         // Check if bucket doesn't exist
-        if (uploadError.message?.includes("Bucket") || uploadError.message?.includes("not found")) {
+        if (
+          uploadError.message?.includes("Bucket") ||
+          uploadError.message?.includes("not found")
+        ) {
           alert(
             "Storage bucket 'professional-documents' not found.\n\n" +
-            "Please create it in Supabase Dashboard:\n" +
-            "1. Go to Storage in your Supabase project\n" +
-            "2. Click 'New bucket'\n" +
-            "3. Name: 'professional-documents'\n" +
-            "4. Make it Public\n" +
-            "5. Click 'Create bucket'\n\n" +
-            "Then try uploading again."
+              "Please create it in Supabase Dashboard:\n" +
+              "1. Go to Storage in your Supabase project\n" +
+              "2. Click 'New bucket'\n" +
+              "3. Name: 'professional-documents'\n" +
+              "4. Make it Public\n" +
+              "5. Click 'Create bucket'\n\n" +
+              "Then try uploading again."
           );
           throw new Error("Storage bucket not found");
         }
@@ -156,7 +165,10 @@ export function DocumentVerification() {
       console.error("Error uploading document:", error);
       // Error message is already shown in the uploadError check above
       if (!error.message?.includes("Storage bucket not found")) {
-        alert("Failed to upload document. Please try again.\n\nError: " + (error.message || "Unknown error"));
+        alert(
+          "Failed to upload document. Please try again.\n\nError: " +
+            (error.message || "Unknown error")
+        );
       }
     } finally {
       setUploading(false);
@@ -207,14 +219,19 @@ export function DocumentVerification() {
         </CardHeader>
         <CardContent>
           {showUploadForm && (
-            <form onSubmit={handleUpload} className="mb-6 p-4 border rounded-lg space-y-4">
+            <form
+              onSubmit={handleUpload}
+              className="mb-6 p-4 border rounded-lg space-y-4"
+            >
               <div>
                 <label className="block text-sm font-medium mb-1">
                   Document Type <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={formData.document_type}
-                  onChange={(e) => setFormData({ ...formData, document_type: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, document_type: e.target.value })
+                  }
                   className="w-full px-3 py-2 border rounded-md"
                   required
                 >
@@ -233,7 +250,9 @@ export function DocumentVerification() {
                 <input
                   type="text"
                   value={formData.document_name}
-                  onChange={(e) => setFormData({ ...formData, document_name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, document_name: e.target.value })
+                  }
                   className="w-full px-3 py-2 border rounded-md"
                   placeholder="e.g., Driver's License"
                   required
@@ -268,7 +287,11 @@ export function DocumentVerification() {
                     </>
                   )}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => setShowUploadForm(false)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowUploadForm(false)}
+                >
                   Cancel
                 </Button>
               </div>
@@ -300,7 +323,8 @@ export function DocumentVerification() {
                         Type: {getDocumentTypeLabel(doc.document_type)}
                       </p>
                       <p className="text-sm text-gray-600 mb-1">
-                        Uploaded: {new Date(doc.created_at).toLocaleDateString()}
+                        Uploaded:{" "}
+                        {new Date(doc.created_at).toLocaleDateString()}
                       </p>
                       {doc.file_size && (
                         <p className="text-sm text-gray-600 mb-1">
@@ -310,14 +334,18 @@ export function DocumentVerification() {
                       {doc.status === "rejected" && doc.rejection_reason && (
                         <div className="mt-2 p-2 bg-red-50 rounded">
                           <p className="text-sm text-red-800">
-                            <strong>Rejection Reason:</strong> {doc.rejection_reason}
+                            <strong>Rejection Reason:</strong>{" "}
+                            {doc.rejection_reason}
                           </p>
                         </div>
                       )}
                       {doc.status === "approved" && doc.verified_at && (
                         <div className="mt-2 flex items-center gap-1 text-sm text-green-600">
                           <CheckCircle className="h-4 w-4" />
-                          <span>Verified on {new Date(doc.verified_at).toLocaleDateString()}</span>
+                          <span>
+                            Verified on{" "}
+                            {new Date(doc.verified_at).toLocaleDateString()}
+                          </span>
                         </div>
                       )}
                     </div>

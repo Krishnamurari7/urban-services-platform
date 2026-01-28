@@ -3,20 +3,31 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import type { Booking, Profile, Payment, AvailabilitySlot } from "@/lib/types/database";
-import { 
-  Calendar, 
-  Clock, 
-  DollarSign, 
-  Package, 
-  CheckCircle, 
+import type {
+  Booking,
+  Profile,
+  Payment,
+  AvailabilitySlot,
+} from "@/lib/types/database";
+import {
+  Calendar,
+  Clock,
+  DollarSign,
+  Package,
+  CheckCircle,
   XCircle,
   FileText,
   TrendingUp,
-  AlertCircle
+  AlertCircle,
 } from "lucide-react";
 import { JobRequestsSection } from "@/components/professional/job-requests-section";
 import { AvailabilityCalendar } from "@/components/professional/availability-calendar";
@@ -35,7 +46,14 @@ interface DashboardStats {
   recentBookings: Booking[];
 }
 
-type TabType = "overview" | "requests" | "calendar" | "earnings" | "documents" | "payments" | "verification";
+type TabType =
+  | "overview"
+  | "requests"
+  | "calendar"
+  | "earnings"
+  | "documents"
+  | "payments"
+  | "verification";
 
 export default function ProfessionalDashboard() {
   const { user, role, loading: authLoading } = useAuth();
@@ -80,7 +98,18 @@ export default function ProfessionalDashboard() {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const tab = params.get("tab");
-      if (tab && ["overview", "requests", "calendar", "earnings", "documents", "payments", "verification"].includes(tab)) {
+      if (
+        tab &&
+        [
+          "overview",
+          "requests",
+          "calendar",
+          "earnings",
+          "documents",
+          "payments",
+          "verification",
+        ].includes(tab)
+      ) {
         setActiveTab(tab as TabType);
       }
     }
@@ -115,29 +144,36 @@ export default function ProfessionalDashboard() {
         .from("payments")
         .select("amount, created_at")
         .eq("status", "completed")
-        .in("booking_id", bookings?.map(b => b.id) || []);
+        .in("booking_id", bookings?.map((b) => b.id) || []);
 
       // Calculate stats
       const totalBookings = bookings?.length || 0;
-      const pendingRequests = bookings?.filter(b => b.status === "pending").length || 0;
-      const confirmedBookings = bookings?.filter(b => b.status === "confirmed").length || 0;
-      const completedBookings = bookings?.filter(b => b.status === "completed").length || 0;
-      
+      const pendingRequests =
+        bookings?.filter((b) => b.status === "pending").length || 0;
+      const confirmedBookings =
+        bookings?.filter((b) => b.status === "confirmed").length || 0;
+      const completedBookings =
+        bookings?.filter((b) => b.status === "completed").length || 0;
+
       // Calculate earnings (assuming professional gets 80% of final_amount)
-      const totalEarnings = bookings
-        ?.filter(b => b.status === "completed")
-        .reduce((sum, b) => sum + Number(b.final_amount) * 0.8, 0) || 0;
-      
+      const totalEarnings =
+        bookings
+          ?.filter((b) => b.status === "completed")
+          .reduce((sum, b) => sum + Number(b.final_amount) * 0.8, 0) || 0;
+
       const currentMonth = new Date().getMonth();
       const currentYear = new Date().getFullYear();
-      const monthlyEarnings = bookings
-        ?.filter(b => {
-          if (b.status !== "completed" || !b.completed_at) return false;
-          const completedDate = new Date(b.completed_at);
-          return completedDate.getMonth() === currentMonth && 
-                 completedDate.getFullYear() === currentYear;
-        })
-        .reduce((sum, b) => sum + Number(b.final_amount) * 0.8, 0) || 0;
+      const monthlyEarnings =
+        bookings
+          ?.filter((b) => {
+            if (b.status !== "completed" || !b.completed_at) return false;
+            const completedDate = new Date(b.completed_at);
+            return (
+              completedDate.getMonth() === currentMonth &&
+              completedDate.getFullYear() === currentYear
+            );
+          })
+          .reduce((sum, b) => sum + Number(b.final_amount) * 0.8, 0) || 0;
 
       setStats({
         totalBookings,
@@ -271,7 +307,9 @@ export default function ProfessionalDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Total Bookings
+                </CardTitle>
                 <Package className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -284,11 +322,15 @@ export default function ProfessionalDashboard() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Pending Requests</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Pending Requests
+                </CardTitle>
                 <AlertCircle className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-orange-600">{stats.pendingRequests}</div>
+                <div className="text-2xl font-bold text-orange-600">
+                  {stats.pendingRequests}
+                </div>
                 <p className="text-xs text-muted-foreground">
                   Awaiting your response
                 </p>
@@ -301,16 +343,18 @@ export default function ProfessionalDashboard() {
                 <CheckCircle className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">{stats.confirmedBookings}</div>
-                <p className="text-xs text-muted-foreground">
-                  Upcoming jobs
-                </p>
+                <div className="text-2xl font-bold text-green-600">
+                  {stats.confirmedBookings}
+                </div>
+                <p className="text-xs text-muted-foreground">Upcoming jobs</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Earnings</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Total Earnings
+                </CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -334,7 +378,10 @@ export default function ProfessionalDashboard() {
                     Your latest job requests and bookings
                   </CardDescription>
                 </div>
-                <Button variant="outline" onClick={() => setActiveTab("requests")}>
+                <Button
+                  variant="outline"
+                  onClick={() => setActiveTab("requests")}
+                >
                   View All
                 </Button>
               </div>
@@ -354,23 +401,26 @@ export default function ProfessionalDashboard() {
                     >
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold">Booking #{booking.id.slice(0, 8)}</h3>
+                          <h3 className="font-semibold">
+                            Booking #{booking.id.slice(0, 8)}
+                          </h3>
                           <Badge
                             variant={
                               booking.status === "completed"
                                 ? "default"
                                 : booking.status === "cancelled"
-                                ? "destructive"
-                                : booking.status === "pending"
-                                ? "secondary"
-                                : "default"
+                                  ? "destructive"
+                                  : booking.status === "pending"
+                                    ? "secondary"
+                                    : "default"
                             }
                           >
                             {booking.status}
                           </Badge>
                         </div>
                         <p className="text-sm text-gray-600">
-                          Scheduled: {new Date(booking.scheduled_at).toLocaleDateString()}
+                          Scheduled:{" "}
+                          {new Date(booking.scheduled_at).toLocaleDateString()}
                         </p>
                         <p className="text-sm font-medium mt-1">
                           ${Number(booking.final_amount).toFixed(2)}
@@ -389,25 +439,15 @@ export default function ProfessionalDashboard() {
         <JobRequestsSection onRefresh={fetchDashboardData} />
       )}
 
-      {activeTab === "calendar" && (
-        <AvailabilityCalendar />
-      )}
+      {activeTab === "calendar" && <AvailabilityCalendar />}
 
-      {activeTab === "earnings" && (
-        <EarningsDashboard />
-      )}
+      {activeTab === "earnings" && <EarningsDashboard />}
 
-      {activeTab === "documents" && (
-        <DocumentVerification />
-      )}
+      {activeTab === "documents" && <DocumentVerification />}
 
-      {activeTab === "payments" && (
-        <PaymentSection />
-      )}
+      {activeTab === "payments" && <PaymentSection />}
 
-      {activeTab === "verification" && (
-        <VerificationSection />
-      )}
+      {activeTab === "verification" && <VerificationSection />}
     </div>
   );
 }

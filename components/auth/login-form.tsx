@@ -2,10 +2,21 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { signIn, signInWithGoogle, sendOTP, verifyOTP } from "@/lib/auth/actions";
+import {
+  signIn,
+  signInWithGoogle,
+  sendOTP,
+  verifyOTP,
+} from "@/lib/auth/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import Link from "next/link";
 
 type LoginMethod = "email" | "otp";
@@ -13,7 +24,7 @@ type LoginMethod = "email" | "otp";
 export function LoginForm() {
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect");
-  
+
   const [loginMethod, setLoginMethod] = useState<LoginMethod>("email");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -103,9 +114,7 @@ export function LoginForm() {
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
-        <CardDescription>
-          Sign in to your account to continue
-        </CardDescription>
+        <CardDescription>Sign in to your account to continue</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Login Method Toggle */}
@@ -169,10 +178,7 @@ export function LoginForm() {
                 <label htmlFor="password" className="text-sm font-medium">
                   Password
                 </label>
-                <Link
-                  href="#"
-                  className="text-sm text-primary hover:underline"
-                >
+                <Link href="#" className="text-sm text-primary hover:underline">
                   Forgot password?
                 </Link>
               </div>
@@ -203,7 +209,9 @@ export function LoginForm() {
                     type="tel"
                     placeholder="9876543210"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+                    onChange={(e) =>
+                      setPhone(e.target.value.replace(/\D/g, ""))
+                    }
                     required
                   />
                   <p className="text-xs text-muted-foreground">
@@ -312,7 +320,10 @@ export function LoginForm() {
 
         <p className="text-center text-sm text-muted-foreground">
           Don't have an account?{" "}
-          <Link href="/register" className="font-medium text-primary hover:underline">
+          <Link
+            href="/register"
+            className="font-medium text-primary hover:underline"
+          >
             Sign up
           </Link>
         </p>

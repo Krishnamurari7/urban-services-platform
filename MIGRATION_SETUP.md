@@ -5,6 +5,7 @@
 To fix the "table not found" error, you need to run these migrations in order:
 
 ### Migration Order:
+
 1. ✅ `001_initial_schema.sql` - Base tables
 2. ✅ `002_fix_rls_recursion.sql` - RLS fixes
 3. ✅ `003_comprehensive_rls_policies.sql` - RLS policies
@@ -62,9 +63,9 @@ After running migrations, verify tables exist:
 
 ```sql
 -- Check if professional_documents table exists
-SELECT table_name 
-FROM information_schema.tables 
-WHERE table_schema = 'public' 
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public'
 AND table_name IN ('professional_documents', 'professional_bank_accounts')
 ORDER BY table_name;
 ```
@@ -83,14 +84,17 @@ You should see both tables listed.
 ## Troubleshooting
 
 ### Error: "relation already exists"
+
 - Table already exists, migration was already run
 - You can skip this migration
 
 ### Error: "permission denied"
+
 - Make sure you're logged in as project owner/admin
 - Check RLS policies are correct
 
 ### Error: "syntax error"
+
 - Check SQL syntax in the migration file
 - Make sure you copied the entire file
 

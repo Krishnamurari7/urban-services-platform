@@ -72,9 +72,9 @@ Run these in **exact order** in Supabase SQL Editor:
 Run in Supabase SQL Editor:
 
 ```sql
-SELECT table_name 
-FROM information_schema.tables 
-WHERE table_schema = 'public' 
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public'
 ORDER BY table_name;
 ```
 
@@ -113,15 +113,19 @@ See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for Railway, Render, AWS, etc.
 ## 🐛 Common Issues
 
 ### "Table not found"
+
 → Run migrations in order (001-009)
 
 ### "Bucket not found"
+
 → Create `professional-documents` bucket in Supabase Storage
 
 ### "Authentication failed"
+
 → Check Supabase URL and keys in `.env.local`
 
 ### "Payment not working"
+
 → Verify Razorpay keys and webhook URL (after deployment)
 
 ---

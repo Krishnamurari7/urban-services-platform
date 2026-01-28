@@ -3,7 +3,13 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -20,7 +26,9 @@ interface BookingWithDetails extends Booking {
 export default function CustomerBookingsPage() {
   const { user, loading: authLoading } = useAuth();
   const [bookings, setBookings] = useState<BookingWithDetails[]>([]);
-  const [filteredBookings, setFilteredBookings] = useState<BookingWithDetails[]>([]);
+  const [filteredBookings, setFilteredBookings] = useState<
+    BookingWithDetails[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -43,12 +51,14 @@ export default function CustomerBookingsPage() {
 
       const { data, error } = await supabase
         .from("bookings")
-        .select(`
+        .select(
+          `
           *,
           service:services(*),
           professional:profiles!bookings_professional_id_fkey(*),
           address:addresses(*)
-        `)
+        `
+        )
         .eq("customer_id", user.id)
         .order("created_at", { ascending: false });
 
@@ -184,7 +194,9 @@ export default function CustomerBookingsPage() {
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-xl font-semibold">{booking.service.name}</h3>
+                        <h3 className="text-xl font-semibold">
+                          {booking.service.name}
+                        </h3>
                         <Badge variant={getStatusBadgeVariant(booking.status)}>
                           {booking.status.replace("_", " ")}
                         </Badge>
@@ -194,27 +206,32 @@ export default function CustomerBookingsPage() {
                         <div className="flex items-center gap-2">
                           <Package className="h-4 w-4" />
                           <span>
-                            <strong>Professional:</strong> {booking.professional.full_name}
+                            <strong>Professional:</strong>{" "}
+                            {booking.professional.full_name}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Calendar className="h-4 w-4" />
                           <span>
                             <strong>Scheduled:</strong>{" "}
-                            {new Date(booking.scheduled_at).toLocaleDateString("en-US", {
-                              weekday: "short",
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
+                            {new Date(booking.scheduled_at).toLocaleDateString(
+                              "en-US",
+                              {
+                                weekday: "short",
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              }
+                            )}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <MapPin className="h-4 w-4" />
                           <span>
-                            <strong>Location:</strong> {booking.address.city}, {booking.address.state}
+                            <strong>Location:</strong> {booking.address.city},{" "}
+                            {booking.address.state}
                           </span>
                         </div>
                         {booking.completed_at && (
@@ -222,7 +239,9 @@ export default function CustomerBookingsPage() {
                             <Clock className="h-4 w-4" />
                             <span>
                               <strong>Completed:</strong>{" "}
-                              {new Date(booking.completed_at).toLocaleDateString()}
+                              {new Date(
+                                booking.completed_at
+                              ).toLocaleDateString()}
                             </span>
                           </div>
                         )}
@@ -233,7 +252,9 @@ export default function CustomerBookingsPage() {
                       <div className="text-2xl font-bold mb-1">
                         ₹{Number(booking.final_amount).toFixed(2)}
                       </div>
-                      <p className="text-sm text-gray-500">Booking ID: {booking.id.slice(0, 8)}</p>
+                      <p className="text-sm text-gray-500">
+                        Booking ID: {booking.id.slice(0, 8)}
+                      </p>
                     </div>
                   </div>
                 </CardContent>

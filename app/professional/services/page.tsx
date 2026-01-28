@@ -3,22 +3,28 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import type { Service, ProfessionalService } from "@/lib/types/database";
-import { 
-  Briefcase, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  CheckCircle, 
-  XCircle, 
+import {
+  Briefcase,
+  Plus,
+  Edit,
+  Trash2,
+  CheckCircle,
+  XCircle,
   Loader2,
   DollarSign,
   Clock,
-  Search
+  Search,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -83,10 +89,12 @@ export default function ProfessionalServicesPage() {
       // Fetch professional's services
       const { data: professionalServices, error: profError } = await supabase
         .from("professional_services")
-        .select(`
+        .select(
+          `
           *,
           service:services(*)
-        `)
+        `
+        )
         .eq("professional_id", user.id)
         .order("created_at", { ascending: false });
 
@@ -122,17 +130,15 @@ export default function ProfessionalServicesPage() {
     try {
       const supabase = createClient();
 
-      const { error } = await supabase
-        .from("professional_services")
-        .insert({
-          professional_id: user.id,
-          service_id: formData.service_id,
-          price: parseFloat(formData.price),
-          duration_minutes: formData.duration_minutes
-            ? parseInt(formData.duration_minutes)
-            : null,
-          is_available: formData.is_available,
-        });
+      const { error } = await supabase.from("professional_services").insert({
+        professional_id: user.id,
+        service_id: formData.service_id,
+        price: parseFloat(formData.price),
+        duration_minutes: formData.duration_minutes
+          ? parseInt(formData.duration_minutes)
+          : null,
+        is_available: formData.is_available,
+      });
 
       if (error) throw error;
 
@@ -220,7 +226,10 @@ export default function ProfessionalServicesPage() {
     }
   };
 
-  const toggleAvailability = async (professionalServiceId: string, currentStatus: boolean) => {
+  const toggleAvailability = async (
+    professionalServiceId: string,
+    currentStatus: boolean
+  ) => {
     try {
       const supabase = createClient();
 
@@ -247,7 +256,8 @@ export default function ProfessionalServicesPage() {
     setFormData({
       service_id: service.id,
       price: service.professional_service?.price.toString() || "",
-      duration_minutes: service.professional_service?.duration_minutes?.toString() || "",
+      duration_minutes:
+        service.professional_service?.duration_minutes?.toString() || "",
       is_available: service.professional_service?.is_available ?? true,
     });
   };
@@ -294,7 +304,9 @@ export default function ProfessionalServicesPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Manage Services</h1>
-        <p className="text-gray-600">Add and manage the services you offer to customers.</p>
+        <p className="text-gray-600">
+          Add and manage the services you offer to customers.
+        </p>
       </div>
 
       {/* My Services */}
@@ -313,7 +325,9 @@ export default function ProfessionalServicesPage() {
             <div className="text-center py-8 text-gray-500">
               <Briefcase className="h-12 w-12 mx-auto mb-4 text-gray-300" />
               <p>You haven't added any services yet.</p>
-              <p className="text-sm mt-2">Add services from the list below to get started.</p>
+              <p className="text-sm mt-2">
+                Add services from the list below to get started.
+              </p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -326,12 +340,20 @@ export default function ProfessionalServicesPage() {
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-semibold">{service.name}</h3>
                       <Badge
-                        variant={service.professional_service?.is_available ? "default" : "secondary"}
+                        variant={
+                          service.professional_service?.is_available
+                            ? "default"
+                            : "secondary"
+                        }
                       >
-                        {service.professional_service?.is_available ? "Available" : "Unavailable"}
+                        {service.professional_service?.is_available
+                          ? "Available"
+                          : "Unavailable"}
                       </Badge>
                     </div>
-                    <p className="text-sm text-gray-600 mb-2">{service.description}</p>
+                    <p className="text-sm text-gray-600 mb-2">
+                      {service.description}
+                    </p>
                     <div className="flex items-center gap-4 text-sm">
                       <div className="flex items-center gap-1">
                         <DollarSign className="h-4 w-4" />
@@ -342,7 +364,9 @@ export default function ProfessionalServicesPage() {
                       {service.professional_service?.duration_minutes && (
                         <div className="flex items-center gap-1">
                           <Clock className="h-4 w-4" />
-                          <span>{service.professional_service.duration_minutes} min</span>
+                          <span>
+                            {service.professional_service.duration_minutes} min
+                          </span>
                         </div>
                       )}
                       <Badge variant="outline">{service.category}</Badge>
@@ -352,17 +376,21 @@ export default function ProfessionalServicesPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => toggleAvailability(
-                        service.professional_service!.id,
-                        service.professional_service!.is_available
-                      )}
+                      onClick={() =>
+                        toggleAvailability(
+                          service.professional_service!.id,
+                          service.professional_service!.is_available
+                        )
+                      }
                     >
                       {service.professional_service?.is_available ? (
                         <XCircle className="h-4 w-4 mr-2" />
                       ) : (
                         <CheckCircle className="h-4 w-4 mr-2" />
                       )}
-                      {service.professional_service?.is_available ? "Disable" : "Enable"}
+                      {service.professional_service?.is_available
+                        ? "Disable"
+                        : "Enable"}
                     </Button>
                     <Button
                       variant="outline"
@@ -375,7 +403,9 @@ export default function ProfessionalServicesPage() {
                     <Button
                       variant="destructive"
                       size="sm"
-                      onClick={() => handleDeleteService(service.professional_service!.id)}
+                      onClick={() =>
+                        handleDeleteService(service.professional_service!.id)
+                      }
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -397,11 +427,15 @@ export default function ProfessionalServicesPage() {
           <CardContent>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Price ($)</label>
+                <label className="block text-sm font-medium mb-2">
+                  Price ($)
+                </label>
                 <Input
                   type="number"
                   value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, price: e.target.value })
+                  }
                   placeholder="Enter price"
                   min="0"
                   step="0.01"
@@ -409,11 +443,18 @@ export default function ProfessionalServicesPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Duration (minutes)</label>
+                <label className="block text-sm font-medium mb-2">
+                  Duration (minutes)
+                </label>
                 <Input
                   type="number"
                   value={formData.duration_minutes}
-                  onChange={(e) => setFormData({ ...formData, duration_minutes: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      duration_minutes: e.target.value,
+                    })
+                  }
                   placeholder="Optional: Custom duration"
                   min="1"
                 />
@@ -423,10 +464,15 @@ export default function ProfessionalServicesPage() {
                   type="checkbox"
                   id="is_available_edit"
                   checked={formData.is_available}
-                  onChange={(e) => setFormData({ ...formData, is_available: e.target.checked })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, is_available: e.target.checked })
+                  }
                   className="rounded"
                 />
-                <label htmlFor="is_available_edit" className="text-sm font-medium">
+                <label
+                  htmlFor="is_available_edit"
+                  className="text-sm font-medium"
+                >
                   Available for booking
                 </label>
               </div>
@@ -457,36 +503,57 @@ export default function ProfessionalServicesPage() {
         <Card className="mb-8">
           <CardHeader>
             <CardTitle>Add Service Details</CardTitle>
-            <CardDescription>Set your price and availability for this service</CardDescription>
+            <CardDescription>
+              Set your price and availability for this service
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Price ($)</label>
+                <label className="block text-sm font-medium mb-2">
+                  Price ($)
+                </label>
                 <Input
                   type="number"
                   value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, price: e.target.value })
+                  }
                   placeholder="Enter your price"
                   min="0"
                   step="0.01"
                   required
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Base price: ${allServices.find(s => s.id === addingServiceId)?.base_price.toFixed(2)}
+                  Base price: $
+                  {allServices
+                    .find((s) => s.id === addingServiceId)
+                    ?.base_price.toFixed(2)}
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Duration (minutes)</label>
+                <label className="block text-sm font-medium mb-2">
+                  Duration (minutes)
+                </label>
                 <Input
                   type="number"
                   value={formData.duration_minutes}
-                  onChange={(e) => setFormData({ ...formData, duration_minutes: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      duration_minutes: e.target.value,
+                    })
+                  }
                   placeholder="Optional: Custom duration"
                   min="1"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Default: {allServices.find(s => s.id === addingServiceId)?.duration_minutes} minutes
+                  Default:{" "}
+                  {
+                    allServices.find((s) => s.id === addingServiceId)
+                      ?.duration_minutes
+                  }{" "}
+                  minutes
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -494,10 +561,15 @@ export default function ProfessionalServicesPage() {
                   type="checkbox"
                   id="is_available_add"
                   checked={formData.is_available}
-                  onChange={(e) => setFormData({ ...formData, is_available: e.target.checked })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, is_available: e.target.checked })
+                  }
                   className="rounded"
                 />
-                <label htmlFor="is_available_add" className="text-sm font-medium">
+                <label
+                  htmlFor="is_available_add"
+                  className="text-sm font-medium"
+                >
                   Available for booking
                 </label>
               </div>
@@ -578,7 +650,9 @@ export default function ProfessionalServicesPage() {
                 >
                   <div className="flex-1">
                     <h3 className="font-semibold mb-1">{service.name}</h3>
-                    <p className="text-sm text-gray-600 mb-2">{service.description}</p>
+                    <p className="text-sm text-gray-600 mb-2">
+                      {service.description}
+                    </p>
                     <div className="flex items-center gap-4 text-sm">
                       <div className="flex items-center gap-1">
                         <DollarSign className="h-4 w-4" />

@@ -9,7 +9,11 @@ export function DeleteServiceButton({ serviceId }: { serviceId: string }) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this service? This action cannot be undone.")) {
+    if (
+      !confirm(
+        "Are you sure you want to delete this service? This action cannot be undone."
+      )
+    ) {
       return;
     }
 
@@ -20,7 +24,7 @@ export function DeleteServiceButton({ serviceId }: { serviceId: string }) {
       });
 
       const result = await response.json();
-      
+
       if (!response.ok || result.error) {
         alert(result.error || "Failed to delete service");
       } else {

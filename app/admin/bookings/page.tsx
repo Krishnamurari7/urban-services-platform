@@ -5,7 +5,7 @@ import Link from "next/link";
 
 async function getBookings() {
   const supabase = await createClient();
-  
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -111,19 +111,29 @@ export default async function AdminBookingsPage() {
                     </td>
                     <td className="p-2">
                       <div>
-                        <div className="font-medium">{booking.customer?.full_name}</div>
-                        <div className="text-xs text-gray-500">{booking.customer?.phone}</div>
+                        <div className="font-medium">
+                          {booking.customer?.full_name}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {booking.customer?.phone}
+                        </div>
                       </div>
                     </td>
                     <td className="p-2">
                       <div>
-                        <div className="font-medium">{booking.professional?.full_name}</div>
-                        <div className="text-xs text-gray-500">{booking.professional?.phone}</div>
+                        <div className="font-medium">
+                          {booking.professional?.full_name}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {booking.professional?.phone}
+                        </div>
                       </div>
                     </td>
                     <td className="p-2">
                       <div className="text-sm">{booking.service?.name}</div>
-                      <div className="text-xs text-gray-500">{booking.service?.category}</div>
+                      <div className="text-xs text-gray-500">
+                        {booking.service?.category}
+                      </div>
                     </td>
                     <td className="p-2 text-sm">
                       {new Date(booking.scheduled_at).toLocaleDateString()}
@@ -144,11 +154,12 @@ export default async function AdminBookingsPage() {
                         className={`px-2 py-1 rounded text-xs ${
                           booking.status === "completed"
                             ? "bg-green-100 text-green-700"
-                            : booking.status === "cancelled" || booking.status === "refunded"
-                            ? "bg-red-100 text-red-700"
-                            : booking.status === "in_progress"
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-yellow-100 text-yellow-700"
+                            : booking.status === "cancelled" ||
+                                booking.status === "refunded"
+                              ? "bg-red-100 text-red-700"
+                              : booking.status === "in_progress"
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-yellow-100 text-yellow-700"
                         }`}
                       >
                         {booking.status.replace("_", " ")}
@@ -161,18 +172,20 @@ export default async function AdminBookingsPage() {
                             booking.payment.status === "completed"
                               ? "bg-green-100 text-green-700"
                               : booking.payment.status === "refunded"
-                              ? "bg-red-100 text-red-700"
-                              : "bg-yellow-100 text-yellow-700"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-yellow-100 text-yellow-700"
                           }`}
                         >
                           {booking.payment.status}
                         </span>
                       ) : (
-                        <span className="text-xs text-gray-400">No payment</span>
+                        <span className="text-xs text-gray-400">
+                          No payment
+                        </span>
                       )}
                     </td>
                     <td className="p-2">
-                      <Link 
+                      <Link
                         href={`/admin/bookings/${booking.id}`}
                         className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
                       >

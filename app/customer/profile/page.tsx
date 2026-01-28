@@ -3,7 +3,13 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -194,7 +200,10 @@ export default function CustomerProfilePage() {
 
     try {
       const supabase = createClient();
-      const { error } = await supabase.from("addresses").delete().eq("id", addressId);
+      const { error } = await supabase
+        .from("addresses")
+        .delete()
+        .eq("id", addressId);
 
       if (error) throw error;
 
@@ -229,7 +238,9 @@ export default function CustomerProfilePage() {
                 <User className="h-5 w-5" />
                 Profile Information
               </CardTitle>
-              <CardDescription>Manage your personal information</CardDescription>
+              <CardDescription>
+                Manage your personal information
+              </CardDescription>
             </div>
             {!editingProfile ? (
               <Button variant="outline" onClick={() => setEditingProfile(true)}>
@@ -238,7 +249,10 @@ export default function CustomerProfilePage() {
               </Button>
             ) : (
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setEditingProfile(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setEditingProfile(false)}
+                >
                   <X className="h-4 w-4 mr-2" />
                   Cancel
                 </Button>
@@ -254,11 +268,16 @@ export default function CustomerProfilePage() {
           {editingProfile ? (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Full Name</label>
+                <label className="block text-sm font-medium mb-2">
+                  Full Name
+                </label>
                 <Input
                   value={profileForm.full_name}
                   onChange={(e) =>
-                    setProfileForm((prev) => ({ ...prev, full_name: e.target.value }))
+                    setProfileForm((prev) => ({
+                      ...prev,
+                      full_name: e.target.value,
+                    }))
                   }
                   placeholder="Enter your full name"
                 />
@@ -268,18 +287,26 @@ export default function CustomerProfilePage() {
                 <Input
                   value={profileForm.phone}
                   onChange={(e) =>
-                    setProfileForm((prev) => ({ ...prev, phone: e.target.value }))
+                    setProfileForm((prev) => ({
+                      ...prev,
+                      phone: e.target.value,
+                    }))
                   }
                   placeholder="Enter your phone number"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Date of Birth</label>
+                <label className="block text-sm font-medium mb-2">
+                  Date of Birth
+                </label>
                 <Input
                   type="date"
                   value={profileForm.date_of_birth}
                   onChange={(e) =>
-                    setProfileForm((prev) => ({ ...prev, date_of_birth: e.target.value }))
+                    setProfileForm((prev) => ({
+                      ...prev,
+                      date_of_birth: e.target.value,
+                    }))
                   }
                 />
               </div>
@@ -300,7 +327,9 @@ export default function CustomerProfilePage() {
             <div className="space-y-4">
               <div>
                 <p className="text-sm text-gray-500">Full Name</p>
-                <p className="font-semibold text-lg">{profile?.full_name || "Not set"}</p>
+                <p className="font-semibold text-lg">
+                  {profile?.full_name || "Not set"}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Email</p>
@@ -358,52 +387,77 @@ export default function CustomerProfilePage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Label (e.g., Home, Office)</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Label (e.g., Home, Office)
+                  </label>
                   <Input
                     value={addressForm.label}
                     onChange={(e) =>
-                      setAddressForm((prev) => ({ ...prev, label: e.target.value }))
+                      setAddressForm((prev) => ({
+                        ...prev,
+                        label: e.target.value,
+                      }))
                     }
                     placeholder="Home"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Address Line 1</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Address Line 1
+                  </label>
                   <Input
                     value={addressForm.address_line1}
                     onChange={(e) =>
-                      setAddressForm((prev) => ({ ...prev, address_line1: e.target.value }))
+                      setAddressForm((prev) => ({
+                        ...prev,
+                        address_line1: e.target.value,
+                      }))
                     }
                     placeholder="Street address"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Address Line 2 (Optional)</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Address Line 2 (Optional)
+                  </label>
                   <Input
                     value={addressForm.address_line2}
                     onChange={(e) =>
-                      setAddressForm((prev) => ({ ...prev, address_line2: e.target.value }))
+                      setAddressForm((prev) => ({
+                        ...prev,
+                        address_line2: e.target.value,
+                      }))
                     }
                     placeholder="Apartment, suite, etc."
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">City</label>
+                    <label className="block text-sm font-medium mb-2">
+                      City
+                    </label>
                     <Input
                       value={addressForm.city}
                       onChange={(e) =>
-                        setAddressForm((prev) => ({ ...prev, city: e.target.value }))
+                        setAddressForm((prev) => ({
+                          ...prev,
+                          city: e.target.value,
+                        }))
                       }
                       placeholder="City"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">State</label>
+                    <label className="block text-sm font-medium mb-2">
+                      State
+                    </label>
                     <Input
                       value={addressForm.state}
                       onChange={(e) =>
-                        setAddressForm((prev) => ({ ...prev, state: e.target.value }))
+                        setAddressForm((prev) => ({
+                          ...prev,
+                          state: e.target.value,
+                        }))
                       }
                       placeholder="State"
                     />
@@ -411,21 +465,31 @@ export default function CustomerProfilePage() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Postal Code</label>
+                    <label className="block text-sm font-medium mb-2">
+                      Postal Code
+                    </label>
                     <Input
                       value={addressForm.postal_code}
                       onChange={(e) =>
-                        setAddressForm((prev) => ({ ...prev, postal_code: e.target.value }))
+                        setAddressForm((prev) => ({
+                          ...prev,
+                          postal_code: e.target.value,
+                        }))
                       }
                       placeholder="Postal code"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Country</label>
+                    <label className="block text-sm font-medium mb-2">
+                      Country
+                    </label>
                     <Input
                       value={addressForm.country}
                       onChange={(e) =>
-                        setAddressForm((prev) => ({ ...prev, country: e.target.value }))
+                        setAddressForm((prev) => ({
+                          ...prev,
+                          country: e.target.value,
+                        }))
                       }
                       placeholder="Country"
                     />
@@ -437,7 +501,10 @@ export default function CustomerProfilePage() {
                     id="is_default"
                     checked={addressForm.is_default}
                     onChange={(e) =>
-                      setAddressForm((prev) => ({ ...prev, is_default: e.target.checked }))
+                      setAddressForm((prev) => ({
+                        ...prev,
+                        is_default: e.target.checked,
+                      }))
                     }
                     className="h-4 w-4"
                   />
@@ -466,7 +533,11 @@ export default function CustomerProfilePage() {
                     Cancel
                   </Button>
                   <Button onClick={handleSaveAddress} disabled={saving}>
-                    {saving ? "Saving..." : editingAddress ? "Update Address" : "Add Address"}
+                    {saving
+                      ? "Saving..."
+                      : editingAddress
+                        ? "Update Address"
+                        : "Add Address"}
                   </Button>
                 </div>
               </CardContent>
@@ -477,7 +548,9 @@ export default function CustomerProfilePage() {
             <div className="text-center py-8 text-gray-500">
               <MapPin className="h-12 w-12 mx-auto mb-4 text-gray-300" />
               <p>No addresses saved yet.</p>
-              <p className="text-sm">Add an address to get started with bookings.</p>
+              <p className="text-sm">
+                Add an address to get started with bookings.
+              </p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -494,7 +567,8 @@ export default function CustomerProfilePage() {
                         </div>
                         <p className="text-gray-600">
                           {address.address_line1}
-                          {address.address_line2 && `, ${address.address_line2}`}
+                          {address.address_line2 &&
+                            `, ${address.address_line2}`}
                         </p>
                         <p className="text-gray-600">
                           {address.city}, {address.state} {address.postal_code}

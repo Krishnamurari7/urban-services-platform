@@ -5,6 +5,7 @@ Use this checklist alongside the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) fo
 ## 📋 Pre-Deployment Checklist
 
 ### Prerequisites
+
 - [ ] Node.js 18+ installed
 - [ ] npm/yarn/pnpm installed
 - [ ] Git installed
@@ -16,6 +17,7 @@ Use this checklist alongside the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) fo
 ---
 
 ## 🔧 Step 1: Local Setup
+
 - [ ] Navigated to project directory
 - [ ] Ran `npm install`
 - [ ] Created `.env.local` file
@@ -23,6 +25,7 @@ Use this checklist alongside the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) fo
 ---
 
 ## 🗄️ Step 2: Supabase Setup
+
 - [ ] Created Supabase project
 - [ ] Copied Project URL
 - [ ] Copied anon public key
@@ -32,6 +35,7 @@ Use this checklist alongside the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) fo
 ---
 
 ## 📊 Step 3: Database Migrations
+
 - [ ] Ran migration 001_initial_schema.sql
 - [ ] Ran migration 002_fix_rls_recursion.sql
 - [ ] Ran migration 003_comprehensive_rls_policies.sql
@@ -46,6 +50,7 @@ Use this checklist alongside the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) fo
 ---
 
 ## 📦 Step 4: Storage Setup
+
 - [ ] Created `professional-documents` bucket
 - [ ] Set bucket to Public
 - [ ] Verified bucket exists
@@ -53,6 +58,7 @@ Use this checklist alongside the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) fo
 ---
 
 ## 💳 Step 5: Razorpay Setup
+
 - [ ] Created Razorpay account
 - [ ] Generated test API keys
 - [ ] Copied Key ID
@@ -61,6 +67,7 @@ Use this checklist alongside the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) fo
 ---
 
 ## ⚙️ Step 6: Environment Configuration
+
 - [ ] Added `NEXT_PUBLIC_SUPABASE_URL` to `.env.local`
 - [ ] Added `NEXT_PUBLIC_SUPABASE_ANON_KEY` to `.env.local`
 - [ ] Added `SUPABASE_SERVICE_ROLE_KEY` to `.env.local`
@@ -72,6 +79,7 @@ Use this checklist alongside the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) fo
 ---
 
 ## 🧪 Step 7: Local Testing
+
 - [ ] Ran `npm run dev`
 - [ ] Homepage loads at http://localhost:3000
 - [ ] No console errors
@@ -82,6 +90,7 @@ Use this checklist alongside the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) fo
 ---
 
 ## 🚀 Step 8: Vercel Deployment
+
 - [ ] Initialized Git repository
 - [ ] Created GitHub repository
 - [ ] Pushed code to GitHub
@@ -101,6 +110,7 @@ Use this checklist alongside the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) fo
 ---
 
 ## 🔗 Step 9: Post-Deployment
+
 - [ ] Configured Razorpay webhook URL
 - [ ] Added webhook events (payment.captured, payment.failed, refund.created)
 - [ ] Added `RAZORPAY_WEBHOOK_SECRET` to Vercel (if generated)
@@ -109,6 +119,7 @@ Use this checklist alongside the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) fo
 ---
 
 ## ✅ Step 10: Verification
+
 - [ ] Production homepage loads
 - [ ] No console errors in production
 - [ ] User registration works in production
@@ -125,6 +136,7 @@ Use this checklist alongside the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) fo
 ## 🎯 Production Readiness Checklist
 
 ### Before Going Live
+
 - [ ] Switched to Live Razorpay Keys (after KYC)
 - [ ] Updated Razorpay keys in Vercel
 - [ ] Set up custom domain (optional)
@@ -141,14 +153,14 @@ Use this checklist alongside the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) fo
 
 ## 🔍 Quick Troubleshooting Reference
 
-| Issue | Quick Fix |
-|-------|-----------|
-| Table not found | Re-run migrations in order |
-| Bucket not found | Create `professional-documents` bucket, set to Public |
-| Auth not working | Check Supabase keys in env vars |
-| Payment not working | Check Razorpay keys, verify webhook URL |
-| Build fails | Check Vercel logs, verify env vars |
-| RLS errors | Re-run migration 003 |
+| Issue               | Quick Fix                                             |
+| ------------------- | ----------------------------------------------------- |
+| Table not found     | Re-run migrations in order                            |
+| Bucket not found    | Create `professional-documents` bucket, set to Public |
+| Auth not working    | Check Supabase keys in env vars                       |
+| Payment not working | Check Razorpay keys, verify webhook URL               |
+| Build fails         | Check Vercel logs, verify env vars                    |
+| RLS errors          | Re-run migration 003                                  |
 
 ---
 

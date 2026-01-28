@@ -4,7 +4,13 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -15,7 +21,12 @@ interface ReviewFormProps {
   onSuccess?: () => void;
 }
 
-export function ReviewForm({ bookingId, serviceId, professionalId, onSuccess }: ReviewFormProps) {
+export function ReviewForm({
+  bookingId,
+  serviceId,
+  professionalId,
+  onSuccess,
+}: ReviewFormProps) {
   const router = useRouter();
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
@@ -36,7 +47,9 @@ export function ReviewForm({ bookingId, serviceId, professionalId, onSuccess }: 
 
     try {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       if (!user) {
         setError("You must be logged in to submit a review");
@@ -139,7 +152,11 @@ export function ReviewForm({ bookingId, serviceId, professionalId, onSuccess }: 
           </div>
 
           <div className="flex gap-2">
-            <Button type="submit" disabled={submitting || rating === 0} className="flex-1">
+            <Button
+              type="submit"
+              disabled={submitting || rating === 0}
+              className="flex-1"
+            >
               {submitting ? "Submitting..." : "Submit Review"}
             </Button>
           </div>

@@ -8,7 +8,7 @@ import { Star, Eye, EyeOff, CheckCircle2, XCircle } from "lucide-react";
 
 async function getReviews() {
   const supabase = await createClient();
-  
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -30,7 +30,8 @@ async function getReviews() {
   // Get all reviews with related data
   const { data: reviews } = await supabase
     .from("reviews")
-    .select(`
+    .select(
+      `
       id,
       rating,
       comment,
@@ -56,7 +57,8 @@ async function getReviews() {
         id,
         status
       )
-    `)
+    `
+    )
     .order("created_at", { ascending: false })
     .limit(100);
 
@@ -74,7 +76,9 @@ export default async function AdminReviewsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Review Moderation</h1>
-        <p className="text-gray-600 mt-1">Manage and moderate customer reviews</p>
+        <p className="text-gray-600 mt-1">
+          Manage and moderate customer reviews
+        </p>
       </div>
 
       {/* Stats */}
@@ -157,10 +161,14 @@ export default async function AdminReviewsPage() {
                               }`}
                             />
                           ))}
-                          <span className="ml-1 font-medium">{review.rating}/5</span>
+                          <span className="ml-1 font-medium">
+                            {review.rating}/5
+                          </span>
                         </div>
                         <Badge
-                          variant={review.is_visible ? "default" : "destructive"}
+                          variant={
+                            review.is_visible ? "default" : "destructive"
+                          }
                           className="gap-1"
                         >
                           {review.is_visible ? (
@@ -184,7 +192,9 @@ export default async function AdminReviewsPage() {
                       </div>
 
                       {review.comment && (
-                        <p className="text-sm text-gray-700 mb-3">{review.comment}</p>
+                        <p className="text-sm text-gray-700 mb-3">
+                          {review.comment}
+                        </p>
                       )}
 
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -202,7 +212,9 @@ export default async function AdminReviewsPage() {
                         </div>
                         <div>
                           <span className="text-gray-600">Service:</span>{" "}
-                          <span className="font-medium">{review.service?.name || "N/A"}</span>
+                          <span className="font-medium">
+                            {review.service?.name || "N/A"}
+                          </span>
                         </div>
                         <div>
                           <span className="text-gray-600">Date:</span>{" "}
@@ -215,16 +227,24 @@ export default async function AdminReviewsPage() {
 
                     <div className="flex flex-col gap-2 ml-4">
                       {review.is_visible ? (
-                        <form action={hideReview}>
-                          <input type="hidden" name="reviewId" value={review.id} />
+                        <form action={async (formData) => { await hideReview(formData); }}>
+                          <input
+                            type="hidden"
+                            name="reviewId"
+                            value={review.id}
+                          />
                           <Button type="submit" variant="outline" size="sm">
                             <EyeOff className="h-4 w-4 mr-1" />
                             Hide
                           </Button>
                         </form>
                       ) : (
-                        <form action={showReview}>
-                          <input type="hidden" name="reviewId" value={review.id} />
+                        <form action={async (formData) => { await showReview(formData); }}>
+                          <input
+                            type="hidden"
+                            name="reviewId"
+                            value={review.id}
+                          />
                           <Button type="submit" variant="default" size="sm">
                             <Eye className="h-4 w-4 mr-1" />
                             Show
@@ -232,16 +252,24 @@ export default async function AdminReviewsPage() {
                         </form>
                       )}
                       {!review.is_verified && (
-                        <form action={approveReview}>
-                          <input type="hidden" name="reviewId" value={review.id} />
+                        <form action={async (formData) => { await approveReview(formData); }}>
+                          <input
+                            type="hidden"
+                            name="reviewId"
+                            value={review.id}
+                          />
                           <Button type="submit" variant="default" size="sm">
                             <CheckCircle2 className="h-4 w-4 mr-1" />
                             Approve
                           </Button>
                         </form>
                       )}
-                      <form action={rejectReview}>
-                        <input type="hidden" name="reviewId" value={review.id} />
+                      <form action={async (formData) => { await rejectReview(formData); }}>
+                        <input
+                          type="hidden"
+                          name="reviewId"
+                          value={review.id}
+                        />
                         <Button type="submit" variant="destructive" size="sm">
                           <XCircle className="h-4 w-4 mr-1" />
                           Reject

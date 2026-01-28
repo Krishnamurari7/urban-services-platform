@@ -13,10 +13,13 @@ export function Footer() {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-md">
                 <span className="text-lg font-bold">V</span>
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">vera company</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
+                vera company
+              </span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Your trusted partner for all home and professional services. Connecting you with verified professionals.
+              Your trusted partner for all home and professional services.
+              Connecting you with verified professionals.
             </p>
             <div className="space-y-2 pt-2">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -32,30 +35,47 @@ export function Footer() {
 
           {/* Services */}
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold uppercase tracking-wider">Services</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider">
+              Services
+            </h3>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
-                <Link href="/services" className="hover:text-foreground transition-colors inline-block hover:translate-x-1">
+                <Link
+                  href="/services"
+                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                >
                   All Services
                 </Link>
               </li>
               <li>
-                <Link href="/services?category=cleaning" className="hover:text-foreground transition-colors inline-block hover:translate-x-1">
+                <Link
+                  href="/services?category=cleaning"
+                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                >
                   Cleaning
                 </Link>
               </li>
               <li>
-                <Link href="/services?category=plumbing" className="hover:text-foreground transition-colors inline-block hover:translate-x-1">
+                <Link
+                  href="/services?category=plumbing"
+                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                >
                   Plumbing
                 </Link>
               </li>
               <li>
-                <Link href="/services?category=electrical" className="hover:text-foreground transition-colors inline-block hover:translate-x-1">
+                <Link
+                  href="/services?category=electrical"
+                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                >
                   Electrical
                 </Link>
               </li>
               <li>
-                <Link href="/services?category=carpentry" className="hover:text-foreground transition-colors inline-block hover:translate-x-1">
+                <Link
+                  href="/services?category=carpentry"
+                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                >
                   Carpentry
                 </Link>
               </li>
@@ -64,25 +84,39 @@ export function Footer() {
 
           {/* Company */}
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold uppercase tracking-wider">Company</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider">
+              Company
+            </h3>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
-                <Link href="/about" className="hover:text-foreground transition-colors inline-block hover:translate-x-1">
+                <Link
+                  href="/about"
+                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                >
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/become-professional" className="hover:text-foreground transition-colors inline-block hover:translate-x-1">
+                <Link
+                  href="/become-professional"
+                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                >
                   Become a Professional
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-foreground transition-colors inline-block hover:translate-x-1">
+                <Link
+                  href="/contact"
+                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                >
                   Contact
                 </Link>
               </li>
               <li>
-                <Link href="/careers" className="hover:text-foreground transition-colors inline-block hover:translate-x-1">
+                <Link
+                  href="/careers"
+                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                >
                   Careers
                 </Link>
               </li>
@@ -91,25 +125,39 @@ export function Footer() {
 
           {/* Support */}
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold uppercase tracking-wider">Support</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider">
+              Support
+            </h3>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
-                <Link href="/help-center" className="hover:text-foreground transition-colors inline-block hover:translate-x-1">
+                <Link
+                  href="/help-center"
+                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                >
                   Help Center
                 </Link>
               </li>
               <li>
-                <Link href="/privacy-policy" className="hover:text-foreground transition-colors inline-block hover:translate-x-1">
+                <Link
+                  href="/privacy-policy"
+                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                >
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms-of-service" className="hover:text-foreground transition-colors inline-block hover:translate-x-1">
+                <Link
+                  href="/terms-of-service"
+                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                >
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="hover:text-foreground transition-colors inline-block hover:translate-x-1">
+                <Link
+                  href="/faq"
+                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                >
                   FAQ
                 </Link>
               </li>
@@ -123,13 +171,22 @@ export function Footer() {
               © {new Date().getFullYear()} vera company. All rights reserved.
             </p>
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <Link href="/privacy" className="hover:text-foreground transition-colors">
+              <Link
+                href="/privacy"
+                className="hover:text-foreground transition-colors"
+              >
                 Privacy
               </Link>
-              <Link href="/terms" className="hover:text-foreground transition-colors">
+              <Link
+                href="/terms"
+                className="hover:text-foreground transition-colors"
+              >
                 Terms
               </Link>
-              <Link href="/cookies" className="hover:text-foreground transition-colors">
+              <Link
+                href="/cookies"
+                className="hover:text-foreground transition-colors"
+              >
                 Cookies
               </Link>
             </div>

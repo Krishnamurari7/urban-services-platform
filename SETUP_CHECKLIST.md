@@ -33,6 +33,7 @@ Run these migrations in **exact order** in Supabase SQL Editor:
 - [ ] `009_allow_customer_payment_insert.sql` - Payment permissions
 
 **Verification:**
+
 - [ ] All tables exist (run verification query)
 - [ ] RLS policies are active
 - [ ] Triggers are working
@@ -76,6 +77,7 @@ Create `.env.local` file with:
 ## ✅ Testing (Local)
 
 ### Authentication
+
 - [ ] User registration (customer) works
 - [ ] User registration (professional) works
 - [ ] Login with email/password works
@@ -83,6 +85,7 @@ Create `.env.local` file with:
 - [ ] Role stored correctly in database
 
 ### Features
+
 - [ ] Browse services
 - [ ] View service details
 - [ ] Create booking (as customer)
@@ -119,12 +122,14 @@ Create `.env.local` file with:
 ## ✅ Post-Deployment
 
 ### Razorpay Webhook
+
 - [ ] Webhook URL added: `https://your-domain.vercel.app/api/payments/webhook`
 - [ ] Events selected: `payment.captured`, `payment.failed`, `refund.created`
 - [ ] Webhook secret copied
 - [ ] Webhook secret added to Vercel env vars (if needed)
 
 ### Testing (Production)
+
 - [ ] Homepage loads
 - [ ] Authentication works
 - [ ] Booking creation works
@@ -133,6 +138,7 @@ Create `.env.local` file with:
 - [ ] All user roles work correctly
 
 ### Security
+
 - [ ] RLS policies verified
 - [ ] Admin routes protected
 - [ ] Role-based access working
@@ -140,6 +146,7 @@ Create `.env.local` file with:
 - [ ] Environment variables secure
 
 ### Monitoring
+
 - [ ] Error tracking configured (optional)
 - [ ] Analytics configured (optional)
 - [ ] Uptime monitoring set up (optional)

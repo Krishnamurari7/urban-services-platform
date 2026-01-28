@@ -3,7 +3,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { createBanner, updateBanner, deleteBanner, toggleBannerStatus } from "./actions";
+import {
+  createBanner,
+  updateBanner,
+  deleteBanner,
+  toggleBannerStatus,
+} from "./actions";
 
 interface Banner {
   id?: string;
@@ -35,8 +40,8 @@ export function BannerForm({ banner }: { banner?: Banner }) {
       link_text: formData.get("link_text") as string,
       position: parseInt(formData.get("position") as string) || 0,
       is_active: formData.get("is_active") === "true",
-      start_date: formData.get("start_date") as string || null,
-      end_date: formData.get("end_date") as string || null,
+      start_date: (formData.get("start_date") as string) || null,
+      end_date: (formData.get("end_date") as string) || null,
     };
 
     try {
@@ -86,24 +91,16 @@ export function BannerForm({ banner }: { banner?: Banner }) {
         <Button
           onClick={() => setIsOpen(true)}
           variant={banner ? "ghost" : "default"}
-          size={banner ? "sm" : "default"}
+          size={banner ? "sm" : "md"}
         >
           {banner ? "Edit" : "Create Banner"}
         </Button>
         {banner?.id && (
           <>
-            <Button
-              onClick={handleToggleStatus}
-              variant="outline"
-              size="sm"
-            >
+            <Button onClick={handleToggleStatus} variant="outline" size="sm">
               {banner.is_active ? "Deactivate" : "Activate"}
             </Button>
-            <Button
-              onClick={handleDelete}
-              variant="outline"
-              size="sm"
-            >
+            <Button onClick={handleDelete} variant="outline" size="sm">
               Delete
             </Button>
           </>
@@ -114,12 +111,16 @@ export function BannerForm({ banner }: { banner?: Banner }) {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <CardHeader>
-              <CardTitle>{banner ? "Edit Banner" : "Create New Banner"}</CardTitle>
+              <CardTitle>
+                {banner ? "Edit Banner" : "Create New Banner"}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Title</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Title
+                  </label>
                   <input
                     type="text"
                     name="title"
@@ -130,7 +131,9 @@ export function BannerForm({ banner }: { banner?: Banner }) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Description</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Description
+                  </label>
                   <textarea
                     name="description"
                     defaultValue={banner?.description || ""}
@@ -140,7 +143,9 @@ export function BannerForm({ banner }: { banner?: Banner }) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Image URL</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Image URL
+                  </label>
                   <input
                     type="url"
                     name="image_url"
@@ -152,7 +157,9 @@ export function BannerForm({ banner }: { banner?: Banner }) {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Link URL</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Link URL
+                    </label>
                     <input
                       type="url"
                       name="link_url"
@@ -162,7 +169,9 @@ export function BannerForm({ banner }: { banner?: Banner }) {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Link Text</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Link Text
+                    </label>
                     <input
                       type="text"
                       name="link_text"
@@ -174,7 +183,9 @@ export function BannerForm({ banner }: { banner?: Banner }) {
 
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Position</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Position
+                    </label>
                     <input
                       type="number"
                       name="position"
@@ -185,21 +196,35 @@ export function BannerForm({ banner }: { banner?: Banner }) {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Start Date</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Start Date
+                    </label>
                     <input
                       type="datetime-local"
                       name="start_date"
-                      defaultValue={banner?.start_date ? new Date(banner.start_date).toISOString().slice(0, 16) : ""}
+                      defaultValue={
+                        banner?.start_date
+                          ? new Date(banner.start_date)
+                              .toISOString()
+                              .slice(0, 16)
+                          : ""
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">End Date</label>
+                    <label className="block text-sm font-medium mb-1">
+                      End Date
+                    </label>
                     <input
                       type="datetime-local"
                       name="end_date"
-                      defaultValue={banner?.end_date ? new Date(banner.end_date).toISOString().slice(0, 16) : ""}
+                      defaultValue={
+                        banner?.end_date
+                          ? new Date(banner.end_date).toISOString().slice(0, 16)
+                          : ""
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     />
                   </div>

@@ -46,13 +46,16 @@ export function CategoryCard({
         <CardContent className="p-5">
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">{name}</h3>
+              <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
+                {name}
+              </h3>
               <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                 {description}
               </p>
               {serviceCount !== undefined && (
                 <p className="text-xs font-medium text-primary/80">
-                  {serviceCount} {serviceCount === 1 ? 'service' : 'services'} available
+                  {serviceCount} {serviceCount === 1 ? "service" : "services"}{" "}
+                  available
                 </p>
               )}
             </div>

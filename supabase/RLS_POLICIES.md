@@ -5,6 +5,7 @@ This document describes the comprehensive RLS policies implemented for the Urban
 ## Overview
 
 The RLS policies enforce three distinct access levels:
+
 - **Customer**: Access only to their own data
 - **Professional**: Access only to assigned jobs/bookings
 - **Admin**: Full access to all data
@@ -24,12 +25,14 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 ### 1. Profiles Table
 
 **Customer Access:**
+
 - ✅ View own profile
 - ✅ Update own profile
 - ❌ Cannot view other profiles (except active professionals)
 - ❌ Cannot delete profiles
 
 **Professional Access:**
+
 - ✅ View own profile
 - ✅ Update own profile
 - ✅ View other active professionals (for booking purposes)
@@ -37,11 +40,13 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 - ❌ Cannot delete profiles
 
 **Admin Access:**
+
 - ✅ View all profiles
 - ✅ Update all profiles
 - ✅ Delete profiles
 
 **Public Access:**
+
 - ✅ View active professionals (for service discovery)
 
 ---
@@ -49,10 +54,12 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 ### 2. Services Table
 
 **Customer/Professional Access:**
+
 - ✅ View active services (public catalog)
 - ❌ Cannot create, update, or delete services
 
 **Admin Access:**
+
 - ✅ View all services (including inactive/suspended)
 - ✅ Create services
 - ✅ Update services
@@ -63,10 +70,12 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 ### 3. Professional Services Table
 
 **Customer Access:**
+
 - ✅ View available professional services (for booking)
 - ❌ Cannot manage professional services
 
 **Professional Access:**
+
 - ✅ View own services
 - ✅ Create own services
 - ✅ Update own services
@@ -74,6 +83,7 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 - ❌ Cannot access other professionals' services
 
 **Admin Access:**
+
 - ✅ Full access to all professional services
 
 ---
@@ -81,6 +91,7 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 ### 4. Addresses Table
 
 **Customer Access:**
+
 - ✅ View own addresses
 - ✅ Create own addresses
 - ✅ Update own addresses
@@ -88,6 +99,7 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 - ❌ Cannot access other users' addresses
 
 **Professional Access:**
+
 - ✅ View own addresses
 - ✅ Create own addresses
 - ✅ Update own addresses
@@ -95,6 +107,7 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 - ❌ Cannot access other users' addresses
 
 **Admin Access:**
+
 - ✅ Full access to all addresses
 
 ---
@@ -102,6 +115,7 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 ### 5. Bookings Table
 
 **Customer Access:**
+
 - ✅ View own bookings
 - ✅ Create bookings (as customer)
 - ✅ Update own pending bookings
@@ -110,6 +124,7 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 - ❌ Cannot modify bookings after confirmation
 
 **Professional Access:**
+
 - ✅ View bookings assigned to them (`professional_id = auth.uid()`)
 - ✅ Update assigned bookings (status changes: confirmed, in_progress, completed, cancelled)
 - ❌ Cannot view bookings assigned to other professionals
@@ -117,6 +132,7 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 - ❌ Cannot delete bookings
 
 **Admin Access:**
+
 - ✅ View all bookings
 - ✅ Create bookings
 - ✅ Update all bookings
@@ -127,15 +143,18 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 ### 6. Payments Table
 
 **Customer Access:**
+
 - ✅ View own payments (`customer_id = auth.uid()`)
 - ❌ Cannot create, update, or delete payments
 - ⚠️ Payment creation should be done via service role or admin
 
 **Professional Access:**
+
 - ❌ Cannot access payments (no direct access)
 - ⚠️ Professionals can see payment info through bookings if needed
 
 **Admin Access:**
+
 - ✅ View all payments
 - ✅ Create payments
 - ✅ Update all payments
@@ -146,6 +165,7 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 ### 7. Reviews Table
 
 **Customer Access:**
+
 - ✅ View visible reviews (public)
 - ✅ View own reviews (even if not visible)
 - ✅ Create reviews for completed bookings
@@ -154,17 +174,20 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 - ❌ Cannot view other customers' private reviews
 
 **Professional Access:**
+
 - ✅ View visible reviews (public)
 - ✅ View reviews about them (`professional_id = auth.uid()`)
 - ❌ Cannot create, update, or delete reviews
 
 **Admin Access:**
+
 - ✅ View all reviews (including non-visible)
 - ✅ Create reviews
 - ✅ Update all reviews
 - ✅ Delete reviews
 
 **Public Access:**
+
 - ✅ View visible reviews (`is_visible = true`)
 
 ---
@@ -172,10 +195,12 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 ### 8. Availability Slots Table
 
 **Customer Access:**
+
 - ✅ View available slots (for booking)
 - ❌ Cannot manage availability slots
 
 **Professional Access:**
+
 - ✅ View own availability slots
 - ✅ Create own availability slots
 - ✅ Update own availability slots
@@ -183,9 +208,11 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 - ❌ Cannot access other professionals' availability
 
 **Admin Access:**
+
 - ✅ Full access to all availability slots
 
 **Public Access:**
+
 - ✅ View available slots (`status = 'available'`)
 
 ---
@@ -193,9 +220,11 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 ### 9. Admin Actions Table
 
 **Customer/Professional Access:**
+
 - ❌ No access to admin actions (audit log)
 
 **Admin Access:**
+
 - ✅ View all admin actions
 - ✅ Create admin actions
 - ✅ Update admin actions
@@ -206,26 +235,31 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 ## Security Best Practices
 
 ### 1. Principle of Least Privilege
+
 - Each role has the minimum permissions necessary
 - Customers can only access their own data
 - Professionals can only access assigned bookings
 - Admins have full access but should use it responsibly
 
 ### 2. Data Isolation
+
 - Customer data is strictly isolated
 - Professionals cannot see other professionals' bookings
 - No cross-customer data leakage
 
 ### 3. Audit Trail
+
 - Admin actions are logged in `admin_actions` table
 - Only admins can view audit logs
 
 ### 4. Payment Security
+
 - Customers cannot create or modify payments directly
 - Payment operations should use service role key
 - Admins can manage payments for support purposes
 
 ### 5. Review Integrity
+
 - Customers can only review their own completed bookings
 - Reviews are public by default but can be hidden
 - Admins can moderate all reviews
@@ -235,12 +269,14 @@ These functions use `SECURITY DEFINER` to bypass RLS when checking user roles.
 To test RLS policies:
 
 1. **Test as Customer:**
+
    ```sql
    -- Should only see own bookings
    SELECT * FROM bookings WHERE customer_id = auth.uid();
    ```
 
 2. **Test as Professional:**
+
    ```sql
    -- Should only see assigned bookings
    SELECT * FROM bookings WHERE professional_id = auth.uid();

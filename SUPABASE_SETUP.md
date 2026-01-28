@@ -54,6 +54,7 @@ To enable Google authentication:
    - `https://yourdomain.com/auth/callback` (for production)
 
 **Google Cloud Console Setup:**
+
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Create a new project or select existing
 3. Enable Google+ API
@@ -159,6 +160,7 @@ export default async function AdminPage() {
 ## Middleware Protection
 
 The middleware (`middleware.ts`) automatically:
+
 - Refreshes user sessions
 - Fetches user role from `profiles` table
 - Redirects unauthenticated users from protected routes to `/login`
@@ -166,23 +168,27 @@ The middleware (`middleware.ts`) automatically:
 - Enforces role-based access (e.g., `/users` requires admin role)
 
 Protected routes:
+
 - `/dashboard`, `/bookings`, `/services`, `/profile` - Requires authentication
 - `/users` - Requires admin role
 
 ## Authentication Features
 
 ### Email + Password
+
 - Users can sign up with email and password
 - Role selection during registration (customer or professional)
 - Admin accounts must be created by existing admins
 - Email confirmation required (configurable in Supabase)
 
 ### Google OAuth
+
 - One-click sign in with Google
 - Profile automatically created with role from metadata or defaults to 'customer'
 - Seamless integration with existing auth flow
 
 ### Role-Based Access
+
 - Roles stored in `profiles` table
 - Automatic profile creation via database trigger
 - Middleware enforces role-based route protection

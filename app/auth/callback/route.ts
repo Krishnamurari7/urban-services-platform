@@ -24,7 +24,9 @@ export async function GET(request: NextRequest) {
           .eq("id", user.id)
           .single();
 
-        const role = (profile?.role as "admin" | "professional" | "customer") || "customer";
+        const role =
+          (profile?.role as "admin" | "professional" | "customer") ||
+          "customer";
         const redirectPath = getRoleBasedRedirect(role);
         return NextResponse.redirect(new URL(redirectPath, requestUrl.origin));
       }
@@ -32,10 +34,14 @@ export async function GET(request: NextRequest) {
   }
 
   // If there's an error or no code, redirect to login
-  return NextResponse.redirect(new URL("/login?error=Authentication failed", requestUrl.origin));
+  return NextResponse.redirect(
+    new URL("/login?error=Authentication failed", requestUrl.origin)
+  );
 }
 
-function getRoleBasedRedirect(role: "admin" | "professional" | "customer"): string {
+function getRoleBasedRedirect(
+  role: "admin" | "professional" | "customer"
+): string {
   switch (role) {
     case "admin":
       return "/admin/dashboard";

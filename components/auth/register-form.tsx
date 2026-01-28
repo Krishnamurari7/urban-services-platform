@@ -4,7 +4,13 @@ import { useState } from "react";
 import { signUp, signInWithGoogle } from "@/lib/auth/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import type { UserRole } from "@/lib/types/auth";
 import Link from "next/link";
 
@@ -68,9 +74,7 @@ export function RegisterForm() {
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
-        <CardDescription>
-          Enter your information to get started
-        </CardDescription>
+        <CardDescription>Enter your information to get started</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -120,7 +124,9 @@ export function RegisterForm() {
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               <option value="customer">Book services (Customer)</option>
-              <option value="professional">Offer services (Professional)</option>
+              <option value="professional">
+                Offer services (Professional)
+              </option>
             </select>
             <p className="text-xs text-muted-foreground">
               Admin accounts can only be created by existing admins
@@ -212,7 +218,10 @@ export function RegisterForm() {
 
         <p className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Link href="/login" className="font-medium text-primary hover:underline">
+          <Link
+            href="/login"
+            className="font-medium text-primary hover:underline"
+          >
             Sign in
           </Link>
         </p>

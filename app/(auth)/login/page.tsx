@@ -4,7 +4,11 @@ import { Suspense } from "react";
 async function LoginMessages({
   searchParams,
 }: {
-  searchParams: Promise<{ message?: string; error?: string; redirect?: string }>;
+  searchParams: Promise<{
+    message?: string;
+    error?: string;
+    redirect?: string;
+  }>;
 }) {
   const params = await searchParams;
   return (
@@ -26,7 +30,11 @@ async function LoginMessages({
 export default function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ message?: string; error?: string; redirect?: string }>;
+  searchParams: Promise<{
+    message?: string;
+    error?: string;
+    redirect?: string;
+  }>;
 }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-primary/5 py-12 px-4 sm:px-6 lg:px-8">

@@ -34,11 +34,15 @@ export async function deleteService(serviceId: string) {
 
   if (activeBookings && activeBookings.length > 0) {
     return {
-      error: "Cannot delete service with active bookings. Please cancel bookings first.",
+      error:
+        "Cannot delete service with active bookings. Please cancel bookings first.",
     };
   }
 
-  const { error } = await supabase.from("services").delete().eq("id", serviceId);
+  const { error } = await supabase
+    .from("services")
+    .delete()
+    .eq("id", serviceId);
 
   if (error) {
     return { error: error.message };

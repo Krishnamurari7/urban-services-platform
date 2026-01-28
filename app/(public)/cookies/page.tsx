@@ -6,7 +6,8 @@ export default function CookiesPage() {
     {
       icon: <Shield className="h-6 w-6" />,
       title: "Essential Cookies",
-      description: "These cookies are necessary for the website to function properly. They enable core functionality such as security, network management, and accessibility.",
+      description:
+        "These cookies are necessary for the website to function properly. They enable core functionality such as security, network management, and accessibility.",
       examples: [
         "Authentication cookies",
         "Session management cookies",
@@ -16,17 +17,15 @@ export default function CookiesPage() {
     {
       icon: <Settings className="h-6 w-6" />,
       title: "Functional Cookies",
-      description: "These cookies allow the website to remember choices you make and provide enhanced, personalized features.",
-      examples: [
-        "Language preferences",
-        "Region settings",
-        "User preferences",
-      ],
+      description:
+        "These cookies allow the website to remember choices you make and provide enhanced, personalized features.",
+      examples: ["Language preferences", "Region settings", "User preferences"],
     },
     {
       icon: <Eye className="h-6 w-6" />,
       title: "Analytics Cookies",
-      description: "These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously.",
+      description:
+        "These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously.",
       examples: [
         "Page views and navigation",
         "User behavior tracking",
@@ -52,10 +51,16 @@ export default function CookiesPage() {
               Cookie <span className="text-primary">Policy</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-              Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+              Last updated:{" "}
+              {new Date().toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
             </p>
             <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-              Learn about how we use cookies and similar technologies on our platform.
+              Learn about how we use cookies and similar technologies on our
+              platform.
             </p>
           </div>
         </div>
@@ -68,14 +73,20 @@ export default function CookiesPage() {
             <div className="mb-8">
               <h2 className="mb-4 text-2xl font-bold">What Are Cookies?</h2>
               <p className="text-muted-foreground leading-relaxed">
-                Cookies are small text files that are placed on your device when you visit a website. They are widely used to make websites work more efficiently and provide information to website owners. Cookies help us provide you with a better experience by remembering your preferences and understanding how you use our platform.
+                Cookies are small text files that are placed on your device when
+                you visit a website. They are widely used to make websites work
+                more efficiently and provide information to website owners.
+                Cookies help us provide you with a better experience by
+                remembering your preferences and understanding how you use our
+                platform.
               </p>
             </div>
 
             <div className="mb-8">
               <h2 className="mb-4 text-2xl font-bold">How We Use Cookies</h2>
               <p className="mb-6 text-muted-foreground leading-relaxed">
-                We use cookies for various purposes to enhance your experience on our platform:
+                We use cookies for various purposes to enhance your experience
+                on our platform:
               </p>
               <div className="space-y-6">
                 {cookieTypes.map((type, index) => (
@@ -94,7 +105,10 @@ export default function CookiesPage() {
                         <p className="mb-2 text-sm font-medium">Examples:</p>
                         <ul className="space-y-1">
                           {type.examples.map((example, exampleIndex) => (
-                            <li key={exampleIndex} className="list-disc text-sm text-muted-foreground">
+                            <li
+                              key={exampleIndex}
+                              className="list-disc text-sm text-muted-foreground"
+                            >
                               {example}
                             </li>
                           ))}
@@ -108,9 +122,14 @@ export default function CookiesPage() {
 
             <Card className="mb-6">
               <CardContent className="p-6">
-                <h3 className="mb-4 text-xl font-semibold">Third-Party Cookies</h3>
+                <h3 className="mb-4 text-xl font-semibold">
+                  Third-Party Cookies
+                </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  In addition to our own cookies, we may also use various third-party cookies to report usage statistics, deliver advertisements, and monitor performance. These third-party cookies are subject to their respective privacy policies.
+                  In addition to our own cookies, we may also use various
+                  third-party cookies to report usage statistics, deliver
+                  advertisements, and monitor performance. These third-party
+                  cookies are subject to their respective privacy policies.
                 </p>
               </CardContent>
             </Card>
@@ -119,23 +138,31 @@ export default function CookiesPage() {
               <CardContent className="p-6">
                 <h3 className="mb-4 text-xl font-semibold">Managing Cookies</h3>
                 <p className="mb-4 text-muted-foreground leading-relaxed">
-                  You have the right to accept or reject cookies. Most web browsers automatically accept cookies, but you can usually modify your browser settings to decline cookies if you prefer. However, this may prevent you from taking full advantage of the website.
+                  You have the right to accept or reject cookies. Most web
+                  browsers automatically accept cookies, but you can usually
+                  modify your browser settings to decline cookies if you prefer.
+                  However, this may prevent you from taking full advantage of
+                  the website.
                 </p>
                 <p className="mb-4 text-muted-foreground leading-relaxed">
                   To manage cookies in your browser:
                 </p>
                 <ul className="ml-4 space-y-2">
                   <li className="list-disc text-muted-foreground leading-relaxed">
-                    <strong>Chrome:</strong> Settings → Privacy and Security → Cookies and other site data
+                    <strong>Chrome:</strong> Settings → Privacy and Security →
+                    Cookies and other site data
                   </li>
                   <li className="list-disc text-muted-foreground leading-relaxed">
-                    <strong>Firefox:</strong> Options → Privacy & Security → Cookies and Site Data
+                    <strong>Firefox:</strong> Options → Privacy & Security →
+                    Cookies and Site Data
                   </li>
                   <li className="list-disc text-muted-foreground leading-relaxed">
-                    <strong>Safari:</strong> Preferences → Privacy → Cookies and website data
+                    <strong>Safari:</strong> Preferences → Privacy → Cookies and
+                    website data
                   </li>
                   <li className="list-disc text-muted-foreground leading-relaxed">
-                    <strong>Edge:</strong> Settings → Privacy, search, and services → Cookies and site permissions
+                    <strong>Edge:</strong> Settings → Privacy, search, and
+                    services → Cookies and site permissions
                   </li>
                 </ul>
               </CardContent>
@@ -145,16 +172,25 @@ export default function CookiesPage() {
               <CardContent className="p-6">
                 <h3 className="mb-4 text-xl font-semibold">Cookie Duration</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Cookies can be either "session" cookies or "persistent" cookies. Session cookies are temporary and are deleted when you close your browser. Persistent cookies remain on your device for a set period or until you delete them. We use both types of cookies to provide you with the best experience.
+                  Cookies can be either "session" cookies or "persistent"
+                  cookies. Session cookies are temporary and are deleted when
+                  you close your browser. Persistent cookies remain on your
+                  device for a set period or until you delete them. We use both
+                  types of cookies to provide you with the best experience.
                 </p>
               </CardContent>
             </Card>
 
             <Card className="mb-6">
               <CardContent className="p-6">
-                <h3 className="mb-4 text-xl font-semibold">Updates to This Policy</h3>
+                <h3 className="mb-4 text-xl font-semibold">
+                  Updates to This Policy
+                </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  We may update this Cookie Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. Please review this page periodically for any updates.
+                  We may update this Cookie Policy from time to time to reflect
+                  changes in our practices or for other operational, legal, or
+                  regulatory reasons. Please review this page periodically for
+                  any updates.
                 </p>
               </CardContent>
             </Card>
@@ -163,7 +199,8 @@ export default function CookiesPage() {
               <CardContent className="p-6">
                 <h3 className="mb-4 text-xl font-semibold">Contact Us</h3>
                 <p className="mb-4 text-muted-foreground leading-relaxed">
-                  If you have any questions about our use of cookies, please contact us:
+                  If you have any questions about our use of cookies, please
+                  contact us:
                 </p>
                 <ul className="space-y-2 text-muted-foreground">
                   <li>Email: privacy@veracompany.com</li>
