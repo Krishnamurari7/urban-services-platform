@@ -83,12 +83,11 @@ async function getBooking(id: string) {
   return booking;
 }
 
-export default async function BookingDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const booking = await getBooking(params.id);
+export default async function BookingDetailPage(
+  props: PageProps<"/admin/bookings/[id]">
+) {
+  const { id } = await props.params;
+  const booking = await getBooking(id);
 
   if (!booking) {
     return (
@@ -115,7 +114,7 @@ export default async function BookingDetailPage({
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Booking Details</h1>
           <p className="text-gray-600 mt-1">
-            ID: {params.id.substring(0, 8)}...
+            ID: {id.substring(0, 8)}...
           </p>
         </div>
         <Link href="/admin/bookings">
