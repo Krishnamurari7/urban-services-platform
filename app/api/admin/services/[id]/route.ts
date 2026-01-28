@@ -3,9 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params;
+  const { id } = await params;
   const supabase = await createClient();
 
   const {
