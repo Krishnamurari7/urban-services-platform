@@ -3,8 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const supabase = await createClient();
   
   const {
@@ -29,7 +30,7 @@ export async function DELETE(
   const { data: activeBookings } = await supabase
     .from("bookings")
     .select("id")
-    .eq("service_id", params.id)
+    .eq("service_id", id)
     .in("status", ["pending", "confirmed", "in_progress"])
     .limit(1);
 
@@ -43,7 +44,7 @@ export async function DELETE(
     );
   }
 
-  const { error } = await supabase.from("services").delete().eq("id", params.id);
+  const { error } = await supabase.from("services").delete().eq("id", id);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -54,8 +55,8 @@ export async function DELETE(
     admin_id: user.id,
     action_type: "service_deleted",
     target_type: "service",
-    target_id: params.id,
-    description: `Deleted service: ${params.id}`,
+    target_id: id,
+    description: `Deleted service: ${id}`,
   });
 
   return NextResponse.json({ success: true });
