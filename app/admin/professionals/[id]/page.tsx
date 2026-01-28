@@ -75,9 +75,10 @@ async function getProfessional(id: string) {
 export default async function ProfessionalDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const professional = await getProfessional(params.id);
+  const { id } = await params;
+  const professional = await getProfessional(id);
 
   if (!professional) {
     return (
