@@ -73,7 +73,7 @@ export async function generateMetadata({
       images: service.image_url ? [service.image_url] : [],
     },
     alternates: {
-      canonical: `/services/${params.id}`,
+      canonical: `/services/${id}`,
     },
     other: {
       "service:price:amount": service.base_price.toString(),
