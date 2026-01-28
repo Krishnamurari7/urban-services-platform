@@ -36,12 +36,15 @@ async function getService(id: string) {
   };
 }
 
+type ServicePageParams = Promise<{ id: string }>;
+
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string };
+  params: ServicePageParams;
 }): Promise<Metadata> {
-  const service = await getService(params.id);
+  const { id } = await params;
+  const service = await getService(id);
 
   if (!service) {
     return {
@@ -85,9 +88,10 @@ export const revalidate = 3600; // Revalidate every hour (ISR)
 export default async function ServiceDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: ServicePageParams;
 }) {
-  const service = await getService(params.id);
+  const { id } = await params;
+  const service = await getService(id);
 
   if (!service) {
     notFound();

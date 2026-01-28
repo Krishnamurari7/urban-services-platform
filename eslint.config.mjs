@@ -1,12 +1,10 @@
 import { defineConfig } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals.js";
-import nextTs from "eslint-config-next/typescript.js";
+import next from "eslint-config-next";
 import prettier from "eslint-plugin-prettier";
 import prettierConfig from "eslint-config-prettier";
 
 export default defineConfig([
-  ...nextVitals,
-  ...nextTs,
+  ...next,
   prettierConfig,
   {
     plugins: {
