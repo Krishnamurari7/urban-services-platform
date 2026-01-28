@@ -152,12 +152,11 @@ async function getUser(id: string) {
   };
 }
 
-export default async function UserDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const data = await getUser(params.id);
+export default async function UserDetailPage(
+  props: PageProps<"/admin/users/[id]">
+) {
+  const { id } = await props.params;
+  const data = await getUser(id);
 
   if (!data) {
     return (
