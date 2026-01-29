@@ -49,7 +49,9 @@ export async function signIn(
   } else {
     redirectPath = getRoleBasedRedirect(profile?.role || "customer");
   }
-  redirect(redirectPath);
+
+  // Return success with redirect path for client-side handling
+  return { success: true, redirectPath };
 }
 
 /**
@@ -226,7 +228,9 @@ export async function verifyOTP(
   } else {
     redirectPath = getRoleBasedRedirect(profile?.role || "customer");
   }
-  redirect(redirectPath);
+
+  // Return success with redirect path for client-side handling
+  return { success: true, redirectPath };
 }
 
 /**

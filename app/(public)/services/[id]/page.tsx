@@ -97,5 +97,68 @@ export default async function ServiceDetailPage({
     notFound();
   }
 
-  return <ServiceDetailClient service={service} />;
+  const supabase = await createClient();
+  const { data: reviews } = await supabase
+    .from("reviews")
+    .select("rating")
+    .eq("service_id", service.id)
+    .eq("is_visible", true);
+
+  const rating =
+    reviews && reviews.length > 0
+      ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+      : null;
+
+
+  if (!service) {
+    notFound();
+  }
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: service.name,
+    description: service.description,
+    provider: {
+      "@type": "Organization",
+      name: "vera company",
+      url: process.env.NEXT_PUBLIC_APP_URL,
+    },
+    areaServed: {
+      "@type": "Country",
+      name: "India",
+    },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: service.category,
+      itemListElement: [
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: service.name,
+          },
+          price: service.base_price,
+          priceCurrency: "INR",
+        },
+      ],
+    },
+    aggregateRating: rating
+      ? {
+        "@type": "AggregateRating",
+        ratingValue: rating,
+        reviewCount: reviews?.length || 0,
+      }
+      : undefined,
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ServiceDetailClient service={service} />
+    </>
+  );
 }

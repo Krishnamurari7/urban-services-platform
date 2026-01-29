@@ -118,3 +118,6 @@ supabase/.branches
 
 # Optional: Uncomment if using Storybook
 # storybook-static
+
+.vercel
+.env*.local

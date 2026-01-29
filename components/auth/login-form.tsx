@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   signIn,
   signInWithGoogle,
@@ -24,6 +24,7 @@ type LoginMethod = "email" | "otp";
 export function LoginForm() {
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect");
+  const router = useRouter();
 
   const [loginMethod, setLoginMethod] = useState<LoginMethod>("email");
   const [email, setEmail] = useState("");
@@ -45,6 +46,13 @@ export function LoginForm() {
       const result = await signIn(email, password, redirectTo || undefined);
       if (result?.error) {
         setError(result.error);
+      } else if (result?.success && result?.redirectPath) {
+        // Refresh router to ensure session is synced
+        router.refresh();
+        // Small delay to ensure cookies are propagated
+        await new Promise(resolve => setTimeout(resolve, 100));
+        // Navigate to role-based dashboard
+        router.push(result.redirectPath);
       }
     } catch (err) {
       setError("An unexpected error occurred");
@@ -102,6 +110,13 @@ export function LoginForm() {
       const result = await verifyOTP(phone, otp, redirectTo || undefined);
       if (result?.error) {
         setError(result.error);
+      } else if (result?.success && result?.redirectPath) {
+        // Refresh router to ensure session is synced
+        router.refresh();
+        // Small delay to ensure cookies are propagated
+        await new Promise(resolve => setTimeout(resolve, 100));
+        // Navigate to role-based dashboard
+        router.push(result.redirectPath);
       }
     } catch (err) {
       setError("Failed to verify OTP. Please try again.");
@@ -126,11 +141,10 @@ export function LoginForm() {
               setError(null);
               setOtpSent(false);
             }}
-            className={`flex-1 py-2 text-sm font-medium transition-colors ${
-              loginMethod === "email"
-                ? "border-b-2 border-primary text-primary"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
+            className={`flex-1 py-2 text-sm font-medium transition-colors ${loginMethod === "email"
+              ? "border-b-2 border-primary text-primary"
+              : "text-muted-foreground hover:text-foreground"
+              }`}
           >
             Email
           </button>
@@ -141,11 +155,10 @@ export function LoginForm() {
               setError(null);
               setOtpSent(false);
             }}
-            className={`flex-1 py-2 text-sm font-medium transition-colors ${
-              loginMethod === "otp"
-                ? "border-b-2 border-primary text-primary"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
+            className={`flex-1 py-2 text-sm font-medium transition-colors ${loginMethod === "otp"
+              ? "border-b-2 border-primary text-primary"
+              : "text-muted-foreground hover:text-foreground"
+              }`}
           >
             Phone OTP
           </button>
