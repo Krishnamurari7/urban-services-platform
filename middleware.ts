@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 import type { UserRole } from "@/lib/types/auth";
+import { getRoleBasedRedirect } from "@/lib/auth/utils";
 
 export async function middleware(request: NextRequest) {
   const { response, user, supabase } = await updateSession(request);
@@ -137,6 +138,11 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // If user is authenticated but role check didn't happen yet (userRole is null),
+  // we let it pass to the role-specific pages which have their own client-side 
+  // ProtectedRoute checks. This prevents the "unauthorized" redirect loop
+  // while the role-based profile is still being synchronized.
+
   // Protect all protected routes
   if (isProtectedRoute && !user) {
     const redirectUrl = request.nextUrl.clone();
@@ -148,21 +154,6 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-/**
- * Get role-based redirect path
- */
-function getRoleBasedRedirect(role: UserRole): string {
-  switch (role) {
-    case "admin":
-      return "/admin/dashboard";
-    case "professional":
-      return "/professional/dashboard";
-    case "customer":
-      return "/customer/dashboard";
-    default:
-      return "/dashboard";
-  }
-}
 
 export const config = {
   matcher: [

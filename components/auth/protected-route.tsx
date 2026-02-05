@@ -4,6 +4,7 @@ import { useAuth } from "@/components/auth/auth-provider";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { UserRole } from "@/lib/types/auth";
+import { getRoleBasedRedirect } from "@/lib/auth/utils";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -22,22 +23,31 @@ export function ProtectedRoute({
 
   useEffect(() => {
     if (!loading) {
+      // If not authenticated at all, redirect to login
       if (!isAuthenticated) {
         router.push(redirectTo);
         return;
       }
 
       // Check role if required
-      if (requiredRole && role !== requiredRole) {
-        // Only redirect if role is loaded and doesn't match
-        // Don't redirect if role is still null (loading)
-        if (role !== null) {
-          // Redirect to appropriate dashboard based on user's actual role
+      if (requiredRole) {
+        // If role is still null/undefined, we need to wait for it
+        if (role === null || role === undefined) {
+          // Role is loading, keep showing loading state
+          return;
+        }
+
+        // Role is loaded and doesn't match
+        if (role !== requiredRole) {
           const roleBasedRedirect = getRoleBasedRedirect(role);
           router.push(roleBasedRedirect);
+          return;
         }
+
+        // Role matches - stop loading
+        setRoleLoading(false);
       } else {
-        // Role matches or no role required - stop loading
+        // No role required - stop loading
         setRoleLoading(false);
       }
     }
@@ -81,18 +91,4 @@ export function ProtectedRoute({
   return <>{children}</>;
 }
 
-/**
- * Get role-based redirect path
- */
-function getRoleBasedRedirect(role: UserRole | null): string {
-  switch (role) {
-    case "admin":
-      return "/admin/dashboard";
-    case "professional":
-      return "/professional/dashboard";
-    case "customer":
-      return "/customer/dashboard";
-    default:
-      return "/login";
-  }
-}
+

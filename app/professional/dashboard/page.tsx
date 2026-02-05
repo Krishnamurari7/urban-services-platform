@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
+import { useRouter } from "next/navigation";
+import { getRoleBasedRedirect } from "@/lib/auth/utils";
 import { useRealtimeBookings } from "@/hooks/use-realtime-bookings";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -52,6 +54,7 @@ type TabType =
 
 export default function ProfessionalDashboard() {
   const { user, role, loading: authLoading } = useAuth();
+  const router = useRouter();
   const [stats, setStats] = useState<DashboardStats>({
     totalBookings: 0,
     pendingRequests: 0,
@@ -62,7 +65,7 @@ export default function ProfessionalDashboard() {
     recentBookings: [],
   });
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [statsLoading, setStatsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabType>("overview");
 
   // Real-time bookings hook
@@ -111,27 +114,10 @@ export default function ProfessionalDashboard() {
   }, [realtimeBookings]);
 
   useEffect(() => {
-    if (!authLoading) {
-      if (!user) {
-        // Redirect to login if not authenticated
-        window.location.href = "/login";
-        return;
-      }
-      // Check if user has professional role
-      if (role !== "professional") {
-        // Redirect based on actual role
-        if (role === "admin") {
-          window.location.href = "/admin/dashboard";
-        } else if (role === "customer") {
-          window.location.href = "/customer/dashboard";
-        } else {
-          window.location.href = "/login?error=unauthorized";
-        }
-        return;
-      }
+    if (!authLoading && user) {
       fetchDashboardData();
     }
-  }, [user, role, authLoading]);
+  }, [user, authLoading]);
 
   // Check for tab query parameter
   useEffect(() => {
@@ -176,11 +162,11 @@ export default function ProfessionalDashboard() {
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
-      setLoading(false);
+      setStatsLoading(false);
     }
   };
 
-  if (authLoading || loading) {
+  if (authLoading || statsLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="animate-pulse space-y-4">
@@ -216,8 +202,8 @@ export default function ProfessionalDashboard() {
           <button
             onClick={() => setActiveTab("overview")}
             className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "overview"
-                ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              ? "border-blue-500 text-blue-600"
+              : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
           >
             Overview
@@ -225,8 +211,8 @@ export default function ProfessionalDashboard() {
           <button
             onClick={() => setActiveTab("requests")}
             className={`py-4 px-1 border-b-2 font-medium text-sm relative ${activeTab === "requests"
-                ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              ? "border-blue-500 text-blue-600"
+              : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
           >
             Job Requests
@@ -237,8 +223,8 @@ export default function ProfessionalDashboard() {
           <button
             onClick={() => setActiveTab("calendar")}
             className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "calendar"
-                ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              ? "border-blue-500 text-blue-600"
+              : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
           >
             Availability
@@ -246,8 +232,8 @@ export default function ProfessionalDashboard() {
           <button
             onClick={() => setActiveTab("earnings")}
             className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "earnings"
-                ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              ? "border-blue-500 text-blue-600"
+              : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
           >
             Earnings
@@ -255,8 +241,8 @@ export default function ProfessionalDashboard() {
           <button
             onClick={() => setActiveTab("documents")}
             className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "documents"
-                ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              ? "border-blue-500 text-blue-600"
+              : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
           >
             Documents
@@ -264,8 +250,8 @@ export default function ProfessionalDashboard() {
           <button
             onClick={() => setActiveTab("payments")}
             className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "payments"
-                ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              ? "border-blue-500 text-blue-600"
+              : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
           >
             Payments
@@ -273,8 +259,8 @@ export default function ProfessionalDashboard() {
           <button
             onClick={() => setActiveTab("verification")}
             className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "verification"
-                ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              ? "border-blue-500 text-blue-600"
+              : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
           >
             Verification

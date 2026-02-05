@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { UserRole } from "@/lib/types/auth";
 import { logger } from "@/lib/logger";
+import { getRoleBasedRedirect } from "./utils";
 
 /**
  * Sign in with email and password
@@ -31,11 +32,20 @@ export async function signIn(
   }
 
   // Get user role from profile
-  const { data: profile } = await supabase
+  let { data: profile } = await supabase
     .from("profiles")
     .select("role")
     .eq("id", data.user.id)
     .single();
+
+  // If profile is not found, try to fallback to metadata
+  if (!profile) {
+    logger.warn("Profile not found immediately after login, checking metadata", { userId: data.user.id });
+    const metaRole = data.user.user_metadata?.role as UserRole;
+    if (metaRole) {
+      profile = { role: metaRole };
+    }
+  }
 
   revalidatePath("/", "layout");
 
@@ -290,18 +300,4 @@ export async function getUserRole(userId: string): Promise<UserRole | null> {
   return data.role as UserRole;
 }
 
-/**
- * Helper function to get role-based redirect path
- */
-function getRoleBasedRedirect(role: UserRole): string {
-  switch (role) {
-    case "admin":
-      return "/admin/dashboard"; // Admin dashboard
-    case "professional":
-      return "/professional/dashboard"; // Professional dashboard
-    case "customer":
-      return "/customer/dashboard"; // Customer dashboard
-    default:
-      return "/dashboard";
-  }
-}
+// Internal usage already uses the imported getRoleBasedRedirect
