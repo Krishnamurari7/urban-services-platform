@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { verifyPaymentSignature, mapRazorpayMethod } from "@/lib/razorpay";
 import crypto from "crypto";
+import { logger } from "@/lib/logger";
+import { sendBookingStatusUpdate } from "@/lib/notifications";
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,7 +25,7 @@ export async function POST(request: NextRequest) {
       .digest("hex");
 
     if (expectedSignature !== signature) {
-      console.error("Invalid webhook signature");
+      logger.error("Invalid webhook signature", null, { signature });
       return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 
@@ -44,9 +46,11 @@ export async function POST(request: NextRequest) {
       const customerId = payment.notes?.customer_id;
 
       if (!bookingId || !customerId) {
-        console.error("Missing booking_id or customer_id in payment notes");
+        logger.warn("Missing booking_Id or customer_id in payment notes", { paymentId });
         return NextResponse.json({ received: true });
       }
+
+      logger.info(`Processing payment webhook: ${eventType}`, { bookingId, paymentId });
 
       const supabase = await createClient();
 
@@ -86,6 +90,29 @@ export async function POST(request: NextRequest) {
           .from("bookings")
           .update({ status: "confirmed" })
           .eq("id", bookingId);
+
+        logger.info("Booking confirmed via webhook", { bookingId, paymentId });
+
+        // Send notification
+        const { data: bookingData } = await supabase
+          .from("bookings")
+          .select("customer:profiles!bookings_customer_id_fkey(email, full_name), service:services(name)")
+          .eq("id", bookingId)
+          .single();
+
+        if (bookingData?.customer) {
+          try {
+            await sendBookingStatusUpdate({
+              customerEmail: (bookingData.customer as any).email,
+              customerName: (bookingData.customer as any).full_name || "Customer",
+              bookingId,
+              status: "confirmed",
+              serviceName: (bookingData.service as any).name,
+            });
+          } catch (notifError) {
+            logger.error("Failed to send webhook notification", notifError, { bookingId });
+          }
+        }
       }
     }
 
@@ -124,7 +151,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ received: true });
   } catch (error: any) {
-    console.error("Webhook error:", error);
+    logger.error("Unexpected webhook error", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

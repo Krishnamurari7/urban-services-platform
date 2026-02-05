@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
+import { useRealtimeBookings } from "@/hooks/use-realtime-bookings";
 import { createClient } from "@/lib/supabase/client";
 import {
   Card,
@@ -77,6 +78,35 @@ export default function CustomerDashboard() {
   const authLoadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [authLoadingTimeout, setAuthLoadingTimeout] = useState(false);
 
+  // Real-time bookings hook
+  const { bookings: realtimeBookings } = useRealtimeBookings({
+    userId: user?.id,
+    role: "customer",
+    enabled: !!user
+  });
+
+  // Sync realtime bookings with stats
+  useEffect(() => {
+    if (realtimeBookings.length > 0 || hasFetchedRef.current) {
+      const upcoming = realtimeBookings.filter(
+        (b) =>
+          b.status === "pending" ||
+          b.status === "confirmed" ||
+          b.status === "in_progress"
+      ).length;
+
+      const completed = realtimeBookings.filter((b) => b.status === "completed").length;
+
+      setStats((prev) => ({
+        ...prev,
+        totalBookings: realtimeBookings.length,
+        upcomingBookings: upcoming,
+        completedBookings: completed,
+        recentBookings: realtimeBookings.slice(0, 5),
+      }));
+    }
+  }, [realtimeBookings]);
+
   const fetchDashboardData = useCallback(async () => {
     if (!user) {
       setLoading(false);
@@ -93,20 +123,15 @@ export default function CustomerDashboard() {
       const [
         profileResult,
         addressResult,
-        bookingsResult,
         paymentsResult,
         popularServicesResult,
         completedBookingsResult,
-        reviewsResult // Fetch reviews directly here instead of nested
+        reviewsResult
       ] = await Promise.all([
-        // 1. Fetch profile
-        supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", user.id)
-          .single(),
+        // 1. Profile
+        supabase.from("profiles").select("*").eq("id", user.id).single(),
 
-        // 2. Fetch default address
+        // 2. Default address
         supabase
           .from("addresses")
           .select("*")
@@ -114,37 +139,24 @@ export default function CustomerDashboard() {
           .eq("is_default", true)
           .single(),
 
-        // 3. Fetch recent bookings (limit 5)
-        supabase
-          .from("bookings")
-          .select("*")
-          .eq("customer_id", user.id)
-          .order("created_at", { ascending: false })
-          .limit(5),
-
-        // 4. Fetch completed payments
+        // 3. Completed payments
         supabase
           .from("payments")
           .select("amount, status")
           .eq("customer_id", user.id)
           .eq("status", "completed"),
 
-        // 5. Fetch popular services
-        supabase
-          .from("services")
-          .select("*")
-          .eq("status", "active")
-          .limit(6),
+        // 4. Popular services
+        supabase.from("services").select("*").eq("status", "active").limit(6),
 
-        // 6. Fetch all completed bookings (needed for review check)
-        // Optimization tip: In a real large app, we might want to paginate this or use a specific RPC
+        // 5. Completed bookings (for review check)
         supabase
           .from("bookings")
-          .select("id, created_at, completed_at, status") // Select only needed fields
+          .select("id, created_at, completed_at, status")
           .eq("customer_id", user.id)
           .eq("status", "completed"),
 
-        // 7. Fetch existing reviews to compare
+        // 6. Existing reviews
         supabase
           .from("reviews")
           .select("booking_id")
@@ -163,12 +175,6 @@ export default function CustomerDashboard() {
         setDefaultAddress(addressResult.data);
       }
 
-      // Process Bookings
-      const bookings = bookingsResult.data || [];
-      if (bookingsResult.error) {
-        console.error("Error fetching bookings:", bookingsResult.error);
-      }
-
       // Process Payments
       const payments = paymentsResult.data || [];
       if (paymentsResult.error) {
@@ -177,12 +183,12 @@ export default function CustomerDashboard() {
 
       // Process Popular Services
       if (popularServicesResult.data) {
-        setPopularServices(popularServicesResult.data);
+        setPopularServices(popularServicesResult.data as Service[]);
       }
 
       // Process Notifications & Pending Reviews
       const allCompletedBookings = completedBookingsResult.data || [];
-      const existingReviews = reviewsResult.data || [];
+      const existingReviews = (reviewsResult?.data || []) as { booking_id: string }[];
 
       // Calculate pending reviews
       const reviewedBookingIds = new Set(
@@ -193,11 +199,7 @@ export default function CustomerDashboard() {
         (b) => !reviewedBookingIds.has(b.id)
       );
 
-      // Note: We need full booking details for pending reviews if we want to display them nicely
-      // But for notifications we have enough. If we need more, we might need to fetch full details for these specific IDs
-      // For now, assuming we just need the notification logic which uses ID and dates.
-
-      setPendingReviews(bookingsNeedingReview.slice(0, 3) as Booking[]); // Type cast if we only selected partial fields
+      setPendingReviews(bookingsNeedingReview.slice(0, 3) as Booking[]);
 
       // Create notifications for pending reviews
       const reviewNotifications: Notification[] = bookingsNeedingReview
@@ -211,13 +213,10 @@ export default function CustomerDashboard() {
           time: new Date(booking.completed_at || booking.created_at).toISOString(),
         }));
 
-      // Create reminder notification for upcoming bookings
-      // Use the 'bookings' (recent ones) to find upcoming. 
-      // Ideally we should query specifically for upcoming if the recent 5 doesn't cover it,
-      // but for dashboard summary, recent 5 is usually acceptable.
-      const upcomingBooking = bookings.find(
+      // Use realtime bookings to find the next upcoming one for notification
+      const upcomingBooking = realtimeBookings.find(
         (b) =>
-          b.status === "confirmed" &&
+          (b.status === "confirmed" || b.status === "pending") &&
           new Date(b.scheduled_at) > new Date()
       );
 
@@ -236,30 +235,13 @@ export default function CustomerDashboard() {
 
       setNotifications([...reviewNotifications, ...reminderNotifications]);
 
-      // Calculate stats
-      const totalBookingsCount = bookings.length; // Use the count from the fetched page or a count query if needed. logic was weird before.
-      // Correction: The previous logic relied on the 'bookings' array which was limited to 5.
-      // To get accurate "Total Bookings" count without fetching ALL rows, we should use { count: 'exact', head: true } in a separate query usually.
-      // For now, sticking to previous behavior to minimize breakage, but optimized via parallel.
-
-      const upcomingBookingsCount = bookings.filter(
-        (b) =>
-          b.status === "pending" ||
-          b.status === "confirmed" ||
-          b.status === "in_progress"
-      ).length;
-
-      const completedBookingsCount = allCompletedBookings.length;
-
+      // Calculate stats (total spent is still from payments)
       const totalSpent = payments.reduce((sum, p) => sum + Number(p.amount), 0);
 
-      setStats({
-        totalBookings: totalBookingsCount, // This might be inaccurate if > 5. Consider a count query later.
-        upcomingBookings: upcomingBookingsCount,
-        completedBookings: completedBookingsCount,
+      setStats((prev) => ({
+        ...prev,
         totalSpent,
-        recentBookings: bookings,
-      });
+      }));
 
     } catch (error) {
       console.error("Error fetching dashboard data:", error);

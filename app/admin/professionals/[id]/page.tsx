@@ -26,50 +26,60 @@ async function getProfessional(id: string) {
     redirect("/dashboard");
   }
 
-  const { data: professional } = await supabase
-    .from("profiles")
-    .select(
-      `
-      *,
-      documents:professional_documents(
-        id,
-        document_type,
-        document_name,
-        file_url,
-        file_size,
-        mime_type,
-        status,
-        rejection_reason,
-        verified_by,
-        verified_at,
-        created_at
-      ),
-      bank_accounts:professional_bank_accounts(
-        id,
-        account_holder_name,
-        bank_name,
-        account_type,
-        is_primary,
-        is_verified
-      ),
-      services:professional_services(
-        id,
-        price,
-        duration_minutes,
-        is_available,
-        service:services(
+  try {
+    const { data: professional, error } = await supabase
+      .from("profiles")
+      .select(
+        `
+        *,
+        documents:professional_documents(
           id,
-          name,
-          category
+          document_type,
+          document_name,
+          file_url,
+          file_size,
+          mime_type,
+          status,
+          rejection_reason,
+          verified_by,
+          verified_at,
+          created_at
+        ),
+        bank_accounts:professional_bank_accounts(
+          id,
+          account_holder_name,
+          bank_name,
+          account_type,
+          is_primary,
+          is_verified
+        ),
+        services:professional_services(
+          id,
+          price,
+          duration_minutes,
+          is_available,
+          service:services(
+            id,
+            name,
+            category
+          )
         )
+      `
       )
-    `
-    )
-    .eq("id", id)
-    .eq("role", "professional")
-    .single();
+      .eq("id", id)
+      .eq("role", "professional")
+      .single();
 
-  return professional;
+    if (error) {
+      console.error("Error fetching professional:", error);
+      return null;
+    }
+
+    return professional;
+  } catch (error) {
+    console.error("Unexpected error fetching professional:", error);
+    return null;
+  }
 }
 
 export default async function ProfessionalDetailPage({
@@ -147,11 +157,10 @@ export default async function ProfessionalDetailPage({
                   </label>
                   <div className="mt-1">
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        profData.is_verified && profData.is_active
-                          ? "bg-green-100 text-green-700"
-                          : "bg-yellow-100 text-yellow-700"
-                      }`}
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${profData.is_verified && profData.is_active
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"
+                        }`}
                     >
                       {profData.is_verified && profData.is_active
                         ? "Active & Verified"
@@ -414,7 +423,7 @@ export default async function ProfessionalDetailPage({
                 <CardTitle>Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <form action={async (formData) => { await approveProfessional(formData); }}>
+                <form action={approveProfessional}>
                   <input
                     type="hidden"
                     name="professionalId"
@@ -424,7 +433,7 @@ export default async function ProfessionalDetailPage({
                     Approve Professional
                   </Button>
                 </form>
-                <form action={async (formData) => { await rejectProfessional(formData); }}>
+                <form action={rejectProfessional}>
                   <input
                     type="hidden"
                     name="professionalId"

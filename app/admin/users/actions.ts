@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { logger } from "@/lib/logger";
 
 export async function suspendUser(formData: FormData) {
   const supabase = await createClient();
@@ -62,6 +63,7 @@ export async function suspendUser(formData: FormData) {
     description: `Suspended user: ${userId}`,
   });
 
+  logger.info("Admin action: Suspend user", { adminId: user.id, targetUserId: userId });
   revalidatePath("/admin/users");
   return { success: true };
 }
@@ -114,6 +116,7 @@ export async function activateUser(formData: FormData) {
     description: `Activated user: ${userId}`,
   });
 
+  logger.info("Admin action: Activate user", { adminId: user.id, targetUserId: userId });
   revalidatePath("/admin/users");
   return { success: true };
 }

@@ -5,6 +5,8 @@ import {
   getPaymentDetails,
   mapRazorpayMethod,
 } from "@/lib/razorpay";
+import { logger } from "@/lib/logger";
+import { sendPaymentConfirmation, sendBookingConfirmation } from "@/lib/notifications";
 
 export async function POST(request: NextRequest) {
   try {
@@ -61,12 +63,19 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (profileError || !profile) {
-      console.error("Profile not found for user:", user.id, profileError);
+      logger.error("Profile not found for user", profileError, { userId: user.id });
       return NextResponse.json(
         { error: "User profile not found" },
         { status: 404 }
       );
     }
+
+    // Get user details for notifications
+    const { data: userData } = await supabase
+      .from("profiles")
+      .select("full_name, email")
+      .eq("id", user.id)
+      .single();
 
     // Verify booking belongs to user
     const { data: booking, error: bookingError } = await supabase
@@ -77,7 +86,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (bookingError || !booking) {
-      console.error("Booking error:", bookingError);
+      logger.error("Booking not found or unauthorized", bookingError, { bookingId, userId: user.id });
       return NextResponse.json(
         { error: "Booking not found or unauthorized" },
         { status: 404 }
@@ -87,6 +96,11 @@ export async function POST(request: NextRequest) {
     // Check if payment amount matches booking amount
     const paymentAmount = Number(payment.amount) / 100; // Convert from paise to rupees
     if (Math.abs(paymentAmount - Number(booking.final_amount)) > 0.01) {
+      logger.warn("Payment amount mismatch", {
+        expected: booking.final_amount,
+        received: paymentAmount,
+        bookingId
+      });
       return NextResponse.json(
         { error: "Payment amount mismatch" },
         { status: 400 }
@@ -129,12 +143,13 @@ export async function POST(request: NextRequest) {
         .eq("id", existingPayment.id);
 
       if (updateError) {
-        console.error("Failed to update payment record:", updateError);
+        logger.error("Failed to update payment record", updateError, { paymentId, bookingId });
         return NextResponse.json(
           { error: `Failed to update payment record: ${updateError.message}` },
           { status: 500 }
         );
       }
+      logger.info("Payment record updated", { paymentId, bookingId });
     } else {
       // Create new payment record
       const { error: insertError } = await supabase
@@ -142,13 +157,13 @@ export async function POST(request: NextRequest) {
         .insert(paymentData);
 
       if (insertError) {
-        console.error("Failed to create payment record:", insertError);
-        console.error("Payment data:", paymentData);
+        logger.error("Failed to create payment record", insertError, { paymentId, bookingId });
         return NextResponse.json(
           { error: `Failed to create payment record: ${insertError.message}` },
           { status: 500 }
         );
       }
+      logger.info("Payment record created", { paymentId, bookingId });
     }
 
     // Update booking status to confirmed if payment is successful
@@ -157,6 +172,43 @@ export async function POST(request: NextRequest) {
         .from("bookings")
         .update({ status: "confirmed" })
         .eq("id", bookingId);
+
+      logger.info("Booking confirmed via payment", { bookingId, paymentId });
+
+      // Send notifications
+      if (userData?.email) {
+        try {
+          await Promise.all([
+            sendPaymentConfirmation({
+              customerEmail: userData.email,
+              customerName: userData.full_name || "Customer",
+              bookingId,
+              amount: paymentAmount,
+              transactionId: paymentId,
+            }),
+            // Fetch service name for booking confirmation
+            supabase
+              .from("bookings")
+              .select("service:services(name)")
+              .eq("id", bookingId)
+              .single()
+              .then(async ({ data: bData }) => {
+                if (bData?.service) {
+                  await sendBookingConfirmation({
+                    customerEmail: userData.email!,
+                    customerName: userData.full_name || "Customer",
+                    bookingId,
+                    serviceName: (bData.service as any).name,
+                    scheduledAt: new Date(payment.created_at * 1000), // Approximate
+                    amount: paymentAmount,
+                  });
+                }
+              })
+          ]);
+        } catch (notifError) {
+          logger.error("Failed to send payment notifications", notifError, { bookingId });
+        }
+      }
     }
 
     return NextResponse.json({
@@ -165,7 +217,7 @@ export async function POST(request: NextRequest) {
       status: payment.status,
     });
   } catch (error: any) {
-    console.error("Payment verification error:", error);
+    logger.error("Unexpected payment verification error", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

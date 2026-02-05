@@ -27,12 +27,22 @@ async function getServices() {
     redirect("/dashboard");
   }
 
-  const { data: services } = await supabase
-    .from("services")
-    .select("*")
-    .order("created_at", { ascending: false });
+  try {
+    const { data: services, error } = await supabase
+      .from("services")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-  return services || [];
+    if (error) {
+      console.error("Error fetching services:", error);
+      return [];
+    }
+
+    return services || [];
+  } catch (error) {
+    console.error("Unexpected error fetching services:", error);
+    return [];
+  }
 }
 
 export default async function AdminServicesPage() {
@@ -80,13 +90,12 @@ export default async function AdminServicesPage() {
                     <td className="p-2">{service.duration_minutes} min</td>
                     <td className="p-2">
                       <span
-                        className={`px-2 py-1 rounded text-xs ${
-                          service.status === "active"
+                        className={`px-2 py-1 rounded text-xs ${service.status === "active"
                             ? "bg-green-100 text-green-700"
                             : service.status === "suspended"
                               ? "bg-red-100 text-red-700"
                               : "bg-gray-100 text-gray-700"
-                        }`}
+                          }`}
                       >
                         {service.status}
                       </span>

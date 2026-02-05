@@ -27,60 +27,70 @@ async function getBooking(id: string) {
     redirect("/dashboard");
   }
 
-  const { data: booking } = await supabase
-    .from("bookings")
-    .select(
+  try {
+    const { data: booking, error } = await supabase
+      .from("bookings")
+      .select(
+        `
+        *,
+        customer:profiles!bookings_customer_id_fkey(
+          id,
+          full_name,
+          phone,
+          email
+        ),
+        professional:profiles!bookings_professional_id_fkey(
+          id,
+          full_name,
+          phone,
+          rating_average
+        ),
+        service:services(
+          id,
+          name,
+          category,
+          description
+        ),
+        address:addresses(
+          id,
+          label,
+          address_line1,
+          address_line2,
+          city,
+          state,
+          postal_code
+        ),
+        payment:payments(
+          id,
+          amount,
+          status,
+          method,
+          transaction_id,
+          refund_amount,
+          refund_reason,
+          created_at
+        ),
+        review:reviews(
+          id,
+          rating,
+          comment,
+          created_at
+        )
       `
-      *,
-      customer:profiles!bookings_customer_id_fkey(
-        id,
-        full_name,
-        phone,
-        email
-      ),
-      professional:profiles!bookings_professional_id_fkey(
-        id,
-        full_name,
-        phone,
-        rating_average
-      ),
-      service:services(
-        id,
-        name,
-        category,
-        description
-      ),
-      address:addresses(
-        id,
-        label,
-        address_line1,
-        address_line2,
-        city,
-        state,
-        postal_code
-      ),
-      payment:payments(
-        id,
-        amount,
-        status,
-        method,
-        transaction_id,
-        refund_amount,
-        refund_reason,
-        created_at
-      ),
-      review:reviews(
-        id,
-        rating,
-        comment,
-        created_at
       )
-    `
-    )
-    .eq("id", id)
-    .single();
+      .eq("id", id)
+      .single();
 
-  return booking;
+    if (error) {
+      console.error("Error fetching booking:", error);
+      return null;
+    }
+
+    return booking;
+  } catch (error) {
+    console.error("Unexpected error fetching booking:", error);
+    return null;
+  }
 }
 
 export default async function BookingDetailPage(
@@ -138,16 +148,15 @@ export default async function BookingDetailPage(
                   </label>
                   <div className="mt-1">
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        bookingData.status === "completed"
-                          ? "bg-green-100 text-green-700"
-                          : bookingData.status === "cancelled" ||
-                              bookingData.status === "refunded"
-                            ? "bg-red-100 text-red-700"
-                            : bookingData.status === "in_progress"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-yellow-100 text-yellow-700"
-                      }`}
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${bookingData.status === "completed"
+                        ? "bg-green-100 text-green-700"
+                        : bookingData.status === "cancelled" ||
+                          bookingData.status === "refunded"
+                          ? "bg-red-100 text-red-700"
+                          : bookingData.status === "in_progress"
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-yellow-100 text-yellow-700"
+                        }`}
                     >
                       {bookingData.status.replace("_", " ").toUpperCase()}
                     </span>
@@ -353,13 +362,12 @@ export default async function BookingDetailPage(
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Payment Status</span>
                     <span
-                      className={`px-2 py-1 rounded text-xs ${
-                        bookingData.payment.status === "completed"
-                          ? "bg-green-100 text-green-700"
-                          : bookingData.payment.status === "refunded"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-yellow-100 text-yellow-700"
-                      }`}
+                      className={`px-2 py-1 rounded text-xs ${bookingData.payment.status === "completed"
+                        ? "bg-green-100 text-green-700"
+                        : bookingData.payment.status === "refunded"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-yellow-100 text-yellow-700"
+                        }`}
                     >
                       {bookingData.payment.status}
                     </span>
@@ -412,7 +420,7 @@ export default async function BookingDetailPage(
             <CardContent className="space-y-2">
               {bookingData.status === "pending" && (
                 <>
-                  <form action={async (formData) => { await updateBookingStatus(formData); }} className="w-full">
+                  <form action={updateBookingStatus} className="w-full">
                     <input
                       type="hidden"
                       name="bookingId"
@@ -423,7 +431,7 @@ export default async function BookingDetailPage(
                       Confirm Booking
                     </Button>
                   </form>
-                  <form action={async (formData) => { await cancelBooking(formData); }} className="w-full">
+                  <form action={cancelBooking} className="w-full">
                     <input
                       type="hidden"
                       name="bookingId"
@@ -436,7 +444,7 @@ export default async function BookingDetailPage(
                 </>
               )}
               {bookingData.status === "confirmed" && (
-                <form action={async (formData) => { await updateBookingStatus(formData); }} className="w-full">
+                <form action={updateBookingStatus} className="w-full">
                   <input
                     type="hidden"
                     name="bookingId"
@@ -449,7 +457,7 @@ export default async function BookingDetailPage(
                 </form>
               )}
               {bookingData.status === "in_progress" && (
-                <form action={async (formData) => { await updateBookingStatus(formData); }} className="w-full">
+                <form action={updateBookingStatus} className="w-full">
                   <input
                     type="hidden"
                     name="bookingId"

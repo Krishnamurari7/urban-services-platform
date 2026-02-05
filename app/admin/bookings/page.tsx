@@ -24,29 +24,39 @@ async function getBookings() {
     redirect("/dashboard");
   }
 
-  const { data: bookings } = await supabase
-    .from("bookings")
-    .select(
+  try {
+    const { data: bookings, error } = await supabase
+      .from("bookings")
+      .select(
+        `
+        id,
+        status,
+        scheduled_at,
+        completed_at,
+        cancelled_at,
+        total_amount,
+        service_fee,
+        final_amount,
+        created_at,
+        customer:profiles!bookings_customer_id_fkey(id, full_name, phone),
+        professional:profiles!bookings_professional_id_fkey(id, full_name, phone),
+        service:services(id, name, category),
+        payment:payments(id, status, amount, method)
       `
-      id,
-      status,
-      scheduled_at,
-      completed_at,
-      cancelled_at,
-      total_amount,
-      service_fee,
-      final_amount,
-      created_at,
-      customer:profiles!bookings_customer_id_fkey(id, full_name, phone),
-      professional:profiles!bookings_professional_id_fkey(id, full_name, phone),
-      service:services(id, name, category),
-      payment:payments(id, status, amount, method)
-    `
-    )
-    .order("created_at", { ascending: false })
-    .limit(100);
+      )
+      .order("created_at", { ascending: false })
+      .limit(100);
 
-  return bookings || [];
+    if (error) {
+      console.error("Error fetching bookings:", error);
+      return [];
+    }
+
+    return bookings || [];
+  } catch (error) {
+    console.error("Unexpected error fetching bookings:", error);
+    return [];
+  }
 }
 
 export default async function AdminBookingsPage() {
@@ -151,16 +161,15 @@ export default async function AdminBookingsPage() {
                     </td>
                     <td className="p-2">
                       <span
-                        className={`px-2 py-1 rounded text-xs ${
-                          booking.status === "completed"
+                        className={`px-2 py-1 rounded text-xs ${booking.status === "completed"
                             ? "bg-green-100 text-green-700"
                             : booking.status === "cancelled" ||
-                                booking.status === "refunded"
+                              booking.status === "refunded"
                               ? "bg-red-100 text-red-700"
                               : booking.status === "in_progress"
                                 ? "bg-blue-100 text-blue-700"
                                 : "bg-yellow-100 text-yellow-700"
-                        }`}
+                          }`}
                       >
                         {booking.status.replace("_", " ")}
                       </span>
@@ -168,13 +177,12 @@ export default async function AdminBookingsPage() {
                     <td className="p-2">
                       {booking.payment ? (
                         <span
-                          className={`px-2 py-1 rounded text-xs ${
-                            booking.payment.status === "completed"
+                          className={`px-2 py-1 rounded text-xs ${booking.payment.status === "completed"
                               ? "bg-green-100 text-green-700"
                               : booking.payment.status === "refunded"
                                 ? "bg-red-100 text-red-700"
                                 : "bg-yellow-100 text-yellow-700"
-                          }`}
+                            }`}
                         >
                           {booking.payment.status}
                         </span>

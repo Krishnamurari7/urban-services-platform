@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { UserRole } from "@/lib/types/auth";
+import { logger } from "@/lib/logger";
 
 /**
  * Sign in with email and password
@@ -21,6 +22,7 @@ export async function signIn(
   });
 
   if (error) {
+    logger.warn("Login failed", { email, error: error.message });
     return { error: error.message };
   }
 
@@ -51,6 +53,7 @@ export async function signIn(
   }
 
   // Return success with redirect path for client-side handling
+  logger.info("Login successful", { userId: data.user.id, role: profile?.role });
   return { success: true, redirectPath };
 }
 
@@ -78,7 +81,7 @@ export async function signUp(
   });
 
   if (error) {
-    console.error("Auth signup error:", error);
+    logger.error("Signup failed", error, { email, role });
     // Provide more user-friendly error messages
     if (error.message.includes("already registered")) {
       return {
@@ -97,8 +100,11 @@ export async function signUp(
   }
 
   if (!data.user) {
+    logger.error("Signup failed: No user returned", null, { email });
     return { error: "Failed to create account. Please try again." };
   }
+
+  logger.info("Signup successful", { userId: data.user.id, role });
 
   // The trigger should automatically create the profile
   // Wait a moment to ensure trigger execution
@@ -230,6 +236,7 @@ export async function verifyOTP(
   }
 
   // Return success with redirect path for client-side handling
+  logger.info("OTP Login successful", { userId: data.user.id, role: profile?.role });
   return { success: true, redirectPath };
 }
 
@@ -242,8 +249,10 @@ export async function signOut() {
   const { error } = await supabase.auth.signOut();
 
   if (error) {
-    console.error("Sign out error:", error);
+    logger.error("Sign out error", error);
     // Even if there's an error, try to clear the session and redirect
+  } else {
+    logger.info("Sign out successful");
   }
 
   revalidatePath("/", "layout");

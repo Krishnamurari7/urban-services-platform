@@ -27,54 +27,74 @@ async function getDisputes() {
     redirect("/dashboard");
   }
 
-  // Get bookings that are cancelled or have refund requests
-  const { data: bookings } = await supabase
-    .from("bookings")
-    .select(
-      `
-      id,
-      status,
-      cancellation_reason,
-      final_amount,
-      cancelled_at,
-      created_at,
-      customer:profiles!bookings_customer_id_fkey(id, full_name, phone),
-      professional:profiles!bookings_professional_id_fkey(id, full_name, phone),
-      service:services(name),
-      payment:payments(id, status, refund_amount, refund_reason)
-    `
-    )
-    .in("status", ["cancelled", "refunded"])
-    .order("created_at", { ascending: false })
-    .limit(50);
+  // Initialize data with defaults
+  let disputes: any[] = [];
+  let refunds: any[] = [];
 
-  // Get payments that are refunded or have refund requests
-  const { data: refundedPayments } = await supabase
-    .from("payments")
-    .select(
-      `
-      id,
-      booking_id,
-      amount,
-      refund_amount,
-      refund_reason,
-      refunded_at,
-      status,
-      booking:bookings(
+  try {
+    // Get bookings that are cancelled or have refund requests
+    const { data: bookingsData, error: bookingsError } = await supabase
+      .from("bookings")
+      .select(
+        `
         id,
-        customer:profiles!bookings_customer_id_fkey(full_name),
-        professional:profiles!bookings_professional_id_fkey(full_name),
-        service:services(name)
+        status,
+        cancellation_reason,
+        final_amount,
+        cancelled_at,
+        created_at,
+        customer:profiles!bookings_customer_id_fkey(id, full_name, phone),
+        professional:profiles!bookings_professional_id_fkey(id, full_name, phone),
+        service:services(name),
+        payment:payments(id, status, refund_amount, refund_reason)
+      `
       )
-    `
-    )
-    .eq("status", "refunded")
-    .order("refunded_at", { ascending: false })
-    .limit(50);
+      .in("status", ["cancelled", "refunded"])
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    if (bookingsError) {
+      console.error("Error fetching disputes:", bookingsError);
+    } else {
+      disputes = bookingsData || [];
+    }
+
+    // Get payments that are refunded or have refund requests
+    const { data: refundsData, error: refundsError } = await supabase
+      .from("payments")
+      .select(
+        `
+        id,
+        booking_id,
+        amount,
+        refund_amount,
+        refund_reason,
+        refunded_at,
+        status,
+        booking:bookings(
+          id,
+          customer:profiles!bookings_customer_id_fkey(full_name),
+          professional:profiles!bookings_professional_id_fkey(full_name),
+          service:services(name)
+        )
+      `
+      )
+      .eq("status", "refunded")
+      .order("refunded_at", { ascending: false })
+      .limit(50);
+
+    if (refundsError) {
+      console.error("Error fetching refunds:", refundsError);
+    } else {
+      refunds = refundsData || [];
+    }
+  } catch (error) {
+    console.error("Unexpected error fetching disputes/refunds:", error);
+  }
 
   return {
-    disputes: bookings || [],
-    refunds: refundedPayments || [],
+    disputes,
+    refunds,
   };
 }
 
@@ -191,7 +211,7 @@ export default async function AdminDisputesPage() {
                       )}
                     </div>
                     <div className="flex gap-2 ml-4">
-                      <form action={async (formData) => { await processRefund(formData); }}>
+                      <form action={processRefund}>
                         <input
                           type="hidden"
                           name="bookingId"
@@ -201,7 +221,7 @@ export default async function AdminDisputesPage() {
                           Process Refund
                         </Button>
                       </form>
-                      <form action={async (formData) => { await resolveDispute(formData); }}>
+                      <form action={resolveDispute}>
                         <input
                           type="hidden"
                           name="bookingId"

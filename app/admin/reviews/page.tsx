@@ -27,42 +27,52 @@ async function getReviews() {
     redirect("/dashboard");
   }
 
-  // Get all reviews with related data
-  const { data: reviews } = await supabase
-    .from("reviews")
-    .select(
+  try {
+    // Get all reviews with related data
+    const { data: reviews, error } = await supabase
+      .from("reviews")
+      .select(
+        `
+        id,
+        rating,
+        comment,
+        is_visible,
+        is_verified,
+        created_at,
+        updated_at,
+        customer:profiles!reviews_customer_id_fkey(
+          id,
+          full_name,
+          email
+        ),
+        professional:profiles!reviews_professional_id_fkey(
+          id,
+          full_name
+        ),
+        service:services(
+          id,
+          name,
+          category
+        ),
+        booking:bookings(
+          id,
+          status
+        )
       `
-      id,
-      rating,
-      comment,
-      is_visible,
-      is_verified,
-      created_at,
-      updated_at,
-      customer:profiles!reviews_customer_id_fkey(
-        id,
-        full_name,
-        email
-      ),
-      professional:profiles!reviews_professional_id_fkey(
-        id,
-        full_name
-      ),
-      service:services(
-        id,
-        name,
-        category
-      ),
-      booking:bookings(
-        id,
-        status
       )
-    `
-    )
-    .order("created_at", { ascending: false })
-    .limit(100);
+      .order("created_at", { ascending: false })
+      .limit(100);
 
-  return reviews || [];
+    if (error) {
+      console.error("Error fetching reviews:", error);
+      return [];
+    }
+
+    return reviews || [];
+  } catch (error) {
+    console.error("Unexpected error fetching reviews:", error);
+    return [];
+  }
 }
 
 export default async function AdminReviewsPage() {
@@ -141,11 +151,10 @@ export default async function AdminReviewsPage() {
               reviews.map((review: any) => (
                 <div
                   key={review.id}
-                  className={`p-4 border rounded-lg ${
-                    review.is_visible
-                      ? "border-gray-200 bg-white"
-                      : "border-red-200 bg-red-50"
-                  }`}
+                  className={`p-4 border rounded-lg ${review.is_visible
+                    ? "border-gray-200 bg-white"
+                    : "border-red-200 bg-red-50"
+                    }`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -154,11 +163,10 @@ export default async function AdminReviewsPage() {
                           {[...Array(5)].map((_, i) => (
                             <Star
                               key={i}
-                              className={`h-4 w-4 ${
-                                i < review.rating
-                                  ? "fill-yellow-400 text-yellow-400"
-                                  : "text-gray-300"
-                              }`}
+                              className={`h-4 w-4 ${i < review.rating
+                                ? "fill-yellow-400 text-yellow-400"
+                                : "text-gray-300"
+                                }`}
                             />
                           ))}
                           <span className="ml-1 font-medium">
@@ -227,7 +235,7 @@ export default async function AdminReviewsPage() {
 
                     <div className="flex flex-col gap-2 ml-4">
                       {review.is_visible ? (
-                        <form action={async (formData) => { await hideReview(formData); }}>
+                        <form action={hideReview}>
                           <input
                             type="hidden"
                             name="reviewId"
@@ -239,7 +247,7 @@ export default async function AdminReviewsPage() {
                           </Button>
                         </form>
                       ) : (
-                        <form action={async (formData) => { await showReview(formData); }}>
+                        <form action={showReview}>
                           <input
                             type="hidden"
                             name="reviewId"
@@ -252,7 +260,7 @@ export default async function AdminReviewsPage() {
                         </form>
                       )}
                       {!review.is_verified && (
-                        <form action={async (formData) => { await approveReview(formData); }}>
+                        <form action={approveReview}>
                           <input
                             type="hidden"
                             name="reviewId"
@@ -264,7 +272,7 @@ export default async function AdminReviewsPage() {
                           </Button>
                         </form>
                       )}
-                      <form action={async (formData) => { await rejectReview(formData); }}>
+                      <form action={rejectReview}>
                         <input
                           type="hidden"
                           name="reviewId"

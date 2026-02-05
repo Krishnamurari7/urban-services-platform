@@ -7,6 +7,7 @@ import { suspendUser, activateUser } from "../actions";
 
 async function getUser(id: string) {
   const supabase = await createClient();
+  const adminClient = require("@/lib/supabase").createAdminClient();
 
   const {
     data: { user },
@@ -27,128 +28,162 @@ async function getUser(id: string) {
   }
 
   // Get user profile
-  const { data: userProfile } = await supabase
+  const { data: userProfile, error: profileError } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", id)
     .single();
 
-  if (!userProfile) {
+  if (profileError || !userProfile) {
+    console.error("Error fetching user profile:", profileError);
     return null;
   }
 
   // Get email from auth.users
   let email = "N/A";
   try {
-    const { data: authUser, error } = await supabase.auth.admin.getUserById(id);
-    if (!error && authUser?.user?.email) {
+    const { data: authUser, error: authError } = await adminClient.auth.admin.getUserById(id);
+    if (!authError && authUser?.user?.email) {
       email = authUser.user.email;
+    } else {
+      // Fallback to RPC
+      const { data: emailData } = await supabase.rpc("get_user_email", {
+        user_id: id,
+      });
+      if (emailData) email = emailData;
     }
   } catch (error) {
-    console.error("Error fetching email:", error);
+    console.error("Error fetching email for user:", id, error);
   }
 
-  // Get booking stats
-  const { data: customerBookings } = await supabase
-    .from("bookings")
-    .select(
-      `
-      id,
-      status,
-      final_amount,
-      scheduled_at,
-      created_at,
-      service:services(name, category),
-      professional:profiles!bookings_professional_id_fkey(full_name)
-    `
-    )
-    .eq("customer_id", id)
-    .order("created_at", { ascending: false })
-    .limit(10);
+  // Initialize data with defaults
+  let customerBookings: any[] = [];
+  let professionalBookings: any[] = [];
+  let totalCustomerBookings = 0;
+  let totalProfessionalBookings = 0;
+  let addresses: any[] = [];
+  let reviewsGiven: any[] = [];
+  let reviewsReceived: any[] = [];
 
-  const { data: professionalBookings } = await supabase
-    .from("bookings")
-    .select(
-      `
-      id,
-      status,
-      final_amount,
-      scheduled_at,
-      created_at,
-      service:services(name, category),
-      customer:profiles!bookings_customer_id_fkey(full_name)
-    `
-    )
-    .eq("professional_id", id)
-    .order("created_at", { ascending: false })
-    .limit(10);
+  try {
+    // Get booking stats and related data safely
+    const [
+      cBookingsRes,
+      pBookingsRes,
+      cCountRes,
+      pCountRes,
+      addressesRes,
+      reviewsGivenRes,
+      reviewsReceivedRes
+    ] = await Promise.all([
+      supabase
+        .from("bookings")
+        .select(
+          `
+          id,
+          status,
+          final_amount,
+          scheduled_at,
+          created_at,
+          service:services(name, category),
+          professional:profiles!bookings_professional_id_fkey(full_name)
+        `
+        )
+        .eq("customer_id", id)
+        .order("created_at", { ascending: false })
+        .limit(10),
 
-  // Get booking counts
-  const { count: totalCustomerBookings } = await supabase
-    .from("bookings")
-    .select("*", { count: "exact", head: true })
-    .eq("customer_id", id);
+      supabase
+        .from("bookings")
+        .select(
+          `
+          id,
+          status,
+          final_amount,
+          scheduled_at,
+          created_at,
+          service:services(name, category),
+          customer:profiles!bookings_customer_id_fkey(full_name)
+        `
+        )
+        .eq("professional_id", id)
+        .order("created_at", { ascending: false })
+        .limit(10),
 
-  const { count: totalProfessionalBookings } = await supabase
-    .from("bookings")
-    .select("*", { count: "exact", head: true })
-    .eq("professional_id", id);
+      supabase
+        .from("bookings")
+        .select("id", { count: "exact", head: true })
+        .eq("customer_id", id),
 
-  // Get addresses
-  const { data: addresses } = await supabase
-    .from("addresses")
-    .select("*")
-    .eq("user_id", id)
-    .order("is_default", { ascending: false });
+      supabase
+        .from("bookings")
+        .select("id", { count: "exact", head: true })
+        .eq("professional_id", id),
 
-  // Get reviews given (if customer)
-  const { data: reviewsGiven } = await supabase
-    .from("reviews")
-    .select(
-      `
-      id,
-      rating,
-      comment,
-      created_at,
-      booking:bookings(
-        service:services(name),
-        professional:profiles!bookings_professional_id_fkey(full_name)
-      )
-    `
-    )
-    .eq("customer_id", id)
-    .order("created_at", { ascending: false })
-    .limit(5);
+      supabase
+        .from("addresses")
+        .select("*")
+        .eq("user_id", id)
+        .order("is_default", { ascending: false }),
 
-  // Get reviews received (if professional)
-  const { data: reviewsReceived } = await supabase
-    .from("reviews")
-    .select(
-      `
-      id,
-      rating,
-      comment,
-      created_at,
-      customer:profiles!reviews_customer_id_fkey(full_name),
-      booking:bookings(
-        service:services(name)
-      )
-    `
-    )
-    .eq("professional_id", id)
-    .order("created_at", { ascending: false })
-    .limit(5);
+      supabase
+        .from("reviews")
+        .select(
+          `
+          id,
+          rating,
+          comment,
+          created_at,
+          booking:bookings(
+            service:services(name),
+            professional:profiles!bookings_professional_id_fkey(full_name)
+          )
+        `
+        )
+        .eq("customer_id", id)
+        .order("created_at", { ascending: false })
+        .limit(5),
+
+      supabase
+        .from("reviews")
+        .select(
+          `
+          id,
+          rating,
+          comment,
+          created_at,
+          customer:profiles!reviews_customer_id_fkey(full_name),
+          booking:bookings(
+            service:services(name)
+          )
+        `
+        )
+        .eq("professional_id", id)
+        .order("created_at", { ascending: false })
+        .limit(5)
+    ]);
+
+    customerBookings = cBookingsRes.data || [];
+    professionalBookings = pBookingsRes.data || [];
+    totalCustomerBookings = cCountRes.count || 0;
+    totalProfessionalBookings = pCountRes.count || 0;
+    addresses = addressesRes.data || [];
+    reviewsGiven = reviewsGivenRes.data || [];
+    reviewsReceived = reviewsReceivedRes.data || [];
+  } catch (dataError) {
+    console.error("Error fetching related data for user:", id, dataError);
+  }
 
   return {
     profile: userProfile,
     email,
-    customerBookings: customerBookings || [],
-    professionalBookings: professionalBookings || [],
-    totalCustomerBookings: totalCustomerBookings || 0,
-    totalProfessionalBookings: totalProfessionalBookings || 0,
-    addresses: addresses || [],
-    reviewsGiven: reviewsGiven || [],
-    reviewsReceived: reviewsReceived || [],
+    customerBookings,
+    professionalBookings,
+    totalCustomerBookings,
+    totalProfessionalBookings,
+    addresses,
+    reviewsGiven,
+    reviewsReceived,
   };
 }
 
@@ -242,13 +277,12 @@ export default async function UserDetailPage(
                   </label>
                   <div className="mt-1">
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        profile.is_verified && profile.is_active
-                          ? "bg-green-100 text-green-700"
-                          : profile.is_active
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-red-100 text-red-700"
-                      }`}
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${profile.is_verified && profile.is_active
+                        ? "bg-green-100 text-green-700"
+                        : profile.is_active
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-red-100 text-red-700"
+                        }`}
                     >
                       {profile.is_verified && profile.is_active
                         ? "Active & Verified"
@@ -357,13 +391,12 @@ export default async function UserDetailPage(
                         <div className="text-right">
                           <p className="font-medium">₹{booking.final_amount}</p>
                           <span
-                            className={`px-2 py-1 rounded text-xs mt-1 inline-block ${
-                              booking.status === "completed"
-                                ? "bg-green-100 text-green-700"
-                                : booking.status === "cancelled"
-                                  ? "bg-red-100 text-red-700"
-                                  : "bg-yellow-100 text-yellow-700"
-                            }`}
+                            className={`px-2 py-1 rounded text-xs mt-1 inline-block ${booking.status === "completed"
+                              ? "bg-green-100 text-green-700"
+                              : booking.status === "cancelled"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-yellow-100 text-yellow-700"
+                              }`}
                           >
                             {booking.status}
                           </span>
@@ -405,13 +438,12 @@ export default async function UserDetailPage(
                         <div className="text-right">
                           <p className="font-medium">₹{booking.final_amount}</p>
                           <span
-                            className={`px-2 py-1 rounded text-xs mt-1 inline-block ${
-                              booking.status === "completed"
-                                ? "bg-green-100 text-green-700"
-                                : booking.status === "cancelled"
-                                  ? "bg-red-100 text-red-700"
-                                  : "bg-yellow-100 text-yellow-700"
-                            }`}
+                            className={`px-2 py-1 rounded text-xs mt-1 inline-block ${booking.status === "completed"
+                              ? "bg-green-100 text-green-700"
+                              : booking.status === "cancelled"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-yellow-100 text-yellow-700"
+                              }`}
                           >
                             {booking.status}
                           </span>
@@ -611,14 +643,14 @@ export default async function UserDetailPage(
             </CardHeader>
             <CardContent className="space-y-2">
               {profile.is_active ? (
-                <form action={async (formData) => { await suspendUser(formData); }}>
+                <form action={suspendUser}>
                   <input type="hidden" name="userId" value={profile.id} />
                   <Button type="submit" variant="outline" className="w-full">
                     Suspend User
                   </Button>
                 </form>
               ) : (
-                <form action={async (formData) => { await activateUser(formData); }}>
+                <form action={activateUser}>
                   <input type="hidden" name="userId" value={profile.id} />
                   <Button type="submit" variant="default" className="w-full">
                     Activate User

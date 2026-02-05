@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { logger } from "@/lib/logger";
 
 export async function approveProfessional(formData: FormData) {
   const supabase = await createClient();
@@ -68,6 +69,7 @@ export async function approveProfessional(formData: FormData) {
     description: `Approved professional: ${professionalId}`,
   });
 
+  logger.info("Admin action: Approved professional", { adminId: user.id, targetProfessionalId: professionalId });
   revalidatePath("/admin/professionals");
   return { success: true };
 }
@@ -139,6 +141,7 @@ export async function rejectProfessional(formData: FormData) {
     description: `Rejected professional: ${professionalId}. Reason: ${reason || "Not specified"}`,
   });
 
+  logger.info("Admin action: Rejected professional", { adminId: user.id, targetProfessionalId: professionalId, reason });
   revalidatePath("/admin/professionals");
   return { success: true };
 }

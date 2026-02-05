@@ -24,62 +24,71 @@ async function getAnalytics() {
     redirect("/dashboard");
   }
 
-  // Get analytics data
-  const [
-    { count: totalUsers },
-    { count: totalProfessionals },
-    { count: totalBookings },
-    { count: totalServices },
-    { data: recentBookings },
-    { data: revenueData },
-    { data: topServices },
-  ] = await Promise.all([
-    supabase.from("profiles").select("*", { count: "exact", head: true }),
-    supabase
-      .from("profiles")
-      .select("*", { count: "exact", head: true })
-      .eq("role", "professional"),
-    supabase.from("bookings").select("*", { count: "exact", head: true }),
-    supabase.from("services").select("*", { count: "exact", head: true }),
-    supabase
-      .from("bookings")
-      .select(
-        `
-        id,
-        status,
-        final_amount,
-        scheduled_at,
-        created_at,
-        customer:profiles!bookings_customer_id_fkey(full_name),
-        professional:profiles!bookings_professional_id_fkey(full_name)
-      `
-      )
-      .order("created_at", { ascending: false })
-      .limit(5),
-    supabase
-      .from("payments")
-      .select("amount, status, created_at")
-      .eq("status", "completed")
-      .gte(
-        "created_at",
-        new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
-      ),
-    supabase
-      .from("bookings")
-      .select(
-        `
-        service_id,
-        services(name),
-        count
-      `
-      )
-      .limit(5),
-  ]);
+  // Initialize data with defaults
+  let totalUsers = 0;
+  let totalProfessionals = 0;
+  let totalBookings = 0;
+  let totalServices = 0;
+  let recentBookings: any[] = [];
+  let revenueData: any[] = [];
+  let topServices: any[] = [];
 
-  // Calculate revenue metrics
+  try {
+    // Get analytics data with individual error handling
+    const [
+      usersRes,
+      profsRes,
+      bookingsRes,
+      servicesRes,
+      recentRes,
+      revenueRes,
+    ] = await Promise.all([
+      supabase.from("profiles").select("id", { count: "exact", head: true }),
+      supabase
+        .from("profiles")
+        .select("id", { count: "exact", head: true })
+        .eq("role", "professional"),
+      supabase.from("bookings").select("id", { count: "exact", head: true }),
+      supabase.from("services").select("id", { count: "exact", head: true }),
+      supabase
+        .from("bookings")
+        .select(
+          `
+          id,
+          status,
+          final_amount,
+          scheduled_at,
+          created_at,
+          customer:profiles!bookings_customer_id_fkey(full_name),
+          professional:profiles!bookings_professional_id_fkey(full_name)
+        `
+        )
+        .order("created_at", { ascending: false })
+        .limit(5),
+      supabase
+        .from("payments")
+        .select("amount, status, created_at")
+        .eq("status", "completed")
+        .gte(
+          "created_at",
+          new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+        ),
+    ]);
+
+    totalUsers = usersRes.count || 0;
+    totalProfessionals = profsRes.count || 0;
+    totalBookings = bookingsRes.count || 0;
+    totalServices = servicesRes.count || 0;
+    recentBookings = recentRes.data || [];
+    revenueData = revenueRes.data || [];
+  } catch (error) {
+    console.error("Error fetching analytics data:", error);
+  }
+
+  // Calculate revenue metrics safely
   const totalRevenue =
     revenueData?.reduce((sum, payment) => sum + (payment.amount || 0), 0) || 0;
-  const monthlyRevenue =
+  const weeklyRevenue =
     revenueData
       ?.filter(
         (p) =>
@@ -89,10 +98,6 @@ async function getAnalytics() {
       .reduce((sum, payment) => sum + (payment.amount || 0), 0) || 0;
 
   // Get booking status counts
-  const { data: bookingStatuses } = await supabase
-    .from("bookings")
-    .select("status");
-
   const statusCounts = {
     pending: 0,
     confirmed: 0,
@@ -102,18 +107,28 @@ async function getAnalytics() {
     refunded: 0,
   };
 
-  bookingStatuses?.forEach((booking) => {
-    statusCounts[booking.status as keyof typeof statusCounts]++;
-  });
+  try {
+    const { data: bookingStatuses } = await supabase
+      .from("bookings")
+      .select("status");
+
+    bookingStatuses?.forEach((booking) => {
+      if (booking.status in statusCounts) {
+        statusCounts[booking.status as keyof typeof statusCounts]++;
+      }
+    });
+  } catch (statusError) {
+    console.error("Error fetching booking statuses:", statusError);
+  }
 
   return {
-    totalUsers: totalUsers || 0,
-    totalProfessionals: totalProfessionals || 0,
-    totalBookings: totalBookings || 0,
-    totalServices: totalServices || 0,
+    totalUsers,
+    totalProfessionals,
+    totalBookings,
+    totalServices,
     totalRevenue,
-    monthlyRevenue,
-    recentBookings: recentBookings || [],
+    weeklyRevenue,
+    recentBookings,
     statusCounts,
   };
 }
@@ -172,7 +187,7 @@ export default async function AdminDashboard() {
               ₹{analytics.totalRevenue.toLocaleString()}
             </div>
             <p className="text-xs text-gray-500 mt-1">
-              ₹{analytics.monthlyRevenue.toLocaleString()} this week
+              ₹{analytics.weeklyRevenue.toLocaleString()} this week
             </p>
           </CardContent>
         </Card>

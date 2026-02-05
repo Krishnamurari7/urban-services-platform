@@ -23,55 +23,67 @@ async function getPayments() {
     redirect("/dashboard");
   }
 
-  // Get all payments
-  const { data: payments } = await supabase
-    .from("payments")
-    .select(
-      `
-      id,
-      amount,
-      status,
-      method,
-      transaction_id,
-      refund_amount,
-      created_at,
-      booking:bookings(
+  // Initialize data with defaults
+  let payments: any[] = [];
+  let totalRevenue = 0;
+  let totalCommission = 0;
+  let completedCount = 0;
+  let pendingCount = 0;
+  let refundedCount = 0;
+
+  try {
+    // Get all payments
+    const { data: paymentsData, error } = await supabase
+      .from("payments")
+      .select(
+        `
         id,
-        final_amount,
-        service_fee,
-        customer:profiles!bookings_customer_id_fkey(full_name),
-        professional:profiles!bookings_professional_id_fkey(full_name),
-        service:services(name)
+        amount,
+        status,
+        method,
+        transaction_id,
+        refund_amount,
+        created_at,
+        booking:bookings(
+          id,
+          final_amount,
+          service_fee,
+          customer:profiles!bookings_customer_id_fkey(full_name),
+          professional:profiles!bookings_professional_id_fkey(full_name),
+          service:services(name)
+        )
+      `
       )
-    `
-    )
-    .order("created_at", { ascending: false })
-    .limit(100);
+      .order("created_at", { ascending: false })
+      .limit(100);
 
-  // Calculate commission (assuming 10% service fee)
-  const totalRevenue =
-    payments?.reduce((sum, p) => sum + (p.amount || 0), 0) || 0;
+    if (error) {
+      console.error("Error fetching payments:", error);
+    } else {
+      payments = paymentsData || [];
 
-  const totalCommission =
-    payments?.reduce(
-      (sum, p) => sum + ((p.booking as any)?.service_fee || 0),
-      0
-    ) || 0;
-
-  const completedPayments =
-    payments?.filter((p) => p.status === "completed") || [];
-  const pendingPayments = payments?.filter((p) => p.status === "pending") || [];
-  const refundedPayments =
-    payments?.filter((p) => p.status === "refunded") || [];
+      // Calculate metrics safely
+      totalRevenue = payments.reduce((sum, p) => sum + (p.amount || 0), 0);
+      totalCommission = payments.reduce(
+        (sum, p) => sum + ((p.booking as any)?.service_fee || 0),
+        0
+      );
+      completedCount = payments.filter((p) => p.status === "completed").length;
+      pendingCount = payments.filter((p) => p.status === "pending").length;
+      refundedCount = payments.filter((p) => p.status === "refunded").length;
+    }
+  } catch (error) {
+    console.error("Unexpected error fetching payments:", error);
+  }
 
   return {
-    payments: payments || [],
+    payments,
     stats: {
       totalRevenue,
       totalCommission,
-      completed: completedPayments.length,
-      pending: pendingPayments.length,
-      refunded: refundedPayments.length,
+      completed: completedCount,
+      pending: pendingCount,
+      refunded: refundedCount,
     },
   };
 }
@@ -186,15 +198,14 @@ export default async function AdminPaymentsPage() {
                       </td>
                       <td className="p-2">
                         <span
-                          className={`px-2 py-1 rounded text-xs ${
-                            payment.status === "completed"
+                          className={`px-2 py-1 rounded text-xs ${payment.status === "completed"
                               ? "bg-green-100 text-green-700"
                               : payment.status === "refunded"
                                 ? "bg-red-100 text-red-700"
                                 : payment.status === "failed"
                                   ? "bg-red-100 text-red-700"
                                   : "bg-yellow-100 text-yellow-700"
-                          }`}
+                            }`}
                         >
                           {payment.status}
                         </span>

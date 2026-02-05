@@ -34,20 +34,22 @@ export async function middleware(request: NextRequest) {
   // Get user role from profile if authenticated
   let userRole: UserRole | null = null;
   if (user) {
-    // Optimization: Check user metadata first to avoid DB query
-    // This requires the role to be synced to user_metadata on signup/profile update
-    const metadataRole = user.user_metadata?.role as UserRole;
-
-    if (metadataRole) {
-      userRole = metadataRole;
-    } else if (supabase) {
-      // Fallback: Fetch from database if not in metadata
+    // SECURITY: Prioritize database profile over metadata to prevent stale roles
+    if (supabase) {
       const { data: profile } = await supabase
         .from("profiles")
         .select("role")
         .eq("id", user.id)
         .single();
-      userRole = (profile?.role as UserRole) || null;
+
+      if (profile?.role) {
+        userRole = profile.role as UserRole;
+      }
+    }
+
+    // Fallback to metadata only if DB check fails or is unavailable
+    if (!userRole) {
+      userRole = (user.user_metadata?.role as UserRole) || null;
     }
   }
 

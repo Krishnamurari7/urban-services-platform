@@ -3,10 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { approveProfessional, rejectProfessional } from "./actions";
 
 async function getProfessionals() {
   const supabase = await createClient();
+  const adminClient = createAdminClient();
 
   const {
     data: { user },
@@ -27,7 +29,7 @@ async function getProfessionals() {
   }
 
   // Get all professionals with their documents
-  const { data: professionals } = await supabase
+  const { data: professionals, error: profError } = await supabase
     .from("profiles")
     .select(
       `
@@ -43,7 +45,7 @@ async function getProfessionals() {
       skills,
       hourly_rate,
       created_at,
-      documents:professional_documents(
+      documents:professional_documents!professional_id (
         id,
         document_type,
         document_name,
@@ -56,39 +58,60 @@ async function getProfessionals() {
     .eq("role", "professional")
     .order("created_at", { ascending: false });
 
+  if (profError) {
+    console.error("Error fetching professionals:", profError);
+    return [];
+  }
+
   // Get email and booking stats for each professional
   const professionalsWithDetails = await Promise.all(
     (professionals || []).map(async (professional) => {
       // Get email
       let email = "N/A";
       try {
-        const { data: authUser, error } = await supabase.auth.admin.getUserById(
+        const { data: authUser, error } = await adminClient.auth.admin.getUserById(
           professional.id
         );
         if (!error && authUser?.user?.email) {
           email = authUser.user.email;
+        } else {
+          // Fallback to RPC
+          const { data: emailData } = await supabase.rpc("get_user_email", {
+            user_id: professional.id,
+          });
+          if (emailData) email = emailData;
         }
       } catch (error) {
-        console.error("Error fetching email:", error);
+        console.error("Error fetching email for professional:", professional.id, error);
       }
 
-      // Get booking stats
-      const { count: totalBookings } = await supabase
-        .from("bookings")
-        .select("*", { count: "exact", head: true })
-        .eq("professional_id", professional.id);
+      // Initialize stats
+      let totalBookings = 0;
+      let completedBookings = 0;
 
-      const { count: completedBookings } = await supabase
-        .from("bookings")
-        .select("*", { count: "exact", head: true })
-        .eq("professional_id", professional.id)
-        .eq("status", "completed");
+      try {
+        // Get booking stats safely
+        const { count: tCount } = await supabase
+          .from("bookings")
+          .select("id", { count: "exact", head: true })
+          .eq("professional_id", professional.id);
+        totalBookings = tCount || 0;
+
+        const { count: cCount } = await supabase
+          .from("bookings")
+          .select("id", { count: "exact", head: true })
+          .eq("professional_id", professional.id)
+          .eq("status", "completed");
+        completedBookings = cCount || 0;
+      } catch (statError) {
+        console.error("Error fetching stats for professional:", professional.id, statError);
+      }
 
       return {
         ...professional,
         email,
-        totalBookings: totalBookings || 0,
-        completedBookings: completedBookings || 0,
+        totalBookings,
+        completedBookings,
       };
     })
   );
@@ -176,13 +199,12 @@ export default async function AdminProfessionalsPage() {
                                     {doc.document_name}
                                   </a>
                                   <span
-                                    className={`px-2 py-1 rounded text-xs ${
-                                      doc.status === "approved"
-                                        ? "bg-green-100 text-green-700"
-                                        : doc.status === "rejected"
-                                          ? "bg-red-100 text-red-700"
-                                          : "bg-yellow-100 text-yellow-700"
-                                    }`}
+                                    className={`px-2 py-1 rounded text-xs ${doc.status === "approved"
+                                      ? "bg-green-100 text-green-700"
+                                      : doc.status === "rejected"
+                                        ? "bg-red-100 text-red-700"
+                                        : "bg-yellow-100 text-yellow-700"
+                                      }`}
                                   >
                                     {doc.status}
                                   </span>
@@ -198,7 +220,7 @@ export default async function AdminProfessionalsPage() {
                         )}
                     </div>
                     <div className="flex gap-2 ml-4">
-                      <form action={async (formData) => { await approveProfessional(formData); }}>
+                      <form action={approveProfessional}>
                         <input
                           type="hidden"
                           name="professionalId"
@@ -208,7 +230,7 @@ export default async function AdminProfessionalsPage() {
                           Approve
                         </Button>
                       </form>
-                      <form action={async (formData) => { await rejectProfessional(formData); }}>
+                      <form action={rejectProfessional}>
                         <input
                           type="hidden"
                           name="professionalId"
@@ -288,13 +310,12 @@ export default async function AdminProfessionalsPage() {
                     </td>
                     <td className="p-2">
                       <span
-                        className={`px-2 py-1 rounded text-xs ${
-                          professional.is_verified && professional.is_active
-                            ? "bg-green-100 text-green-700"
-                            : professional.is_active
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-red-100 text-red-700"
-                        }`}
+                        className={`px-2 py-1 rounded text-xs ${professional.is_verified && professional.is_active
+                          ? "bg-green-100 text-green-700"
+                          : professional.is_active
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-red-100 text-red-700"
+                          }`}
                       >
                         {professional.is_verified && professional.is_active
                           ? "Active"

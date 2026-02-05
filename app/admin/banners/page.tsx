@@ -25,12 +25,22 @@ async function getBanners() {
     redirect("/dashboard");
   }
 
-  const { data: banners } = await supabase
-    .from("homepage_banners")
-    .select("*")
-    .order("position", { ascending: true });
+  try {
+    const { data: banners, error } = await supabase
+      .from("homepage_banners")
+      .select("*")
+      .order("position", { ascending: true });
 
-  return banners || [];
+    if (error) {
+      console.error("Error fetching banners:", error);
+      return [];
+    }
+
+    return banners || [];
+  } catch (error) {
+    console.error("Unexpected error fetching banners:", error);
+    return [];
+  }
 }
 
 export default async function AdminBannersPage() {

@@ -7,6 +7,7 @@ import { suspendUser, activateUser } from "./actions";
 
 async function getUsers() {
   const supabase = await createClient();
+  const adminClient = require("@/lib/supabase").createAdminClient();
 
   const {
     data: { user },
@@ -27,7 +28,7 @@ async function getUsers() {
   }
 
   // Get all profiles with detailed information
-  const { data: profiles } = await supabase
+  const { data: profiles, error: profilesError } = await supabase
     .from("profiles")
     .select(
       `
@@ -49,58 +50,79 @@ async function getUsers() {
     )
     .order("created_at", { ascending: false });
 
+  if (profilesError) {
+    console.error("Error fetching profiles:", profilesError);
+    return [];
+  }
+
   // Get email from auth.users and booking stats for each user
   const usersWithStats = await Promise.all(
     (profiles || []).map(async (profile) => {
-      // Get email from auth.users using SQL query (admin can access this)
       let email = "N/A";
       try {
-        // Try to get email using admin API
-        const { data: authUser, error } = await supabase.auth.admin.getUserById(
+        // Use admin client to get email - much more reliable
+        const { data: authUser, error } = await adminClient.auth.admin.getUserById(
           profile.id
         );
         if (!error && authUser?.user?.email) {
           email = authUser.user.email;
         } else {
-          // Fallback: Use SQL query if admin API doesn't work
+          // Fallback to RPC if needed
           const { data: emailData } = await supabase.rpc("get_user_email", {
             user_id: profile.id,
           });
           if (emailData) email = emailData;
         }
       } catch (error) {
-        // If admin API fails, email will remain "N/A"
-        console.error("Error fetching email:", error);
+        console.error("Error fetching email for user:", profile.id, error);
       }
 
-      // Get booking counts
-      const { count: customerBookings } = await supabase
-        .from("bookings")
-        .select("*", { count: "exact", head: true })
-        .eq("customer_id", profile.id);
+      // Initialize stats with defaults
+      let customerBookings = 0;
+      let professionalBookings = 0;
+      let completedBookings = 0;
 
-      const { count: professionalBookings } = await supabase
-        .from("bookings")
-        .select("*", { count: "exact", head: true })
-        .eq("professional_id", profile.id);
+      try {
+        // Get booking counts safely
+        const { count: cCount } = await supabase
+          .from("bookings")
+          .select("id", { count: "exact", head: true })
+          .eq("customer_id", profile.id);
+        customerBookings = cCount || 0;
 
-      const totalBookings =
-        (customerBookings || 0) + (professionalBookings || 0);
+        const { count: pCount } = await supabase
+          .from("bookings")
+          .select("id", { count: "exact", head: true })
+          .eq("professional_id", profile.id);
+        professionalBookings = pCount || 0;
 
-      // Get completed bookings count
-      const { count: completedBookings } = await supabase
-        .from("bookings")
-        .select("*", { count: "exact", head: true })
-        .or(`customer_id.eq.${profile.id},professional_id.eq.${profile.id}`)
-        .eq("status", "completed");
+        // Get completed bookings count - using two separate queries for reliability
+        const { count: compCCount } = await supabase
+          .from("bookings")
+          .select("id", { count: "exact", head: true })
+          .eq("customer_id", profile.id)
+          .eq("status", "completed");
+
+        const { count: compPCount } = await supabase
+          .from("bookings")
+          .select("id", { count: "exact", head: true })
+          .eq("professional_id", profile.id)
+          .eq("status", "completed");
+
+        completedBookings = (compCCount || 0) + (compPCount || 0);
+      } catch (statError) {
+        console.error("Error fetching stats for user:", profile.id, statError);
+      }
+
+      const totalBookings = customerBookings + professionalBookings;
 
       return {
         ...profile,
         email,
         bookingCount: totalBookings,
-        customerBookings: customerBookings || 0,
-        professionalBookings: professionalBookings || 0,
-        completedBookings: completedBookings || 0,
+        customerBookings,
+        professionalBookings,
+        completedBookings,
       };
     })
   );
@@ -221,13 +243,12 @@ export default async function AdminUsersPage() {
                       </td>
                       <td className="p-2">
                         <span
-                          className={`px-2 py-1 rounded text-xs ${
-                            user.is_active && user.is_verified
-                              ? "bg-green-100 text-green-700"
-                              : user.is_active
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-red-100 text-red-700"
-                          }`}
+                          className={`px-2 py-1 rounded text-xs ${user.is_active && user.is_verified
+                            ? "bg-green-100 text-green-700"
+                            : user.is_active
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-red-100 text-red-700"
+                            }`}
                         >
                           {user.is_active && user.is_verified
                             ? "Active"
@@ -247,7 +268,7 @@ export default async function AdminUsersPage() {
                             </Button>
                           </Link>
                           {user.is_active ? (
-                            <form action={async (formData) => { await suspendUser(formData); }}>
+                            <form action={suspendUser}>
                               <input
                                 type="hidden"
                                 name="userId"
@@ -258,7 +279,7 @@ export default async function AdminUsersPage() {
                               </Button>
                             </form>
                           ) : (
-                            <form action={async (formData) => { await activateUser(formData); }}>
+                            <form action={activateUser}>
                               <input
                                 type="hidden"
                                 name="userId"
@@ -335,13 +356,12 @@ export default async function AdminUsersPage() {
                       </td>
                       <td className="p-2">
                         <span
-                          className={`px-2 py-1 rounded text-xs ${
-                            user.is_active && user.is_verified
-                              ? "bg-green-100 text-green-700"
-                              : user.is_active
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-red-100 text-red-700"
-                          }`}
+                          className={`px-2 py-1 rounded text-xs ${user.is_active && user.is_verified
+                            ? "bg-green-100 text-green-700"
+                            : user.is_active
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-red-100 text-red-700"
+                            }`}
                         >
                           {user.is_active && user.is_verified
                             ? "Active"
@@ -358,7 +378,7 @@ export default async function AdminUsersPage() {
                             </Button>
                           </Link>
                           {user.is_active ? (
-                            <form action={async (formData) => { await suspendUser(formData); }}>
+                            <form action={suspendUser}>
                               <input
                                 type="hidden"
                                 name="userId"
@@ -369,7 +389,7 @@ export default async function AdminUsersPage() {
                               </Button>
                             </form>
                           ) : (
-                            <form action={async (formData) => { await activateUser(formData); }}>
+                            <form action={activateUser}>
                               <input
                                 type="hidden"
                                 name="userId"
@@ -421,13 +441,12 @@ export default async function AdminUsersPage() {
                     <td className="p-2 text-sm">{user.phone || "N/A"}</td>
                     <td className="p-2">
                       <span
-                        className={`px-2 py-1 rounded text-xs ${
-                          user.role === "admin"
-                            ? "bg-purple-100 text-purple-700"
-                            : user.role === "professional"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-green-100 text-green-700"
-                        }`}
+                        className={`px-2 py-1 rounded text-xs ${user.role === "admin"
+                          ? "bg-purple-100 text-purple-700"
+                          : user.role === "professional"
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-green-100 text-green-700"
+                          }`}
                       >
                         {user.role}
                       </span>
@@ -435,13 +454,12 @@ export default async function AdminUsersPage() {
                     <td className="p-2 text-sm">{user.bookingCount || 0}</td>
                     <td className="p-2">
                       <span
-                        className={`px-2 py-1 rounded text-xs ${
-                          user.is_active && user.is_verified
-                            ? "bg-green-100 text-green-700"
-                            : user.is_active
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-red-100 text-red-700"
-                        }`}
+                        className={`px-2 py-1 rounded text-xs ${user.is_active && user.is_verified
+                          ? "bg-green-100 text-green-700"
+                          : user.is_active
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-red-100 text-red-700"
+                          }`}
                       >
                         {user.is_active && user.is_verified
                           ? "Active"
@@ -469,7 +487,7 @@ export default async function AdminUsersPage() {
                           </Link>
                         ) : null}
                         {user.is_active ? (
-                          <form action={async (formData) => { await suspendUser(formData); }}>
+                          <form action={suspendUser}>
                             <input
                               type="hidden"
                               name="userId"
@@ -480,7 +498,7 @@ export default async function AdminUsersPage() {
                             </Button>
                           </form>
                         ) : (
-                          <form action={async (formData) => { await activateUser(formData); }}>
+                          <form action={activateUser}>
                             <input
                               type="hidden"
                               name="userId"

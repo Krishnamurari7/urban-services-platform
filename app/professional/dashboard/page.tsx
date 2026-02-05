@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
+import { useRealtimeBookings } from "@/hooks/use-realtime-bookings";
 import { createClient } from "@/lib/supabase/client";
 import {
   Card,
@@ -15,18 +16,12 @@ import { Badge } from "@/components/ui/badge";
 import type {
   Booking,
   Profile,
-  Payment,
-  AvailabilitySlot,
 } from "@/lib/types/database";
 import {
   Calendar,
-  Clock,
   DollarSign,
   Package,
   CheckCircle,
-  XCircle,
-  FileText,
-  TrendingUp,
   AlertCircle,
 } from "lucide-react";
 import { JobRequestsSection } from "@/components/professional/job-requests-section";
@@ -69,6 +64,51 @@ export default function ProfessionalDashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabType>("overview");
+
+  // Real-time bookings hook
+  const { bookings: realtimeBookings } = useRealtimeBookings({
+    userId: user?.id,
+    role: "professional",
+    enabled: !!user && role === "professional"
+  });
+
+  // Sync realtime bookings with stats
+  useEffect(() => {
+    if (realtimeBookings.length > 0) {
+      const pending = realtimeBookings.filter((b) => b.status === "pending").length;
+      const confirmed = realtimeBookings.filter((b) => b.status === "confirmed").length;
+      const completed = realtimeBookings.filter((b) => b.status === "completed").length;
+
+      // Calculate earnings (assuming professional gets 80% of final_amount)
+      const totalEarnings = realtimeBookings
+        .filter((b) => b.status === "completed")
+        .reduce((sum, b) => sum + Number(b.final_amount) * 0.8, 0);
+
+      const currentMonth = new Date().getMonth();
+      const currentYear = new Date().getFullYear();
+      const monthlyEarnings = realtimeBookings
+        .filter((b) => {
+          if (b.status !== "completed" || !b.completed_at) return false;
+          const completedDate = new Date(b.completed_at);
+          return (
+            completedDate.getMonth() === currentMonth &&
+            completedDate.getFullYear() === currentYear
+          );
+        })
+        .reduce((sum, b) => sum + Number(b.final_amount) * 0.8, 0);
+
+      setStats((prev) => ({
+        ...prev,
+        totalBookings: realtimeBookings.length,
+        pendingRequests: pending,
+        confirmedBookings: confirmed,
+        completedBookings: completed,
+        totalEarnings,
+        monthlyEarnings,
+        recentBookings: realtimeBookings.slice(0, 5),
+      }));
+    }
+  }, [realtimeBookings]);
 
   useEffect(() => {
     if (!authLoading) {
@@ -132,58 +172,7 @@ export default function ProfessionalDashboard() {
         setProfile(profileData);
       }
 
-      // Fetch bookings
-      const { data: bookings } = await supabase
-        .from("bookings")
-        .select("*")
-        .eq("professional_id", user.id)
-        .order("created_at", { ascending: false });
-
-      // Fetch completed payments
-      const { data: payments } = await supabase
-        .from("payments")
-        .select("amount, created_at")
-        .eq("status", "completed")
-        .in("booking_id", bookings?.map((b) => b.id) || []);
-
-      // Calculate stats
-      const totalBookings = bookings?.length || 0;
-      const pendingRequests =
-        bookings?.filter((b) => b.status === "pending").length || 0;
-      const confirmedBookings =
-        bookings?.filter((b) => b.status === "confirmed").length || 0;
-      const completedBookings =
-        bookings?.filter((b) => b.status === "completed").length || 0;
-
-      // Calculate earnings (assuming professional gets 80% of final_amount)
-      const totalEarnings =
-        bookings
-          ?.filter((b) => b.status === "completed")
-          .reduce((sum, b) => sum + Number(b.final_amount) * 0.8, 0) || 0;
-
-      const currentMonth = new Date().getMonth();
-      const currentYear = new Date().getFullYear();
-      const monthlyEarnings =
-        bookings
-          ?.filter((b) => {
-            if (b.status !== "completed" || !b.completed_at) return false;
-            const completedDate = new Date(b.completed_at);
-            return (
-              completedDate.getMonth() === currentMonth &&
-              completedDate.getFullYear() === currentYear
-            );
-          })
-          .reduce((sum, b) => sum + Number(b.final_amount) * 0.8, 0) || 0;
-
-      setStats({
-        totalBookings,
-        pendingRequests,
-        confirmedBookings,
-        completedBookings,
-        totalEarnings,
-        monthlyEarnings,
-        recentBookings: bookings?.slice(0, 5) || [],
-      });
+      // Note: Bookings and stats are now synchronized via the useRealtimeBookings hook
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -226,21 +215,19 @@ export default function ProfessionalDashboard() {
         <nav className="flex space-x-8">
           <button
             onClick={() => setActiveTab("overview")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === "overview"
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "overview"
                 ? "border-blue-500 text-blue-600"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
+              }`}
           >
             Overview
           </button>
           <button
             onClick={() => setActiveTab("requests")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm relative ${
-              activeTab === "requests"
+            className={`py-4 px-1 border-b-2 font-medium text-sm relative ${activeTab === "requests"
                 ? "border-blue-500 text-blue-600"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
+              }`}
           >
             Job Requests
             {stats.pendingRequests > 0 && (
@@ -249,51 +236,46 @@ export default function ProfessionalDashboard() {
           </button>
           <button
             onClick={() => setActiveTab("calendar")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === "calendar"
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "calendar"
                 ? "border-blue-500 text-blue-600"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
+              }`}
           >
             Availability
           </button>
           <button
             onClick={() => setActiveTab("earnings")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === "earnings"
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "earnings"
                 ? "border-blue-500 text-blue-600"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
+              }`}
           >
             Earnings
           </button>
           <button
             onClick={() => setActiveTab("documents")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === "documents"
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "documents"
                 ? "border-blue-500 text-blue-600"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
+              }`}
           >
             Documents
           </button>
           <button
             onClick={() => setActiveTab("payments")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === "payments"
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "payments"
                 ? "border-blue-500 text-blue-600"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
+              }`}
           >
             Payments
           </button>
           <button
             onClick={() => setActiveTab("verification")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === "verification"
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "verification"
                 ? "border-blue-500 text-blue-600"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
+              }`}
           >
             Verification
           </button>
@@ -359,7 +341,7 @@ export default function ProfessionalDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  ${stats.totalEarnings.toFixed(2)}
+                  ₹{stats.totalEarnings.toFixed(2)}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   Lifetime earnings
@@ -423,7 +405,7 @@ export default function ProfessionalDashboard() {
                           {new Date(booking.scheduled_at).toLocaleDateString()}
                         </p>
                         <p className="text-sm font-medium mt-1">
-                          ${Number(booking.final_amount).toFixed(2)}
+                          ₹{Number(booking.final_amount).toFixed(2)}
                         </p>
                       </div>
                     </div>
