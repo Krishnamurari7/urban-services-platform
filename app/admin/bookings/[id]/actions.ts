@@ -9,7 +9,8 @@ export async function updateBookingStatus(formData: FormData) {
   const status = formData.get("status") as string;
 
   if (!bookingId || !status) {
-    return { error: "Booking ID and status are required" };
+    console.error("Booking ID and status are required");
+    return;
   }
 
   // Check if user is admin
@@ -18,7 +19,8 @@ export async function updateBookingStatus(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Unauthorized" };
+    console.error("Unauthorized: No user found");
+    return;
   }
 
   const { data: profile } = await supabase
@@ -28,7 +30,8 @@ export async function updateBookingStatus(formData: FormData) {
     .single();
 
   if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
+    console.error("Unauthorized: User is not an admin");
+    return;
   }
 
   const updateData: any = {
@@ -45,7 +48,8 @@ export async function updateBookingStatus(formData: FormData) {
     .eq("id", bookingId);
 
   if (error) {
-    return { error: error.message };
+    console.error("Error updating booking status:", error.message);
+    return;
   }
 
   // Log admin action
@@ -59,7 +63,6 @@ export async function updateBookingStatus(formData: FormData) {
 
   revalidatePath(`/admin/bookings/${bookingId}`);
   revalidatePath("/admin/bookings");
-  return { success: true };
 }
 
 export async function cancelBooking(formData: FormData) {
@@ -68,7 +71,8 @@ export async function cancelBooking(formData: FormData) {
   const reason = (formData.get("reason") as string) || "Cancelled by admin";
 
   if (!bookingId) {
-    return { error: "Booking ID is required" };
+    console.error("Booking ID is required");
+    return;
   }
 
   // Check if user is admin
@@ -77,7 +81,8 @@ export async function cancelBooking(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Unauthorized" };
+    console.error("Unauthorized: No user found");
+    return;
   }
 
   const { data: profile } = await supabase
@@ -87,7 +92,8 @@ export async function cancelBooking(formData: FormData) {
     .single();
 
   if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
+    console.error("Unauthorized: User is not an admin");
+    return;
   }
 
   const { error } = await supabase
@@ -100,7 +106,8 @@ export async function cancelBooking(formData: FormData) {
     .eq("id", bookingId);
 
   if (error) {
-    return { error: error.message };
+    console.error("Error cancelling booking:", error.message);
+    return;
   }
 
   // Log admin action
@@ -114,7 +121,6 @@ export async function cancelBooking(formData: FormData) {
 
   revalidatePath(`/admin/bookings/${bookingId}`);
   revalidatePath("/admin/bookings");
-  return { success: true };
 }
 
 export async function assignProfessional(formData: FormData) {
