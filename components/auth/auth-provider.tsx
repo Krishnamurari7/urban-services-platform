@@ -93,12 +93,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const currentUser = session?.user ?? null;
       setUser(currentUser);
 
-      // Set loading to false immediately for auth state change
-      // Role fetch can happen in background
-      setLoading(false);
-
       if (currentUser) {
-        // Fetch role with timeout to prevent blocking
+        setLoading(true); // Ensure loading is true while fetching role
         try {
           await Promise.race([
             fetchUserRole(currentUser.id),
@@ -111,6 +107,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         setRole(null);
       }
+      setLoading(false);
     });
 
     return () => {

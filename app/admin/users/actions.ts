@@ -9,7 +9,8 @@ export async function suspendUser(formData: FormData) {
   const userId = formData.get("userId") as string;
 
   if (!userId) {
-    return { error: "User ID is required" };
+    console.error("User ID is required");
+    return;
   }
 
   // Check if user is admin
@@ -18,7 +19,8 @@ export async function suspendUser(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Unauthorized" };
+    console.error("Unauthorized: No user found");
+    return;
   }
 
   const { data: profile } = await supabase
@@ -28,7 +30,8 @@ export async function suspendUser(formData: FormData) {
     .single();
 
   if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
+    console.error("Unauthorized: User is not an admin");
+    return;
   }
 
   // Don't allow suspending other admins
@@ -39,7 +42,8 @@ export async function suspendUser(formData: FormData) {
     .single();
 
   if (targetUser?.role === "admin") {
-    return { error: "Cannot suspend admin users" };
+    console.error("Cannot suspend admin users");
+    return;
   }
 
   // Update user status
@@ -51,7 +55,8 @@ export async function suspendUser(formData: FormData) {
     .eq("id", userId);
 
   if (error) {
-    return { error: error.message };
+    console.error("Error updating user status:", error.message);
+    return;
   }
 
   // Log admin action
@@ -64,8 +69,8 @@ export async function suspendUser(formData: FormData) {
   });
 
   logger.info("Admin action: Suspend user", { adminId: user.id, targetUserId: userId });
+  logger.info("Admin action: Suspend user", { adminId: user.id, targetUserId: userId });
   revalidatePath("/admin/users");
-  return { success: true };
 }
 
 export async function activateUser(formData: FormData) {
@@ -73,7 +78,8 @@ export async function activateUser(formData: FormData) {
   const userId = formData.get("userId") as string;
 
   if (!userId) {
-    return { error: "User ID is required" };
+    console.error("User ID is required");
+    return;
   }
 
   // Check if user is admin
@@ -82,7 +88,8 @@ export async function activateUser(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Unauthorized" };
+    console.error("Unauthorized: No user found");
+    return;
   }
 
   const { data: profile } = await supabase
@@ -92,7 +99,8 @@ export async function activateUser(formData: FormData) {
     .single();
 
   if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
+    console.error("Unauthorized: User is not an admin");
+    return;
   }
 
   // Update user status
@@ -104,7 +112,8 @@ export async function activateUser(formData: FormData) {
     .eq("id", userId);
 
   if (error) {
-    return { error: error.message };
+    console.error("Error updating user status:", error.message);
+    return;
   }
 
   // Log admin action
@@ -117,6 +126,6 @@ export async function activateUser(formData: FormData) {
   });
 
   logger.info("Admin action: Activate user", { adminId: user.id, targetUserId: userId });
+  logger.info("Admin action: Activate user", { adminId: user.id, targetUserId: userId });
   revalidatePath("/admin/users");
-  return { success: true };
 }

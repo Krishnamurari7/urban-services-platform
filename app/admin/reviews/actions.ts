@@ -29,14 +29,16 @@ async function checkAdmin() {
 export async function approveReview(formData: FormData) {
   const { error, user } = await checkAdmin();
   if (error || !user) {
-    return { error: error || "Unauthorized" };
+    console.error("Unauthorized:", error);
+    return;
   }
 
   const supabase = await createClient();
   const reviewId = formData.get("reviewId") as string;
 
   if (!reviewId) {
-    return { error: "Review ID is required" };
+    console.error("Review ID is required");
+    return;
   }
 
   const { error: updateError } = await supabase
@@ -48,7 +50,8 @@ export async function approveReview(formData: FormData) {
     .eq("id", reviewId);
 
   if (updateError) {
-    return { error: updateError.message };
+    console.error("Error updating review:", updateError.message);
+    return;
   }
 
   // Log admin action
@@ -61,20 +64,21 @@ export async function approveReview(formData: FormData) {
   });
 
   revalidatePath("/admin/reviews");
-  return { success: true };
 }
 
 export async function rejectReview(formData: FormData) {
   const { error, user } = await checkAdmin();
   if (error || !user) {
-    return { error: error || "Unauthorized" };
+    console.error("Unauthorized:", error);
+    return;
   }
 
   const supabase = await createClient();
   const reviewId = formData.get("reviewId") as string;
 
   if (!reviewId) {
-    return { error: "Review ID is required" };
+    console.error("Review ID is required");
+    return;
   }
 
   const { error: updateError } = await supabase
@@ -85,7 +89,8 @@ export async function rejectReview(formData: FormData) {
     .eq("id", reviewId);
 
   if (updateError) {
-    return { error: updateError.message };
+    console.error("Error updating review:", updateError.message);
+    return;
   }
 
   // Log admin action
@@ -98,20 +103,21 @@ export async function rejectReview(formData: FormData) {
   });
 
   revalidatePath("/admin/reviews");
-  return { success: true };
 }
 
 export async function hideReview(formData: FormData) {
   const { error, user } = await checkAdmin();
   if (error || !user) {
-    return { error: error || "Unauthorized" };
+    console.error("Unauthorized:", error);
+    return;
   }
 
   const supabase = await createClient();
   const reviewId = formData.get("reviewId") as string;
 
   if (!reviewId) {
-    return { error: "Review ID is required" };
+    console.error("Review ID is required");
+    return;
   }
 
   const { error: updateError } = await supabase
@@ -122,7 +128,8 @@ export async function hideReview(formData: FormData) {
     .eq("id", reviewId);
 
   if (updateError) {
-    return { error: updateError.message };
+    console.error("Error updating review:", updateError.message);
+    return;
   }
 
   // Log admin action
@@ -135,20 +142,21 @@ export async function hideReview(formData: FormData) {
   });
 
   revalidatePath("/admin/reviews");
-  return { success: true };
 }
 
 export async function showReview(formData: FormData) {
   const { error, user } = await checkAdmin();
   if (error || !user) {
-    return { error: error || "Unauthorized" };
+    console.error("Unauthorized:", error);
+    return;
   }
 
   const supabase = await createClient();
   const reviewId = formData.get("reviewId") as string;
 
   if (!reviewId) {
-    return { error: "Review ID is required" };
+    console.error("Review ID is required");
+    return;
   }
 
   const { error: updateError } = await supabase
@@ -159,7 +167,8 @@ export async function showReview(formData: FormData) {
     .eq("id", reviewId);
 
   if (updateError) {
-    return { error: updateError.message };
+    console.error("Error updating review:", updateError.message);
+    return;
   }
 
   // Log admin action
@@ -172,5 +181,4 @@ export async function showReview(formData: FormData) {
   });
 
   revalidatePath("/admin/reviews");
-  return { success: true };
 }

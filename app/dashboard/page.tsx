@@ -3,6 +3,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { getRoleBasedRedirect } from "@/lib/auth/utils";
 
 export default function DashboardPage() {
   const { user, role, loading } = useAuth();
@@ -15,14 +16,7 @@ export default function DashboardPage() {
     }
 
     if (user && role) {
-      // Redirect to role-specific dashboard
-      if (role === "admin") {
-        router.replace("/admin/dashboard");
-      } else if (role === "professional") {
-        router.replace("/professional/dashboard");
-      } else {
-        router.replace("/customer/dashboard");
-      }
+      router.replace(getRoleBasedRedirect(role));
     }
   }, [user, role, loading, router]);
 

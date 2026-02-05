@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
-import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
+import { getRoleBasedRedirect } from "@/lib/auth/utils";
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
@@ -39,17 +39,4 @@ export async function GET(request: NextRequest) {
   );
 }
 
-function getRoleBasedRedirect(
-  role: "admin" | "professional" | "customer"
-): string {
-  switch (role) {
-    case "admin":
-      return "/admin/dashboard";
-    case "professional":
-      return "/professional/dashboard";
-    case "customer":
-      return "/customer/dashboard";
-    default:
-      return "/dashboard";
-  }
-}
+

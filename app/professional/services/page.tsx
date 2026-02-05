@@ -27,6 +27,7 @@ import {
   Search,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { getRoleBasedRedirect } from "@/lib/auth/utils";
 
 interface ServiceWithProfessional extends Service {
   professional_service?: ProfessionalService;
@@ -56,16 +57,10 @@ export default function ProfessionalServicesPage() {
         return;
       }
       // Check if user has professional role
-      if (role !== "professional") {
-        // Redirect based on actual role
-        if (role === "admin") {
-          router.push("/admin/dashboard");
-        } else if (role === "customer") {
-          router.push("/customer/dashboard");
-        } else {
-          router.push("/login?error=unauthorized");
-        }
-        return;
+      if (role === "admin" || role === "customer") {
+        router.push(getRoleBasedRedirect(role));
+      } else {
+        router.push("/login?error=unauthorized");
       }
       fetchServices();
     }

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
+import { useRouter } from "next/navigation";
+import { getRoleBasedRedirect } from "@/lib/auth/utils";
 import { createClient } from "@/lib/supabase/client";
 import {
   Card,
@@ -24,7 +26,7 @@ import {
   Package,
   Filter,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+
 
 interface BookingWithDetails extends Booking {
   service: Service;
@@ -49,16 +51,10 @@ export default function ProfessionalBookingsPage() {
         return;
       }
       // Check if user has professional role
-      if (role !== "professional") {
-        // Redirect based on actual role
-        if (role === "admin") {
-          router.push("/admin/dashboard");
-        } else if (role === "customer") {
-          router.push("/customer/dashboard");
-        } else {
-          router.push("/login?error=unauthorized");
-        }
-        return;
+      if (role === "admin" || role === "customer") {
+        router.push(getRoleBasedRedirect(role));
+      } else {
+        router.push("/login?error=unauthorized");
       }
       fetchBookings();
     }

@@ -9,6 +9,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { signOut } from "@/lib/auth/actions";
 import { useRouter } from "next/navigation";
 
+import { getRoleBasedRedirect } from "@/lib/auth/utils";
+
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, role } = useAuth();
@@ -59,15 +61,7 @@ export function Header() {
             </Link>
             {user ? (
               <div className="flex items-center space-x-4">
-                <Link
-                  href={
-                    role === "admin"
-                      ? "/admin/dashboard"
-                      : role === "professional"
-                        ? "/professional/dashboard"
-                        : "/customer/dashboard"
-                  }
-                >
+                <Link href={getRoleBasedRedirect(role || "customer")}>
                   <Button variant="ghost" size="sm">
                     <User className="mr-2 h-4 w-4" />
                     Dashboard
@@ -129,13 +123,7 @@ export function Header() {
               {user ? (
                 <>
                   <Link
-                    href={
-                      role === "admin"
-                        ? "/admin/dashboard"
-                        : role === "professional"
-                          ? "/professional/dashboard"
-                          : "/customer/dashboard"
-                    }
+                    href={getRoleBasedRedirect(role || "customer")}
                     className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                     onClick={() => setMobileMenuOpen(false)}
                   >

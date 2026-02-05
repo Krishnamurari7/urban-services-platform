@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { getRoleBasedRedirect } from "@/lib/auth/utils";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -27,8 +29,9 @@ import {
 
 export default function ProfessionalProfilePage() {
   const { user, role, loading: authLoading } = useAuth();
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const [profile, setProfile] = useState<any>(null);
+  const [profileLoading, setProfileLoading] = useState(true);
   const [editingProfile, setEditingProfile] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -45,22 +48,16 @@ export default function ProfessionalProfilePage() {
   });
 
   useEffect(() => {
-    if (!authLoading) {
+    if (!authLoading && !user) {
       if (!user) {
         window.location.href = "/login";
         return;
       }
       // Check if user has professional role
-      if (role !== "professional") {
-        // Redirect based on actual role
-        if (role === "admin") {
-          window.location.href = "/admin/dashboard";
-        } else if (role === "customer") {
-          window.location.href = "/customer/dashboard";
-        } else {
-          window.location.href = "/login?error=unauthorized";
-        }
-        return;
+      if (role === "admin" || role === "customer") {
+        router.push(getRoleBasedRedirect(role));
+      } else {
+        window.location.href = "/login?error=unauthorized";
       }
       fetchProfileData();
     }
@@ -95,7 +92,7 @@ export default function ProfessionalProfilePage() {
     } catch (error) {
       console.error("Error fetching profile data:", error);
     } finally {
-      setLoading(false);
+      setProfileLoading(false);
     }
   };
 
@@ -156,7 +153,7 @@ export default function ProfessionalProfilePage() {
     });
   };
 
-  if (authLoading || loading) {
+  if (authLoading || profileLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="animate-pulse space-y-4">
@@ -437,7 +434,7 @@ export default function ProfessionalProfilePage() {
                     Skills
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {profile.skills.map((skill) => (
+                    {profile.skills.map((skill: string) => (
                       <Badge key={skill} variant="secondary">
                         {skill}
                       </Badge>

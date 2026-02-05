@@ -9,7 +9,8 @@ export async function approveProfessional(formData: FormData) {
   const professionalId = formData.get("professionalId") as string;
 
   if (!professionalId) {
-    return { error: "Professional ID is required" };
+    console.error("Professional ID is required");
+    return;
   }
 
   // Check if user is admin
@@ -18,7 +19,8 @@ export async function approveProfessional(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Unauthorized" };
+    console.error("Unauthorized: No user found");
+    return;
   }
 
   const { data: profile } = await supabase
@@ -28,7 +30,8 @@ export async function approveProfessional(formData: FormData) {
     .single();
 
   if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
+    console.error("Unauthorized: User is not an admin");
+    return;
   }
 
   // Update professional verification status
@@ -42,7 +45,8 @@ export async function approveProfessional(formData: FormData) {
     .eq("role", "professional");
 
   if (profileError) {
-    return { error: profileError.message };
+    console.error("Error updating profile:", profileError.message);
+    return;
   }
 
   // Update all pending documents to approved
@@ -71,7 +75,6 @@ export async function approveProfessional(formData: FormData) {
 
   logger.info("Admin action: Approved professional", { adminId: user.id, targetProfessionalId: professionalId });
   revalidatePath("/admin/professionals");
-  return { success: true };
 }
 
 export async function rejectProfessional(formData: FormData) {
@@ -80,7 +83,8 @@ export async function rejectProfessional(formData: FormData) {
   const reason = formData.get("reason") as string;
 
   if (!professionalId) {
-    return { error: "Professional ID is required" };
+    console.error("Professional ID is required");
+    return;
   }
 
   // Check if user is admin
@@ -89,7 +93,8 @@ export async function rejectProfessional(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Unauthorized" };
+    console.error("Unauthorized: No user found");
+    return;
   }
 
   const { data: profile } = await supabase
@@ -99,7 +104,8 @@ export async function rejectProfessional(formData: FormData) {
     .single();
 
   if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
+    console.error("Unauthorized: User is not an admin");
+    return;
   }
 
   // Update professional status
@@ -113,7 +119,8 @@ export async function rejectProfessional(formData: FormData) {
     .eq("role", "professional");
 
   if (profileError) {
-    return { error: profileError.message };
+    console.error("Error updating profile:", profileError.message);
+    return;
   }
 
   // Reject all pending documents
@@ -143,5 +150,4 @@ export async function rejectProfessional(formData: FormData) {
 
   logger.info("Admin action: Rejected professional", { adminId: user.id, targetProfessionalId: professionalId, reason });
   revalidatePath("/admin/professionals");
-  return { success: true };
 }

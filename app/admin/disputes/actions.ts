@@ -10,7 +10,8 @@ export async function processRefund(formData: FormData) {
     (formData.get("reason") as string) || "Refund processed by admin";
 
   if (!bookingId) {
-    return { error: "Booking ID is required" };
+    console.error("Booking ID is required");
+    return;
   }
 
   // Check if user is admin
@@ -19,7 +20,8 @@ export async function processRefund(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Unauthorized" };
+    console.error("Unauthorized: No user found");
+    return;
   }
 
   const { data: profile } = await supabase
@@ -29,7 +31,8 @@ export async function processRefund(formData: FormData) {
     .single();
 
   if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
+    console.error("Unauthorized: User is not an admin");
+    return;
   }
 
   // Get booking details
@@ -40,7 +43,8 @@ export async function processRefund(formData: FormData) {
     .single();
 
   if (!booking) {
-    return { error: "Booking not found" };
+    console.error("Booking not found");
+    return;
   }
 
   // Get payment for this booking
@@ -51,7 +55,8 @@ export async function processRefund(formData: FormData) {
     .single();
 
   if (!payment) {
-    return { error: "Payment not found" };
+    console.error("Payment not found");
+    return;
   }
 
   // Update payment status to refunded
@@ -66,7 +71,8 @@ export async function processRefund(formData: FormData) {
     .eq("id", payment.id);
 
   if (paymentError) {
-    return { error: paymentError.message };
+    console.error("Error updating payment:", paymentError.message);
+    return;
   }
 
   // Update booking status
@@ -92,7 +98,6 @@ export async function processRefund(formData: FormData) {
   });
 
   revalidatePath("/admin/disputes");
-  return { success: true };
 }
 
 export async function resolveDispute(formData: FormData) {
@@ -102,7 +107,8 @@ export async function resolveDispute(formData: FormData) {
     (formData.get("resolution") as string) || "Dispute resolved by admin";
 
   if (!bookingId) {
-    return { error: "Booking ID is required" };
+    console.error("Booking ID is required");
+    return;
   }
 
   // Check if user is admin
@@ -111,7 +117,8 @@ export async function resolveDispute(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Unauthorized" };
+    console.error("Unauthorized: No user found");
+    return;
   }
 
   const { data: profile } = await supabase
@@ -121,7 +128,8 @@ export async function resolveDispute(formData: FormData) {
     .single();
 
   if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
+    console.error("Unauthorized: User is not an admin");
+    return;
   }
 
   // Update booking - mark as resolved (you might want to add a resolved status)
@@ -135,5 +143,4 @@ export async function resolveDispute(formData: FormData) {
   });
 
   revalidatePath("/admin/disputes");
-  return { success: true };
 }
