@@ -199,7 +199,7 @@ export default function AuditLogPage() {
                                             <TableCell className="text-right">
                                                 <Button
                                                     variant="ghost"
-                                                    size="icon"
+                                                    size="sm"
                                                     onClick={() => setSelectedLog(log)}
                                                 >
                                                     <Eye className="h-4 w-4" />
