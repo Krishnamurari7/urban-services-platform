@@ -337,13 +337,13 @@ export default function CustomerDashboard() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
+        <div className="mb-10">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                 Welcome back, {profile?.full_name || "Customer"}!
               </h1>
               <p className="text-gray-600 text-lg">
@@ -360,123 +360,123 @@ export default function CustomerDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-10">
           <Link href="/customer/book-service">
-            <Card className="hover:shadow-lg transition-all cursor-pointer border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 hover:scale-105">
-              <CardContent className="pt-6 text-center">
-                <div className="h-12 w-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Plus className="h-6 w-6 text-white" />
+            <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border-blue-200 bg-gradient-to-br from-blue-50 via-blue-50 to-white hover:scale-105 hover:border-blue-300 group">
+              <CardContent className="pt-6 pb-6 text-center">
+                <div className="h-14 w-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                  <Plus className="h-7 w-7 text-white" />
                 </div>
-                <p className="font-semibold text-blue-900">Book Service</p>
+                <p className="font-semibold text-blue-900 text-sm md:text-base">Book Service</p>
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/customer/bookings">
-            <Card className="hover:shadow-lg transition-all cursor-pointer border-purple-200 bg-gradient-to-br from-purple-50 to-purple-100 hover:scale-105">
-              <CardContent className="pt-6 text-center">
-                <div className="h-12 w-12 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Calendar className="h-6 w-6 text-white" />
+            <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border-purple-200 bg-gradient-to-br from-purple-50 via-purple-50 to-white hover:scale-105 hover:border-purple-300 group">
+              <CardContent className="pt-6 pb-6 text-center">
+                <div className="h-14 w-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                  <Calendar className="h-7 w-7 text-white" />
                 </div>
-                <p className="font-semibold text-purple-900">My Bookings</p>
+                <p className="font-semibold text-purple-900 text-sm md:text-base">My Bookings</p>
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/customer/profile">
-            <Card className="hover:shadow-lg transition-all cursor-pointer border-green-200 bg-gradient-to-br from-green-50 to-green-100 hover:scale-105">
-              <CardContent className="pt-6 text-center">
-                <div className="h-12 w-12 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Settings className="h-6 w-6 text-white" />
+            <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border-green-200 bg-gradient-to-br from-green-50 via-green-50 to-white hover:scale-105 hover:border-green-300 group">
+              <CardContent className="pt-6 pb-6 text-center">
+                <div className="h-14 w-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                  <Settings className="h-7 w-7 text-white" />
                 </div>
-                <p className="font-semibold text-green-900">Manage Profile</p>
+                <p className="font-semibold text-green-900 text-sm md:text-base">Manage Profile</p>
               </CardContent>
             </Card>
           </Link>
 
           <a href="mailto:support@urbanservices.com">
-            <Card className="hover:shadow-lg transition-all cursor-pointer border-orange-200 bg-gradient-to-br from-orange-50 to-orange-100 hover:scale-105">
-              <CardContent className="pt-6 text-center">
-                <div className="h-12 w-12 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <HelpCircle className="h-6 w-6 text-white" />
+            <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border-orange-200 bg-gradient-to-br from-orange-50 via-orange-50 to-white hover:scale-105 hover:border-orange-300 group">
+              <CardContent className="pt-6 pb-6 text-center">
+                <div className="h-14 w-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                  <HelpCircle className="h-7 w-7 text-white" />
                 </div>
-                <p className="font-semibold text-orange-900">Get Help</p>
+                <p className="font-semibold text-orange-900 text-sm md:text-base">Get Help</p>
               </CardContent>
             </Card>
           </a>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="border-blue-100 bg-gradient-to-br from-blue-50 to-white hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-10">
+          <Card className="border-blue-100 bg-gradient-to-br from-blue-50 via-white to-white hover:shadow-xl transition-all duration-300 hover:border-blue-200">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-gray-700">
                 Total Bookings
               </CardTitle>
-              <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                <Package className="h-5 w-5 text-white" />
+              <div className="h-12 w-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+                <Package className="h-6 w-6 text-white" />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-blue-900">{stats.totalBookings}</div>
-              <p className="text-xs text-gray-500 mt-1 flex items-center">
+              <div className="text-3xl md:text-4xl font-bold text-blue-900 mb-1">{stats.totalBookings}</div>
+              <p className="text-xs text-gray-500 flex items-center">
                 <TrendingUp className="h-3 w-3 mr-1" />
                 All time bookings
               </p>
             </CardContent>
           </Card>
 
-          <Card className="border-purple-100 bg-gradient-to-br from-purple-50 to-white hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+          <Card className="border-purple-100 bg-gradient-to-br from-purple-50 via-white to-white hover:shadow-xl transition-all duration-300 hover:border-purple-200">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-gray-700">
                 Upcoming
               </CardTitle>
-              <div className="h-10 w-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <Calendar className="h-5 w-5 text-white" />
+              <div className="h-12 w-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
+                <Calendar className="h-6 w-6 text-white" />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-purple-900">{stats.upcomingBookings}</div>
-              <p className="text-xs text-gray-500 mt-1">Scheduled services</p>
+              <div className="text-3xl md:text-4xl font-bold text-purple-900 mb-1">{stats.upcomingBookings}</div>
+              <p className="text-xs text-gray-500">Scheduled services</p>
             </CardContent>
           </Card>
 
-          <Card className="border-green-100 bg-gradient-to-br from-green-50 to-white hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+          <Card className="border-green-100 bg-gradient-to-br from-green-50 via-white to-white hover:shadow-xl transition-all duration-300 hover:border-green-200">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-gray-700">
                 Completed
               </CardTitle>
-              <div className="h-10 w-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-                <CheckCircle className="h-5 w-5 text-white" />
+              <div className="h-12 w-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md">
+                <CheckCircle className="h-6 w-6 text-white" />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-green-900">{stats.completedBookings}</div>
-              <p className="text-xs text-gray-500 mt-1">Finished services</p>
+              <div className="text-3xl md:text-4xl font-bold text-green-900 mb-1">{stats.completedBookings}</div>
+              <p className="text-xs text-gray-500">Finished services</p>
             </CardContent>
           </Card>
 
-          <Card className="border-orange-100 bg-gradient-to-br from-orange-50 to-white hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+          <Card className="border-orange-100 bg-gradient-to-br from-orange-50 via-white to-white hover:shadow-xl transition-all duration-300 hover:border-orange-200">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-gray-700">
                 Total Spent
               </CardTitle>
-              <div className="h-10 w-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
-                <DollarSign className="h-5 w-5 text-white" />
+              <div className="h-12 w-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md">
+                <DollarSign className="h-6 w-6 text-white" />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-orange-900">
+              <div className="text-3xl md:text-4xl font-bold text-orange-900 mb-1">
                 ₹{stats.totalSpent.toFixed(2)}
               </div>
-              <p className="text-xs text-gray-500 mt-1">Lifetime spending</p>
+              <p className="text-xs text-gray-500">Lifetime spending</p>
             </CardContent>
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-10">
           {/* Default Address */}
-          <Card className="border-blue-100 hover:shadow-lg transition-shadow">
+          <Card className="border-blue-100 hover:shadow-xl transition-all duration-300 bg-white">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-lg">
@@ -523,7 +523,7 @@ export default function CustomerDashboard() {
           </Card>
 
           {/* Wallet Summary */}
-          <Card className="border-green-100 hover:shadow-lg transition-shadow">
+          <Card className="border-green-100 hover:shadow-xl transition-all duration-300 bg-white">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Wallet className="h-5 w-5 text-green-600" />
@@ -553,7 +553,7 @@ export default function CustomerDashboard() {
           </Card>
 
           {/* Notifications */}
-          <Card className="border-purple-100 hover:shadow-lg transition-shadow">
+          <Card className="border-purple-100 hover:shadow-xl transition-all duration-300 bg-white">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Bell className="h-5 w-5 text-purple-600" />
@@ -598,7 +598,7 @@ export default function CustomerDashboard() {
 
         {/* Popular Services */}
         {popularServices.length > 0 && (
-          <Card className="mb-8 border-indigo-100">
+          <Card className="mb-10 border-indigo-100 bg-white shadow-sm">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
@@ -617,7 +617,7 @@ export default function CustomerDashboard() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {popularServices.map((service) => (
                   <Link key={service.id} href={`/customer/book-service?service=${service.id}`}>
                     <Card className="hover:shadow-md transition-all cursor-pointer border-gray-200 hover:border-indigo-300">
@@ -656,7 +656,7 @@ export default function CustomerDashboard() {
         )}
 
         {/* Recent Bookings */}
-        <Card className="border-gray-200">
+        <Card className="border-gray-200 bg-white shadow-sm">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
@@ -693,7 +693,7 @@ export default function CustomerDashboard() {
                     href={`/customer/bookings/${booking.id}`}
                     className="block"
                   >
-                    <div className="flex items-center justify-between p-4 border rounded-xl hover:bg-gray-50 hover:shadow-md transition-all">
+                    <div className="flex items-center justify-between p-5 border-2 rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:shadow-lg hover:border-blue-200 transition-all duration-300 cursor-pointer group">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
                           <h3 className="font-semibold text-lg">

@@ -79,7 +79,7 @@ export default async function AdminBookingsPage() {
       </div>
 
       {/* Status Summary */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
         {Object.entries(statusCounts).map(([status, count]) => (
           <Card key={status}>
             <CardContent className="p-4">
@@ -95,11 +95,64 @@ export default async function AdminBookingsPage() {
       {/* Bookings Table */}
       <Card>
         <CardHeader>
-          <CardTitle>All Bookings ({bookings.length})</CardTitle>
+          <CardTitle className="text-xl sm:text-2xl">All Bookings ({bookings.length})</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
+          {/* Mobile: Card View */}
+          <div className="md:hidden space-y-4">
+            {bookings.map((booking: any) => (
+              <Card key={booking.id} className="border">
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-mono text-gray-500 mb-1">
+                        {booking.id.substring(0, 8)}...
+                      </div>
+                      <h3 className="font-semibold text-sm mb-2">{booking.service?.name}</h3>
+                      <div className="space-y-1 text-xs text-gray-600">
+                        <div>
+                          <span className="font-medium">Customer:</span> {booking.customer?.full_name}
+                        </div>
+                        <div>
+                          <span className="font-medium">Professional:</span> {booking.professional?.full_name || "Unassigned"}
+                        </div>
+                        <div>
+                          <span className="font-medium">Scheduled:</span> {new Date(booking.scheduled_at).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right ml-2">
+                      <div className="font-bold text-lg">₹{booking.final_amount}</div>
+                      <span
+                        className={`inline-block mt-1 px-2 py-1 rounded text-xs ${booking.status === "completed"
+                            ? "bg-green-100 text-green-700"
+                            : booking.status === "cancelled" || booking.status === "refunded"
+                              ? "bg-red-100 text-red-700"
+                              : booking.status === "in_progress"
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-yellow-100 text-yellow-700"
+                          }`}
+                      >
+                        {booking.status.replace("_", " ")}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="pt-2 border-t">
+                    <Link
+                      href={`/admin/bookings/${booking.id}`}
+                      className="block w-full text-center px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Desktop: Table View */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full min-w-[800px]">
               <thead>
                 <tr className="border-b">
                   <th className="text-left p-2">ID</th>

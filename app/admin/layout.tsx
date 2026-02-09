@@ -12,8 +12,8 @@ export default function AdminLayout({
         <AdminSidebar />
 
         {/* Main Content */}
-        <div className="pl-64">
-          <main className="p-8">{children}</main>
+        <div className="md:pl-64 pt-16 md:pt-0">
+          <main className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto">{children}</main>
         </div>
       </div>
     </ProtectedRoute>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { UserRole } from "@/lib/types/auth";
 import { getRoleBasedRedirect } from "@/lib/auth/utils";
+import { LoadingBar } from "@/components/ui/loading-bar";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -62,8 +63,10 @@ export function ProtectedRoute({
 
   if (loading || (isAuthenticated && roleLoading && role === null)) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-gray-600">Loading...</div>
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="w-full max-w-md px-4">
+          <LoadingBar text="vera company" />
+        </div>
       </div>
     );
   }

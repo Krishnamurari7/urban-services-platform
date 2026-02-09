@@ -63,17 +63,17 @@ export default function AboutPage() {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-primary/5 py-20 md:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 py-20 md:py-32">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute left-1/4 top-1/4 h-72 w-72 rounded-full bg-primary/5 blur-3xl"></div>
-          <div className="absolute right-1/4 bottom-1/4 h-96 w-96 rounded-full bg-primary/5 blur-3xl"></div>
+          <div className="absolute left-1/4 top-1/4 h-72 w-72 rounded-full bg-blue-200/30 blur-3xl"></div>
+          <div className="absolute right-1/4 bottom-1/4 h-96 w-96 rounded-full bg-purple-200/30 blur-3xl"></div>
         </div>
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-7xl">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              About <span className="text-primary">vera company</span>
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              About <span className="text-blue-600">vera company</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600 sm:text-xl">
               We're revolutionizing the way people connect with professional
               services, making it easier, safer, and more convenient than ever
               before.
@@ -116,17 +116,17 @@ export default function AboutPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="bg-muted/50 py-16">
-        <div className="container mx-auto px-4">
+      <section className="bg-gradient-to-br from-gray-50 to-white py-16">
+        <div className="container mx-auto px-4 max-w-7xl">
           <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
             {stats.map((stat, index) => (
-              <Card key={index} className="text-center">
-                <CardContent className="pt-6">
-                  <div className="mb-4 flex justify-center text-primary">
+              <Card key={index} className="text-center border-2 border-gray-100 hover:shadow-xl transition-all duration-300 hover:border-blue-200 bg-white">
+                <CardContent className="pt-6 pb-6">
+                  <div className="mb-4 flex justify-center text-blue-600">
                     {stat.icon}
                   </div>
-                  <div className="text-3xl font-bold mb-2">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{stat.value}</div>
+                  <div className="text-sm text-gray-600 font-medium">
                     {stat.label}
                   </div>
                 </CardContent>
@@ -151,14 +151,14 @@ export default function AboutPage() {
             {values.map((value, index) => (
               <Card
                 key={index}
-                className="group transition-all hover:shadow-lg hover:-translate-y-1"
+                className="group transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border-2 border-gray-100 bg-white"
               >
                 <CardContent className="p-6 text-center">
-                  <div className="mb-4 flex justify-center text-primary transition-transform group-hover:scale-110">
+                  <div className="mb-4 flex justify-center text-blue-600 transition-transform group-hover:scale-110">
                     {value.icon}
                   </div>
-                  <h3 className="mb-2 font-semibold text-lg">{value.title}</h3>
-                  <p className="text-sm text-muted-foreground">
+                  <h3 className="mb-2 font-bold text-lg text-gray-900">{value.title}</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">
                     {value.description}
                   </p>
                 </CardContent>

@@ -71,10 +71,10 @@ export function RegisterForm() {
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
-        <CardDescription>Enter your information to get started</CardDescription>
+    <Card className="w-full max-w-md shadow-xl border-2 border-gray-100 bg-white">
+      <CardHeader className="space-y-2 text-center pb-6">
+        <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Create an account</CardTitle>
+        <CardDescription className="text-base">Enter your information to get started</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <form onSubmit={handleSubmit} className="space-y-4">

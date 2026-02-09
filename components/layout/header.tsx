@@ -21,20 +21,20 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 shadow-sm">
-      <div className="container mx-auto px-4">
+    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur-lg supports-[backdrop-filter]:bg-white/90 shadow-sm">
+      <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 group">
+          <Link href="/" className="flex items-center space-x-2 group min-w-0 flex-shrink">
             <Image
               src="/logo.png"
               alt="VERA COMPANY"
               width={40}
               height={40}
-              className="transition-transform group-hover:scale-110"
+              className="transition-transform group-hover:scale-110 flex-shrink-0"
               priority
             />
-            <span className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
+            <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text truncate">
               vera company
             </span>
           </Link>
@@ -90,9 +90,10 @@ export function Header() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden"
+            className="md:hidden p-2 -mr-2 touch-manipulation"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? (
               <X className="h-6 w-6" />
@@ -104,8 +105,8 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="border-t py-4 md:hidden">
-            <nav className="flex flex-col space-y-4">
+          <div className="border-t py-4 md:hidden animate-in slide-in-from-top-2">
+            <nav className="flex flex-col space-y-2">
               <Link
                 href="/services"
                 className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"

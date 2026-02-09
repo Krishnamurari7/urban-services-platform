@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/components/auth/auth-provider";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -19,11 +20,20 @@ import { Package, Search, Clock, DollarSign, ArrowRight } from "lucide-react";
 
 export default function CustomerServicesPage() {
   const { user, loading: authLoading } = useAuth();
+  const searchParams = useSearchParams();
   const [services, setServices] = useState<Service[]>([]);
   const [filteredServices, setFilteredServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
+
+  // Read search query from URL params on mount
+  useEffect(() => {
+    const searchParam = searchParams.get("search");
+    if (searchParam) {
+      setSearchQuery(searchParam);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (!authLoading && user) {

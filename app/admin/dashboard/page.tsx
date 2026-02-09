@@ -137,98 +137,106 @@ export default async function AdminDashboard() {
   const analytics = await getAnalytics();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
           Analytics Dashboard
         </h1>
-        <p className="text-gray-600 mt-1">
+        <p className="text-gray-600 text-lg">
           Overview of platform metrics and performance
         </p>
       </div>
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-            <span className="text-2xl">👥</span>
+        <Card className="border-blue-100 bg-gradient-to-br from-blue-50 via-white to-white hover:shadow-xl transition-all duration-300">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-semibold text-gray-700">Total Users</CardTitle>
+            <div className="h-12 w-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+              <span className="text-2xl">👥</span>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analytics.totalUsers}</div>
-            <p className="text-xs text-gray-500 mt-1">
+            <div className="text-3xl md:text-4xl font-bold text-blue-900 mb-1">{analytics.totalUsers}</div>
+            <p className="text-xs text-gray-500">
               {analytics.totalProfessionals} professionals
             </p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+        <Card className="border-purple-100 bg-gradient-to-br from-purple-50 via-white to-white hover:shadow-xl transition-all duration-300">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-semibold text-gray-700">
               Total Bookings
             </CardTitle>
-            <span className="text-2xl">📅</span>
+            <div className="h-12 w-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
+              <span className="text-2xl">📅</span>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analytics.totalBookings}</div>
-            <p className="text-xs text-gray-500 mt-1">
+            <div className="text-3xl md:text-4xl font-bold text-purple-900 mb-1">{analytics.totalBookings}</div>
+            <p className="text-xs text-gray-500">
               {analytics.statusCounts.completed} completed
             </p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <span className="text-2xl">💰</span>
+        <Card className="border-green-100 bg-gradient-to-br from-green-50 via-white to-white hover:shadow-xl transition-all duration-300">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-semibold text-gray-700">Total Revenue</CardTitle>
+            <div className="h-12 w-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md">
+              <span className="text-2xl">💰</span>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-3xl md:text-4xl font-bold text-green-900 mb-1">
               ₹{analytics.totalRevenue.toLocaleString()}
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-500">
               ₹{analytics.weeklyRevenue.toLocaleString()} this week
             </p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+        <Card className="border-orange-100 bg-gradient-to-br from-orange-50 via-white to-white hover:shadow-xl transition-all duration-300">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-semibold text-gray-700">
               Active Services
             </CardTitle>
-            <span className="text-2xl">🔧</span>
+            <div className="h-12 w-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md">
+              <span className="text-2xl">🔧</span>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analytics.totalServices}</div>
-            <p className="text-xs text-gray-500 mt-1">Available on platform</p>
+            <div className="text-3xl md:text-4xl font-bold text-orange-900 mb-1">{analytics.totalServices}</div>
+            <p className="text-xs text-gray-500">Available on platform</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Booking Status Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
+        <Card className="bg-white shadow-sm">
           <CardHeader>
-            <CardTitle>Booking Status</CardTitle>
+            <CardTitle className="text-xl font-bold">Booking Status</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {Object.entries(analytics.statusCounts).map(([status, count]) => (
-                <div key={status} className="flex items-center justify-between">
-                  <span className="text-sm font-medium capitalize">
+                <div key={status} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <span className="text-sm font-semibold capitalize text-gray-700">
                     {status.replace("_", " ")}
                   </span>
-                  <span className="text-sm text-gray-600">{count}</span>
+                  <span className="text-sm font-bold text-gray-900">{count}</span>
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white shadow-sm">
           <CardHeader>
-            <CardTitle>Recent Bookings</CardTitle>
+            <CardTitle className="text-xl font-bold">Recent Bookings</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -236,24 +244,26 @@ export default async function AdminDashboard() {
                 analytics.recentBookings.map((booking: any) => (
                   <div
                     key={booking.id}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-white rounded-xl border-2 border-gray-100 hover:border-blue-200 hover:shadow-md transition-all duration-300"
                   >
-                    <div>
-                      <p className="text-sm font-medium">
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-gray-900">
                         {booking.customer?.full_name || "Customer"} →{" "}
                         {booking.professional?.full_name || "Professional"}
                       </p>
-                      <p className="text-xs text-gray-500">
-                        ₹{booking.final_amount} • {booking.status}
+                      <p className="text-xs text-gray-600 mt-1">
+                        ₹{booking.final_amount} • <span className="capitalize">{booking.status}</span>
                       </p>
                     </div>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-gray-500 font-medium">
                       {new Date(booking.created_at).toLocaleDateString()}
                     </span>
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-gray-500">No recent bookings</p>
+                <div className="text-center py-8">
+                  <p className="text-sm text-gray-500">No recent bookings</p>
+                </div>
               )}
             </div>
           </CardContent>

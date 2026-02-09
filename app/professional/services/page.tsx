@@ -57,10 +57,13 @@ export default function ProfessionalServicesPage() {
         return;
       }
       // Check if user has professional role
-      if (role === "admin" || role === "customer") {
-        router.push(getRoleBasedRedirect(role));
-      } else {
-        router.push("/login?error=unauthorized");
+      if (role !== "professional") {
+        if (role) {
+          router.push(getRoleBasedRedirect(role));
+        } else {
+          router.push("/login?error=unauthorized");
+        }
+        return;
       }
       fetchServices();
     }
@@ -353,7 +356,7 @@ export default function ProfessionalServicesPage() {
                       <div className="flex items-center gap-1">
                         <DollarSign className="h-4 w-4" />
                         <span className="font-medium">
-                          ${service.professional_service?.price.toFixed(2)}
+                          ₹{Number(service.professional_service?.price).toFixed(2)}
                         </span>
                       </div>
                       {service.professional_service?.duration_minutes && (
@@ -423,7 +426,7 @@ export default function ProfessionalServicesPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  Price ($)
+                  Price (₹)
                 </label>
                 <Input
                   type="number"
@@ -506,7 +509,7 @@ export default function ProfessionalServicesPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  Price ($)
+                  Price (₹)
                 </label>
                 <Input
                   type="number"
@@ -520,10 +523,10 @@ export default function ProfessionalServicesPage() {
                   required
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Base price: $
-                  {allServices
+                  Base price: ₹
+                  {Number(allServices
                     .find((s) => s.id === addingServiceId)
-                    ?.base_price.toFixed(2)}
+                    ?.base_price).toFixed(2)}
                 </p>
               </div>
               <div>
@@ -651,7 +654,7 @@ export default function ProfessionalServicesPage() {
                     <div className="flex items-center gap-4 text-sm">
                       <div className="flex items-center gap-1">
                         <DollarSign className="h-4 w-4" />
-                        <span>Base: ${service.base_price.toFixed(2)}</span>
+                        <span>Base: ₹{Number(service.base_price).toFixed(2)}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Clock className="h-4 w-4" />

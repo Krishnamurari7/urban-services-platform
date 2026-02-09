@@ -18,6 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
+import { LoadingBar } from "@/components/ui/loading-bar";
 
 type LoginMethod = "email" | "otp";
 
@@ -47,12 +48,12 @@ export function LoginForm() {
       if (result?.error) {
         setError(result.error);
       } else if (result?.success && result?.redirectPath) {
-        // Refresh router to ensure session is synced
-        router.refresh();
-        // Small delay to ensure cookies are propagated
-        await new Promise(resolve => setTimeout(resolve, 100));
-        // Navigate to role-based dashboard
-        router.push(result.redirectPath);
+        // Full page reload so Supabase cookies + AuthProvider stay perfectly in sync
+        if (typeof window !== "undefined") {
+          window.location.href = result.redirectPath;
+        } else {
+          router.push(result.redirectPath);
+        }
       }
     } catch (err) {
       setError("An unexpected error occurred");
@@ -111,12 +112,12 @@ export function LoginForm() {
       if (result?.error) {
         setError(result.error);
       } else if (result?.success && result?.redirectPath) {
-        // Refresh router to ensure session is synced
-        router.refresh();
-        // Small delay to ensure cookies are propagated
-        await new Promise(resolve => setTimeout(resolve, 100));
-        // Navigate to role-based dashboard
-        router.push(result.redirectPath);
+        // Full page reload so Supabase cookies + AuthProvider stay perfectly in sync
+        if (typeof window !== "undefined") {
+          window.location.href = result.redirectPath;
+        } else {
+          router.push(result.redirectPath);
+        }
       }
     } catch (err) {
       setError("Failed to verify OTP. Please try again.");
@@ -126,14 +127,14 @@ export function LoginForm() {
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
-        <CardDescription>Sign in to your account to continue</CardDescription>
+    <Card className="w-full max-w-md shadow-xl border-2 border-gray-100 bg-white">
+      <CardHeader className="space-y-2 text-center pb-6">
+        <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Welcome back</CardTitle>
+        <CardDescription className="text-base">Sign in to your account to continue</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Login Method Toggle */}
-        <div className="flex gap-2 border-b">
+        <div className="flex gap-2 border-2 border-gray-200 rounded-lg p-1 bg-gray-50">
           <button
             type="button"
             onClick={() => {
@@ -141,9 +142,9 @@ export function LoginForm() {
               setError(null);
               setOtpSent(false);
             }}
-            className={`flex-1 py-2 text-sm font-medium transition-colors ${loginMethod === "email"
-              ? "border-b-2 border-primary text-primary"
-              : "text-muted-foreground hover:text-foreground"
+            className={`flex-1 py-2.5 text-sm font-semibold rounded-md transition-all duration-200 ${loginMethod === "email"
+              ? "bg-white text-blue-600 shadow-sm"
+              : "text-gray-600 hover:text-gray-900"
               }`}
           >
             Email
@@ -155,9 +156,9 @@ export function LoginForm() {
               setError(null);
               setOtpSent(false);
             }}
-            className={`flex-1 py-2 text-sm font-medium transition-colors ${loginMethod === "otp"
-              ? "border-b-2 border-primary text-primary"
-              : "text-muted-foreground hover:text-foreground"
+            className={`flex-1 py-2.5 text-sm font-semibold rounded-md transition-all duration-200 ${loginMethod === "otp"
+              ? "bg-white text-blue-600 shadow-sm"
+              : "text-gray-600 hover:text-gray-900"
               }`}
           >
             Phone OTP
@@ -206,7 +207,11 @@ export function LoginForm() {
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? (
+                <LoadingBar text="vera company" className="w-full" compact />
+              ) : (
+                "Sign in"
+              )}
             </Button>
           </form>
         ) : (
@@ -238,7 +243,11 @@ export function LoginForm() {
                   className="w-full"
                   disabled={otpLoading || !phone}
                 >
-                  {otpLoading ? "Sending..." : "Send OTP"}
+                  {otpLoading ? (
+                    <LoadingBar text="vera company" className="w-full" compact />
+                  ) : (
+                    "Send OTP"
+                  )}
                 </Button>
               </>
             ) : (
@@ -278,7 +287,11 @@ export function LoginForm() {
                     className="flex-1"
                     disabled={otpLoading || otp.length !== 6}
                   >
-                    {otpLoading ? "Verifying..." : "Verify OTP"}
+                    {otpLoading ? (
+                      <LoadingBar text="vera company" className="w-full" compact />
+                    ) : (
+                      "Verify OTP"
+                    )}
                   </Button>
                 </div>
               </form>
@@ -305,7 +318,7 @@ export function LoginForm() {
           className="w-full"
         >
           {googleLoading ? (
-            "Connecting..."
+            <LoadingBar text="vera company" className="w-full" compact variant="outline" />
           ) : (
             <>
               <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">

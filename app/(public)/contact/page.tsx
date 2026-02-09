@@ -52,17 +52,17 @@ export default function ContactPage() {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-primary/5 py-20 md:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 py-20 md:py-32">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute left-1/4 top-1/4 h-72 w-72 rounded-full bg-primary/5 blur-3xl"></div>
-          <div className="absolute right-1/4 bottom-1/4 h-96 w-96 rounded-full bg-primary/5 blur-3xl"></div>
+          <div className="absolute left-1/4 top-1/4 h-72 w-72 rounded-full bg-blue-200/30 blur-3xl"></div>
+          <div className="absolute right-1/4 bottom-1/4 h-96 w-96 rounded-full bg-purple-200/30 blur-3xl"></div>
         </div>
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-7xl">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              Get in <span className="text-primary">Touch</span>
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Get in <span className="text-blue-600">Touch</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600 sm:text-xl">
               Have a question or need help? We're here to assist you. Reach out
               to us and we'll get back to you as soon as possible.
             </p>
@@ -72,20 +72,20 @@ export default function ContactPage() {
 
       {/* Contact Methods */}
       <section className="py-16">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-7xl">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {contactMethods.map((method, index) => (
               <Card
                 key={index}
-                className="group transition-all hover:shadow-lg hover:-translate-y-1"
+                className="group transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border-2 border-gray-100 bg-white"
               >
                 <CardContent className="p-6 text-center">
-                  <div className="mb-4 flex justify-center text-primary transition-transform group-hover:scale-110">
+                  <div className="mb-4 flex justify-center text-blue-600 transition-transform group-hover:scale-110">
                     {method.icon}
                   </div>
-                  <h3 className="mb-2 font-semibold text-lg">{method.title}</h3>
-                  <p className="mb-1 text-sm font-medium">{method.content}</p>
-                  <p className="text-sm text-muted-foreground">
+                  <h3 className="mb-2 font-bold text-lg text-gray-900">{method.title}</h3>
+                  <p className="mb-1 text-sm font-semibold text-gray-800">{method.content}</p>
+                  <p className="text-sm text-gray-600">
                     {method.description}
                   </p>
                 </CardContent>
@@ -96,10 +96,10 @@ export default function ContactPage() {
       </section>
 
       {/* Contact Form */}
-      <section className="bg-muted/50 py-16">
-        <div className="container mx-auto px-4">
+      <section className="bg-gradient-to-br from-gray-50 to-white py-16">
+        <div className="container mx-auto px-4 max-w-7xl">
           <div className="mx-auto max-w-2xl">
-            <Card>
+            <Card className="shadow-xl border-2 border-gray-100 bg-white">
               <CardContent className="p-8">
                 <div className="mb-6 flex items-center gap-3">
                   <MessageSquare className="h-6 w-6 text-primary" />
@@ -184,7 +184,7 @@ export default function ContactPage() {
                       }
                       placeholder="Tell us how we can help..."
                       rows={6}
-                      className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full rounded-lg border-2 border-gray-200 bg-white px-4 py-3 text-sm ring-offset-background placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 focus-visible:ring-offset-2 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-50"
                     />
                   </div>
                   <Button

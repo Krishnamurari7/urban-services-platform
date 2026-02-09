@@ -20,6 +20,7 @@ import type {
   Profile,
   ProfessionalService,
 } from "@/lib/types/database";
+import { LoadingBar } from "@/components/ui/loading-bar";
 import {
   Check,
   ChevronLeft,
@@ -442,19 +443,42 @@ export default function BookServicePage() {
 
   if (authLoading || loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="animate-pulse">Loading...</div>
+      <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[60vh]">
+        <div className="w-full max-w-md">
+          <LoadingBar text="vera company" />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-8">Book a Service</h1>
+    <div className="container mx-auto px-4 py-4 sm:py-8 max-w-4xl">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-8">Book a Service</h1>
 
       {/* Progress Steps */}
       <div className="mb-8">
-        <div className="flex items-center justify-between">
+        {/* Mobile: Simplified step indicator */}
+        <div className="md:hidden mb-4">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-600">
+              Step {steps.findIndex((s) => s.id === currentStep) + 1} of {steps.length}
+            </span>
+            <span className="text-sm font-semibold text-blue-600">
+              {steps.find((s) => s.id === currentStep)?.label}
+            </span>
+          </div>
+          <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-blue-600 transition-all duration-300"
+              style={{
+                width: `${((steps.findIndex((s) => s.id === currentStep) + 1) / steps.length) * 100}%`,
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Desktop: Full step indicator */}
+        <div className="hidden md:flex items-center justify-between">
           {steps.map((step, index) => {
             const stepIndex = steps.findIndex((s) => s.id === currentStep);
             const isActive = step.id === currentStep;
@@ -498,8 +522,8 @@ export default function BookServicePage() {
         <CardContent className="p-6">
           {currentStep === "service" && (
             <div>
-              <CardTitle className="mb-4">Select a Service</CardTitle>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <CardTitle className="mb-4 text-lg sm:text-xl">Select a Service</CardTitle>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {services.map((service) => (
                   <div
                     key={service.id}
@@ -524,7 +548,7 @@ export default function BookServicePage() {
 
           {currentStep === "professional" && (
             <div>
-              <CardTitle className="mb-4">Choose a Professional</CardTitle>
+              <CardTitle className="mb-4 text-lg sm:text-xl">Choose a Professional</CardTitle>
               {professionals.length === 0 ? (
                 <p className="text-gray-500">
                   No professionals available for this service.
@@ -585,7 +609,7 @@ export default function BookServicePage() {
 
           {currentStep === "datetime" && (
             <div>
-              <CardTitle className="mb-4">Select Date & Time</CardTitle>
+              <CardTitle className="mb-4 text-lg sm:text-xl">Select Date & Time</CardTitle>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-2">
@@ -648,7 +672,7 @@ export default function BookServicePage() {
 
           {currentStep === "address" && (
             <div>
-              <CardTitle className="mb-4">Select Address</CardTitle>
+              <CardTitle className="mb-4 text-lg sm:text-xl">Select Address</CardTitle>
               {addresses.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-gray-500 mb-4">No addresses found.</p>
@@ -714,7 +738,7 @@ export default function BookServicePage() {
 
           {currentStep === "review" && (
             <div>
-              <CardTitle className="mb-4">Review Your Booking</CardTitle>
+              <CardTitle className="mb-4 text-lg sm:text-xl">Review Your Booking</CardTitle>
               <div className="space-y-4">
                 <div className="border-b pb-4">
                   <h3 className="font-semibold mb-2">Service Details</h3>
@@ -798,7 +822,7 @@ export default function BookServicePage() {
 
           {currentStep === "payment" && (
             <div>
-              <CardTitle className="mb-4">Payment</CardTitle>
+              <CardTitle className="mb-4 text-lg sm:text-xl">Payment</CardTitle>
               <div className="space-y-4">
                 <div className="border rounded-lg p-4">
                   <h3 className="font-semibold mb-4">Payment Summary</h3>

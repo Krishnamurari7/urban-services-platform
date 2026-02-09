@@ -186,23 +186,23 @@ export default function ProfessionalDashboard() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="mb-10">
+        <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
           Welcome back, {profile?.full_name || "Professional"}!
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 text-lg">
           Manage your job requests, availability, and earnings.
         </p>
       </div>
 
       {/* Tab Navigation */}
-      <div className="mb-6 border-b">
-        <nav className="flex space-x-8">
+      <div className="mb-6 sm:mb-8 border-b border-gray-200 overflow-x-auto">
+        <nav className="flex flex-nowrap gap-2 sm:gap-4 md:gap-8 min-w-max sm:min-w-0">
           <button
             onClick={() => setActiveTab("overview")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "overview"
-              ? "border-blue-500 text-blue-600"
+            className={`py-3 sm:py-4 px-2 sm:px-3 border-b-2 font-semibold text-xs sm:text-sm whitespace-nowrap transition-all duration-200 touch-manipulation ${activeTab === "overview"
+              ? "border-blue-600 text-blue-600"
               : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
           >
@@ -210,20 +210,20 @@ export default function ProfessionalDashboard() {
           </button>
           <button
             onClick={() => setActiveTab("requests")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm relative ${activeTab === "requests"
-              ? "border-blue-500 text-blue-600"
+            className={`py-3 sm:py-4 px-2 sm:px-3 border-b-2 font-semibold text-xs sm:text-sm whitespace-nowrap relative transition-all duration-200 touch-manipulation ${activeTab === "requests"
+              ? "border-blue-600 text-blue-600"
               : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
           >
             Job Requests
             {stats.pendingRequests > 0 && (
-              <Badge className="ml-2 bg-red-500">{stats.pendingRequests}</Badge>
+              <Badge className="ml-2 bg-red-500 text-white">{stats.pendingRequests}</Badge>
             )}
           </button>
           <button
             onClick={() => setActiveTab("calendar")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "calendar"
-              ? "border-blue-500 text-blue-600"
+            className={`py-3 sm:py-4 px-2 sm:px-3 border-b-2 font-semibold text-xs sm:text-sm whitespace-nowrap transition-all duration-200 touch-manipulation ${activeTab === "calendar"
+              ? "border-blue-600 text-blue-600"
               : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
           >
@@ -231,8 +231,8 @@ export default function ProfessionalDashboard() {
           </button>
           <button
             onClick={() => setActiveTab("earnings")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "earnings"
-              ? "border-blue-500 text-blue-600"
+            className={`py-3 sm:py-4 px-2 sm:px-3 border-b-2 font-semibold text-xs sm:text-sm whitespace-nowrap transition-all duration-200 touch-manipulation ${activeTab === "earnings"
+              ? "border-blue-600 text-blue-600"
               : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
           >
@@ -240,8 +240,8 @@ export default function ProfessionalDashboard() {
           </button>
           <button
             onClick={() => setActiveTab("documents")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "documents"
-              ? "border-blue-500 text-blue-600"
+            className={`py-3 sm:py-4 px-2 sm:px-3 border-b-2 font-semibold text-xs sm:text-sm whitespace-nowrap transition-all duration-200 touch-manipulation ${activeTab === "documents"
+              ? "border-blue-600 text-blue-600"
               : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
           >
@@ -249,8 +249,8 @@ export default function ProfessionalDashboard() {
           </button>
           <button
             onClick={() => setActiveTab("payments")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "payments"
-              ? "border-blue-500 text-blue-600"
+            className={`py-3 sm:py-4 px-2 sm:px-3 border-b-2 font-semibold text-xs sm:text-sm whitespace-nowrap transition-all duration-200 touch-manipulation ${activeTab === "payments"
+              ? "border-blue-600 text-blue-600"
               : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
           >
@@ -258,8 +258,8 @@ export default function ProfessionalDashboard() {
           </button>
           <button
             onClick={() => setActiveTab("verification")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "verification"
-              ? "border-blue-500 text-blue-600"
+            className={`py-3 sm:py-4 px-2 sm:px-3 border-b-2 font-semibold text-xs sm:text-sm whitespace-nowrap transition-all duration-200 touch-manipulation ${activeTab === "verification"
+              ? "border-blue-600 text-blue-600"
               : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
           >
@@ -272,64 +272,72 @@ export default function ProfessionalDashboard() {
       {activeTab === "overview" && (
         <>
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-10">
+            <Card className="border-blue-100 bg-gradient-to-br from-blue-50 via-white to-white hover:shadow-xl transition-all duration-300">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                <CardTitle className="text-sm font-semibold text-gray-700">
                   Total Bookings
                 </CardTitle>
-                <Package className="h-4 w-4 text-muted-foreground" />
+                <div className="h-12 w-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+                  <Package className="h-6 w-6 text-white" />
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.totalBookings}</div>
-                <p className="text-xs text-muted-foreground">
+                <div className="text-3xl md:text-4xl font-bold text-blue-900 mb-1">{stats.totalBookings}</div>
+                <p className="text-xs text-gray-500">
                   All time bookings
                 </p>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+            <Card className="border-orange-100 bg-gradient-to-br from-orange-50 via-white to-white hover:shadow-xl transition-all duration-300">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                <CardTitle className="text-sm font-semibold text-gray-700">
                   Pending Requests
                 </CardTitle>
-                <AlertCircle className="h-4 w-4 text-muted-foreground" />
+                <div className="h-12 w-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md">
+                  <AlertCircle className="h-6 w-6 text-white" />
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-orange-600">
+                <div className="text-3xl md:text-4xl font-bold text-orange-600 mb-1">
                   {stats.pendingRequests}
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-gray-500">
                   Awaiting your response
                 </p>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Confirmed</CardTitle>
-                <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            <Card className="border-green-100 bg-gradient-to-br from-green-50 via-white to-white hover:shadow-xl transition-all duration-300">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                <CardTitle className="text-sm font-semibold text-gray-700">Confirmed</CardTitle>
+                <div className="h-12 w-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md">
+                  <CheckCircle className="h-6 w-6 text-white" />
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">
+                <div className="text-3xl md:text-4xl font-bold text-green-600 mb-1">
                   {stats.confirmedBookings}
                 </div>
-                <p className="text-xs text-muted-foreground">Upcoming jobs</p>
+                <p className="text-xs text-gray-500">Upcoming jobs</p>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+            <Card className="border-purple-100 bg-gradient-to-br from-purple-50 via-white to-white hover:shadow-xl transition-all duration-300">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                <CardTitle className="text-sm font-semibold text-gray-700">
                   Total Earnings
                 </CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                <div className="h-12 w-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
+                  <DollarSign className="h-6 w-6 text-white" />
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">
+                <div className="text-3xl md:text-4xl font-bold text-purple-900 mb-1">
                   ₹{stats.totalEarnings.toFixed(2)}
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-gray-500">
                   Lifetime earnings
                 </p>
               </CardContent>
@@ -337,12 +345,12 @@ export default function ProfessionalDashboard() {
           </div>
 
           {/* Recent Bookings */}
-          <Card>
+          <Card className="bg-white shadow-sm">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle>Recent Bookings</CardTitle>
-                  <CardDescription>
+                  <CardTitle className="text-xl font-bold">Recent Bookings</CardTitle>
+                  <CardDescription className="mt-1">
                     Your latest job requests and bookings
                   </CardDescription>
                 </div>
@@ -356,16 +364,17 @@ export default function ProfessionalDashboard() {
             </CardHeader>
             <CardContent>
               {stats.recentBookings.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <Package className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                  <p>No bookings yet</p>
+                <div className="text-center py-12 text-gray-500">
+                  <Package className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+                  <p className="text-lg font-medium">No bookings yet</p>
+                  <p className="text-sm text-gray-400 mt-1">Start accepting jobs to see them here</p>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {stats.recentBookings.map((booking) => (
                     <div
                       key={booking.id}
-                      className="flex items-center justify-between p-4 border rounded-lg"
+                      className="flex items-center justify-between p-5 border-2 rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:shadow-lg hover:border-blue-200 transition-all duration-300 cursor-pointer group"
                     >
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">

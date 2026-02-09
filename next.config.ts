@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // ESLint configuration
+  eslint: {
+    // This will still run ESLint but may help with compatibility
+    ignoreDuringBuilds: false,
+  },
   // Ignore TypeScript errors during builds (if needed)
   // Uncomment the line below ONLY if TypeScript compilation is causing the hang
   // typescript: {

@@ -1,5 +1,6 @@
 import { LoginForm } from "@/components/auth/login-form";
 import { Suspense } from "react";
+import { LoadingBar } from "@/components/ui/loading-bar";
 
 async function LoginMessages({
   searchParams,
@@ -37,12 +38,16 @@ export default function LoginPage({
   }>;
 }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-primary/5 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <Suspense fallback={null}>
           <LoginMessages searchParams={searchParams} />
         </Suspense>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={
+          <div className="w-full max-w-md">
+            <LoadingBar text="vera company" />
+          </div>
+        }>
           <LoginForm />
         </Suspense>
       </div>

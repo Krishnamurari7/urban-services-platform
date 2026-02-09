@@ -130,30 +130,30 @@ export default function CustomerBookingsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">My Bookings</h1>
-        <p className="text-gray-600">View and manage your service bookings</p>
+    <div className="container mx-auto px-4 py-4 sm:py-8">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">My Bookings</h1>
+        <p className="text-sm sm:text-base text-gray-600">View and manage your service bookings</p>
       </div>
 
       {/* Filters */}
-      <Card className="mb-6">
-        <CardContent className="p-4">
-          <div className="flex flex-col md:flex-row gap-4">
+      <Card className="mb-4 sm:mb-6">
+        <CardContent className="p-3 sm:p-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 placeholder="Search bookings..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-10 h-10 sm:h-auto"
               />
             </div>
             <div className="flex gap-2">
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-4 py-2 border rounded-md"
+                className="px-3 sm:px-4 py-2 border rounded-md text-sm sm:text-base min-h-[44px] flex-1 sm:flex-none"
               >
                 <option value="all">All Status</option>
                 <option value="pending">Pending</option>
@@ -190,19 +190,19 @@ export default function CustomerBookingsPage() {
           {filteredBookings.map((booking) => (
             <Link key={booking.id} href={`/customer/bookings/${booking.id}`}>
               <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardContent className="p-6">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-xl font-semibold">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                        <h3 className="text-lg sm:text-xl font-semibold truncate">
                           {booking.service.name}
                         </h3>
-                        <Badge variant={getStatusBadgeVariant(booking.status)}>
+                        <Badge variant={getStatusBadgeVariant(booking.status)} className="self-start sm:self-auto">
                           {booking.status.replace("_", " ")}
                         </Badge>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-gray-600">
                         <div className="flex items-center gap-2">
                           <Package className="h-4 w-4" />
                           <span>
@@ -248,11 +248,11 @@ export default function CustomerBookingsPage() {
                       </div>
                     </div>
 
-                    <div className="text-right">
-                      <div className="text-2xl font-bold mb-1">
+                    <div className="text-left sm:text-right">
+                      <div className="text-xl sm:text-2xl font-bold mb-1">
                         ₹{Number(booking.final_amount).toFixed(2)}
                       </div>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-xs sm:text-sm text-gray-500">
                         Booking ID: {booking.id.slice(0, 8)}
                       </p>
                     </div>
