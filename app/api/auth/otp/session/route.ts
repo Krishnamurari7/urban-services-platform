@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       refresh_token: refreshToken || "",
     });
 
-    if (sessionError || !session.session) {
+    if (sessionError || !session.session || !session.user) {
       logger.error("Failed to create session", sessionError);
       return NextResponse.json(
         { error: "Failed to create session" },

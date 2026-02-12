@@ -131,8 +131,7 @@ export async function POST(request: NextRequest) {
         const { data: newAuthUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
           email: virtualEmail,
           phone: `+91${formattedPhone}`,
-          phone_confirmed: true,
-          email_confirmed: false,
+          email_confirm: false,
           user_metadata: {
             role: userRole,
             phone: formattedPhone,
@@ -154,8 +153,7 @@ export async function POST(request: NextRequest) {
       const { data: newAuthUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
         email: virtualEmail,
         phone: `+91${formattedPhone}`,
-        phone_confirmed: true,
-        email_confirmed: false,
+        email_confirm: false,
         user_metadata: {
           role: userRole,
           full_name: `User ${formattedPhone}`,

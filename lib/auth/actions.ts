@@ -274,6 +274,9 @@ export async function verifyOTP(
       userId: data.userId,
       role: data.role,
       sessionToken: data.sessionToken, // If API provides it
+      magicLink: data.magicLink, // Pass through from API
+      accessToken: data.accessToken, // Pass through from API
+      refreshToken: data.refreshToken, // Pass through from API
     };
   } catch (error) {
     logger.error("Error verifying OTP", error);
