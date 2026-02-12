@@ -45,7 +45,7 @@ export default function LoginPage({
         </Suspense>
         <Suspense fallback={
           <div className="w-full max-w-md">
-            <LoadingBar text="vera company" />
+            <LoadingBar text="Vera Company" />
           </div>
         }>
           <LoginForm />

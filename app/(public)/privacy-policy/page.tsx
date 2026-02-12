@@ -91,7 +91,7 @@ export default function PrivacyPolicyPage() {
             <div className="mb-8">
               <h2 className="mb-4 text-2xl font-bold">Introduction</h2>
               <p className="text-muted-foreground leading-relaxed">
-                vera company ("we", "our", or "us") is committed to protecting
+                Vera Company ("we", "our", or "us") is committed to protecting
                 your privacy. This Privacy Policy explains how we collect, use,
                 disclose, and safeguard your information when you use our
                 platform and services. By using our services, you agree to the

@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "vera company",
+  title: "Vera Company",
   description: "Professional home services marketplace",
 };
 

@@ -52,7 +52,7 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${service.name} - ${service.category} Service | vera company`;
+  const title = `${service.name} - ${service.category} Service | Vera Company`;
   const description =
     service.description ||
     `Book ${service.name} service starting at ₹${service.base_price}. Professional ${service.category.toLowerCase()} service with verified professionals.`;
@@ -121,7 +121,7 @@ export default async function ServiceDetailPage({
     description: service.description,
     provider: {
       "@type": "Organization",
-      name: "vera company",
+      name: "Vera Company",
       url: process.env.NEXT_PUBLIC_APP_URL,
     },
     areaServed: {

@@ -71,7 +71,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              About <span className="text-blue-600">vera company</span>
+              About <span className="text-blue-600">Vera Company</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600 sm:text-xl">
               We're revolutionizing the way people connect with professional
@@ -93,7 +93,7 @@ export default function AboutPage() {
             </div>
             <div className="prose prose-lg mx-auto dark:prose-invert">
               <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                vera company was founded with a simple mission: to connect
+                Vera Company was founded with a simple mission: to connect
                 people with trusted professionals who can help them with their
                 everyday needs. We recognized that finding reliable service
                 providers was often a challenge, filled with uncertainty and

@@ -9,7 +9,7 @@ interface LoadingBarProps {
   variant?: "default" | "outline";
 }
 
-export function LoadingBar({ text = "vera company", className = "", compact = false, variant = "default" }: LoadingBarProps) {
+export function LoadingBar({ text = "Vera Company", className = "", compact = false, variant = "default" }: LoadingBarProps) {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {

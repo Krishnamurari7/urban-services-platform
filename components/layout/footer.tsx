@@ -14,7 +14,7 @@ export function Footer() {
                 <span className="text-lg font-bold">V</span>
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
-                vera company
+                Vera Company
               </span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -168,7 +168,7 @@ export function Footer() {
         <div className="mt-12 border-t pt-8">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             <p className="text-sm text-muted-foreground text-center md:text-left">
-              © {new Date().getFullYear()} vera company. All rights reserved.
+              © {new Date().getFullYear()} Vera Company. All rights reserved.
             </p>
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <Link

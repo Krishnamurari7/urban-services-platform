@@ -88,7 +88,7 @@ export default function TermsOfServicePage() {
               <h2 className="mb-4 text-2xl font-bold">Introduction</h2>
               <p className="text-muted-foreground leading-relaxed">
                 These Terms of Service ("Terms") govern your access to and use
-                of vera company's platform and services. By using our platform,
+                of Vera Company's platform and services. By using our platform,
                 you agree to comply with and be bound by these Terms. If you
                 disagree with any part of these terms, you may not access or use
                 our services.
@@ -183,7 +183,7 @@ export default function TermsOfServicePage() {
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
                   All content on the platform, including text, graphics, logos,
-                  and software, is the property of vera company or its licensors
+                  and software, is the property of Vera Company or its licensors
                   and is protected by copyright and trademark laws. You may not
                   reproduce, distribute, or create derivative works without our
                   written permission.

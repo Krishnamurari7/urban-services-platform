@@ -112,6 +112,36 @@ export function LoginForm() {
       if (result?.error) {
         setError(result.error);
       } else if (result?.success && result?.redirectPath) {
+        // If we have a magic link or access token, establish session first
+        if (result.magicLink) {
+          // Redirect to magic link to establish session, then redirect to dashboard
+          window.location.href = result.magicLink;
+          return;
+        } else if (result.accessToken) {
+          // Create session using access token
+          try {
+            const sessionResponse = await fetch("/api/auth/otp/session", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                accessToken: result.accessToken,
+                refreshToken: result.refreshToken,
+              }),
+            });
+
+            if (sessionResponse.ok) {
+              // Session created, reload page to sync auth state
+              window.location.href = result.redirectPath;
+              return;
+            }
+          } catch (sessionErr) {
+            console.error("Failed to create session:", sessionErr);
+            // Still redirect, session might be created via magic link
+          }
+        }
+
         // Full page reload so Supabase cookies + AuthProvider stay perfectly in sync
         if (typeof window !== "undefined") {
           window.location.href = result.redirectPath;
@@ -208,7 +238,7 @@ export function LoginForm() {
 
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? (
-                <LoadingBar text="vera company" className="w-full" compact />
+                <LoadingBar text="Vera Company" className="w-full" compact />
               ) : (
                 "Sign in"
               )}
@@ -244,7 +274,7 @@ export function LoginForm() {
                   disabled={otpLoading || !phone}
                 >
                   {otpLoading ? (
-                    <LoadingBar text="vera company" className="w-full" compact />
+                    <LoadingBar text="Vera Company" className="w-full" compact />
                   ) : (
                     "Send OTP"
                   )}
@@ -288,7 +318,7 @@ export function LoginForm() {
                     disabled={otpLoading || otp.length !== 6}
                   >
                     {otpLoading ? (
-                      <LoadingBar text="vera company" className="w-full" compact />
+                      <LoadingBar text="Vera Company" className="w-full" compact />
                     ) : (
                       "Verify OTP"
                     )}
@@ -318,7 +348,7 @@ export function LoginForm() {
           className="w-full"
         >
           {googleLoading ? (
-            <LoadingBar text="vera company" className="w-full" compact variant="outline" />
+            <LoadingBar text="Vera Company" className="w-full" compact variant="outline" />
           ) : (
             <>
               <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">

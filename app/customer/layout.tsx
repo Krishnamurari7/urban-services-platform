@@ -72,14 +72,14 @@ function CustomerLayoutContent({ children }: { children: React.ReactNode }) {
             >
               <Image
                 src="/logo.png"
-                alt="vera company"
+                alt="Vera Company"
                 width={36}
                 height={36}
                 className="rounded-lg shadow-sm"
               />
               <div className="flex flex-col leading-tight">
                 <span className="text-sm font-semibold text-gray-900">
-                  vera company
+                  Vera Company
                 </span>
                 <span className="text-xs text-gray-500">
                   Home services at your doorstep

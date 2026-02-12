@@ -17,6 +17,14 @@ This document describes the complete authentication system implemented for the U
 - Automatic profile creation with role from metadata
 - Seamless OAuth callback handling
 
+### ✅ Phone OTP Authentication (MSG91)
+
+- OTP-based login via phone number
+- MSG91 integration for reliable SMS delivery
+- Automatic user creation on first login
+- OTP storage and verification with expiration
+- Rate limiting and attempt tracking
+
 ### ✅ Role-Based Access Control
 
 - Roles stored in `profiles` table (customer, professional, admin)
@@ -63,6 +71,8 @@ This document describes the complete authentication system implemented for the U
 - `signIn(email, password)` - Email/password login
 - `signUp(email, password, fullName, role)` - User registration
 - `signInWithGoogle()` - Google OAuth sign in
+- `sendOTP(phone)` - Send OTP via MSG91
+- `verifyOTP(phone, token)` - Verify OTP and sign in
 - `signOut()` - Sign out current user
 - `getUserRole(userId)` - Get user role by ID
 
@@ -212,8 +222,29 @@ Required environment variables in `.env.local`:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+MSG91_AUTH_KEY=your_msg91_auth_key
+MSG91_TEMPLATE_ID=your_msg91_template_id
 ```
+
+### MSG91 Setup
+
+1. **Sign up at MSG91**
+   - Visit [MSG91](https://msg91.com)
+   - Create an account and navigate to API section
+   - Copy your Auth Key from the dashboard
+   - Create an OTP template and note the Template ID
+
+2. **Add API Keys to Environment**
+   - Add `MSG91_AUTH_KEY` to your `.env.local` file
+   - Add `MSG91_TEMPLATE_ID` to your `.env.local` file (optional, if using template)
+   - The Auth Key will be used to send OTP messages
+
+3. **OTP Storage**
+   - OTPs are stored in the `otp_verifications` table
+   - OTPs expire after 5 minutes
+   - Maximum 5 verification attempts per OTP
 
 ## Setup Instructions
 
@@ -226,6 +257,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 2. **Run Database Migrations**
    - Run migrations in order from `supabase/migrations/`
    - Migration `004_auto_create_profile_trigger.sql` is required for auto profile creation
+   - Migration `010_otp_storage.sql` is required for MSG91 OTP storage
 
 3. **Configure Supabase**
    - Set up Google OAuth in Supabase dashboard (optional)
@@ -238,6 +270,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 5. **Test Authentication**
    - Sign up with email/password
    - Sign in with Google (if configured)
+   - Test OTP login with phone number (requires MSG91 Auth Key)
    - Verify profile creation
    - Test role-based access
 
@@ -256,16 +289,21 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ### New Files
 
 - `supabase/migrations/004_auto_create_profile_trigger.sql` - Auto-create profile trigger
+- `supabase/migrations/010_otp_storage.sql` - OTP storage table for MSG91
+- `lib/services/msg91.ts` - MSG91 service utility
+- `app/api/auth/otp/send/route.ts` - API route for sending OTP
+- `app/api/auth/otp/verify/route.ts` - API route for verifying OTP
+- `app/api/auth/otp/session/route.ts` - API route for creating session
 - `app/auth/callback/route.ts` - OAuth callback handler
 - `components/auth/register-form.tsx` - Registration form
 - `AUTHENTICATION.md` - This documentation
 
 ### Modified Files
 
-- `lib/auth/actions.ts` - Added Google OAuth and role handling
+- `lib/auth/actions.ts` - Added Google OAuth, MSG91 OTP, and role handling
 - `lib/auth/session.ts` - Updated to fetch role from profiles table
 - `components/auth/auth-provider.tsx` - Added role tracking
-- `components/auth/login-form.tsx` - Complete login form with Google OAuth
+- `components/auth/login-form.tsx` - Complete login form with Google OAuth and MSG91 OTP
 - `components/auth/protected-route.tsx` - Added role-based protection
 - `middleware.ts` - Added role-based route protection
 - `app/(auth)/login/page.tsx` - Updated with LoginForm
@@ -273,10 +311,29 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 - `package.json` - Added @supabase/ssr and @supabase/supabase-js
 - `SUPABASE_SETUP.md` - Updated with new authentication features
 
+## MSG91 OTP Flow
+
+1. **User enters phone number** on login page
+2. **System generates 6-digit OTP** and stores it in database
+3. **OTP is sent via MSG91 API** to user's phone
+4. **User enters OTP** for verification
+5. **System verifies OTP** against stored value
+6. **User account is created/updated** in Supabase Auth
+7. **Session is established** and user is redirected to dashboard
+
+### OTP Security Features
+
+- OTPs expire after 5 minutes
+- Maximum 5 verification attempts per OTP
+- Rate limiting prevents abuse
+- OTPs are stored securely in database
+- Automatic cleanup of expired OTPs
+
 ## Next Steps
 
 1. Configure Google OAuth in Supabase dashboard
-2. Customize email templates
-3. Add password reset functionality (if needed)
-4. Add email verification flow customization
-5. Implement additional OAuth providers (if needed)
+2. Set up MSG91 Auth Key for OTP functionality
+3. Customize email templates
+4. Add password reset functionality (if needed)
+5. Add email verification flow customization
+6. Implement additional OAuth providers (if needed)

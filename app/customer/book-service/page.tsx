@@ -445,7 +445,7 @@ export default function BookServicePage() {
     return (
       <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[60vh]">
         <div className="w-full max-w-md">
-          <LoadingBar text="vera company" />
+          <LoadingBar text="Vera Company" />
         </div>
       </div>
     );

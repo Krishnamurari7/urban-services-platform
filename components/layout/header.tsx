@@ -28,14 +28,14 @@ export function Header() {
           <Link href="/" className="flex items-center space-x-2 group min-w-0 flex-shrink">
             <Image
               src="/logo.png"
-              alt="VERA COMPANY"
+              alt="Vera Company"
               width={40}
               height={40}
               className="transition-transform group-hover:scale-110 flex-shrink-0"
               priority
             />
             <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text truncate">
-              vera company
+              Vera Company
             </span>
           </Link>
 

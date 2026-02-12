@@ -19,6 +19,7 @@ const navigation = [
     { name: "Reviews", href: "/admin/reviews", icon: "⭐" },
     { name: "Disputes", href: "/admin/disputes", icon: "⚖️" },
     { name: "Banners", href: "/admin/banners", icon: "🎨" },
+    { name: "Sections", href: "/admin/sections", icon: "📄" },
     { name: "Audit Logs", href: "/admin/audit-logs", icon: "📋" },
 ];
 
@@ -34,7 +35,7 @@ export function AdminSidebar() {
                     <Link href="/admin/dashboard" className="flex items-center space-x-2">
                         <Image
                             src="/logo.png"
-                            alt="VERA COMPANY"
+                            alt="Vera Company"
                             width={32}
                             height={32}
                             className="object-contain"
@@ -72,7 +73,7 @@ export function AdminSidebar() {
                         <Link href="/admin/dashboard" className="flex items-center space-x-2">
                             <Image
                                 src="/logo.png"
-                                alt="VERA COMPANY"
+                                alt="Vera Company"
                                 width={32}
                                 height={32}
                                 className="object-contain"
@@ -127,7 +128,7 @@ export function AdminSidebar() {
                         <Link href="/admin/dashboard" className="flex items-center space-x-2">
                             <Image
                                 src="/logo.png"
-                                alt="VERA COMPANY"
+                                alt="Vera Company"
                                 width={32}
                                 height={32}
                                 className="object-contain"

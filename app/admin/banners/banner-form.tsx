@@ -45,11 +45,18 @@ export function BannerForm({ banner }: { banner?: Banner }) {
     };
 
     try {
+      let result;
       if (banner?.id) {
-        await updateBanner(banner.id, data);
+        result = await updateBanner(banner.id, data);
       } else {
-        await createBanner(data);
+        result = await createBanner(data);
       }
+      
+      if (result?.error) {
+        alert(`Failed to save banner: ${result.error}`);
+        return;
+      }
+      
       setIsOpen(false);
       window.location.reload();
     } catch (error) {
@@ -65,7 +72,11 @@ export function BannerForm({ banner }: { banner?: Banner }) {
     if (!confirm("Are you sure you want to delete this banner?")) return;
 
     try {
-      await deleteBanner(banner.id);
+      const result = await deleteBanner(banner.id);
+      if (result?.error) {
+        alert(`Failed to delete banner: ${result.error}`);
+        return;
+      }
       window.location.reload();
     } catch (error) {
       console.error("Error deleting banner:", error);
@@ -77,7 +88,11 @@ export function BannerForm({ banner }: { banner?: Banner }) {
     if (!banner?.id) return;
 
     try {
-      await toggleBannerStatus(banner.id, !banner.is_active);
+      const result = await toggleBannerStatus(banner.id, !banner.is_active);
+      if (result?.error) {
+        alert(`Failed to update banner status: ${result.error}`);
+        return;
+      }
       window.location.reload();
     } catch (error) {
       console.error("Error toggling banner status:", error);

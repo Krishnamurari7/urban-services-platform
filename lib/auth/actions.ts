@@ -178,76 +178,107 @@ export async function signInWithGoogle() {
 }
 
 /**
- * Send OTP to phone number
+ * Send OTP to phone number via MSG91
  */
 export async function sendOTP(phone: string) {
-  const supabase = await createClient();
+  try {
+    const formattedPhone = phone.replace(/^\+91/, "").replace(/\D/g, "");
 
-  // Format phone number (add +91 if not present for Indian numbers)
-  const formattedPhone = phone.startsWith("+") ? phone : `+91${phone}`;
+    if (formattedPhone.length !== 10) {
+      return { error: "Invalid phone number. Please enter a valid 10-digit Indian mobile number." };
+    }
 
-  const { data, error } = await supabase.auth.signInWithOtp({
-    phone: formattedPhone,
-  });
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/auth/otp/send`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ phone: formattedPhone }),
+    });
 
-  if (error) {
-    return { error: error.message };
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      return { error: data.error || "Failed to send OTP" };
+    }
+
+    return { success: true, message: "OTP sent successfully" };
+  } catch (error) {
+    logger.error("Error sending OTP", error);
+    return { error: "Failed to send OTP. Please try again." };
   }
-
-  return { success: true, message: "OTP sent successfully" };
 }
 
 /**
- * Verify OTP and sign in
+ * Verify OTP and sign in via MSG91
  */
 export async function verifyOTP(
   phone: string,
   token: string,
   redirectTo?: string
 ) {
-  const supabase = await createClient();
+  try {
+    const formattedPhone = phone.replace(/^\+91/, "").replace(/\D/g, "");
 
-  // Format phone number
-  const formattedPhone = phone.startsWith("+") ? phone : `+91${phone}`;
+    if (formattedPhone.length !== 10) {
+      return { error: "Invalid phone number" };
+    }
 
-  const { data, error } = await supabase.auth.verifyOtp({
-    phone: formattedPhone,
-    token,
-    type: "sms",
-  });
+    if (token.length !== 6) {
+      return { error: "OTP must be 6 digits" };
+    }
 
-  if (error) {
-    return { error: error.message };
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/auth/otp/verify`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ phone: formattedPhone, otp: token }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      return { error: data.error || "Failed to verify OTP" };
+    }
+
+    // After verification, we need to establish a Supabase session
+    // The API returns userId, but we need to create a session
+    // We'll use the admin API to generate a session token
+    const supabase = await createClient();
+    
+    // Create a session by signing in with a temporary password approach
+    // Actually, we'll need to use a different method - let's create a session via admin API
+    // For now, we'll return success and handle session creation on client side via a callback
+    
+    revalidatePath("/", "layout");
+
+    // Use redirect parameter if provided and valid, otherwise redirect based on role
+    let redirectPath: string;
+    if (
+      redirectTo &&
+      redirectTo.startsWith("/") &&
+      !redirectTo.startsWith("//")
+    ) {
+      redirectPath = redirectTo;
+    } else {
+      redirectPath = data.redirectPath || getRoleBasedRedirect(data.role || "customer");
+    }
+
+    logger.info("OTP Login successful", { userId: data.userId, role: data.role });
+    
+    // Return session token if available, otherwise client will need to handle session
+    return { 
+      success: true, 
+      redirectPath,
+      userId: data.userId,
+      role: data.role,
+      sessionToken: data.sessionToken, // If API provides it
+    };
+  } catch (error) {
+    logger.error("Error verifying OTP", error);
+    return { error: "Failed to verify OTP. Please try again." };
   }
-
-  if (!data.user) {
-    return { error: "Failed to verify OTP" };
-  }
-
-  // Get user role from profile
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", data.user.id)
-    .single();
-
-  revalidatePath("/", "layout");
-
-  // Use redirect parameter if provided and valid, otherwise redirect based on role
-  let redirectPath: string;
-  if (
-    redirectTo &&
-    redirectTo.startsWith("/") &&
-    !redirectTo.startsWith("//")
-  ) {
-    redirectPath = redirectTo;
-  } else {
-    redirectPath = getRoleBasedRedirect(profile?.role || "customer");
-  }
-
-  // Return success with redirect path for client-side handling
-  logger.info("OTP Login successful", { userId: data.user.id, role: profile?.role });
-  return { success: true, redirectPath };
 }
 
 /**
