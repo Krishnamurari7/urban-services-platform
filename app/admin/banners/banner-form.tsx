@@ -15,6 +15,7 @@ interface Banner {
   title?: string;
   description?: string | null;
   image_url?: string;
+  mobile_image_url?: string | null;
   link_url?: string | null;
   link_text?: string | null;
   position?: number;
@@ -32,10 +33,12 @@ export function BannerForm({ banner }: { banner?: Banner }) {
     setIsSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
+    const mobileImageUrl = formData.get("mobile_image_url") as string;
     const data = {
       title: formData.get("title") as string,
       description: formData.get("description") as string,
       image_url: formData.get("image_url") as string,
+      mobile_image_url: mobileImageUrl && mobileImageUrl.trim() ? mobileImageUrl : undefined,
       link_url: formData.get("link_url") as string,
       link_text: formData.get("link_text") as string,
       position: parseInt(formData.get("position") as string) || 0,
@@ -157,17 +160,39 @@ export function BannerForm({ banner }: { banner?: Banner }) {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Image URL
-                  </label>
-                  <input
-                    type="url"
-                    name="image_url"
-                    defaultValue={banner?.image_url}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Desktop Image URL <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="url"
+                      name="image_url"
+                      defaultValue={banner?.image_url}
+                      required
+                      placeholder="https://example.com/desktop-banner.jpg"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Image for desktop/laptop (recommended: 1920x600px)
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Mobile Image URL <span className="text-gray-400">(Optional)</span>
+                    </label>
+                    <input
+                      type="url"
+                      name="mobile_image_url"
+                      defaultValue={banner?.mobile_image_url || ""}
+                      placeholder="https://example.com/mobile-banner.jpg"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Image for mobile devices (recommended: 800x600px). If not provided, desktop image will be used.
+                    </p>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">

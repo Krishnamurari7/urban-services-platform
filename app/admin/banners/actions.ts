@@ -7,6 +7,7 @@ export async function createBanner(data: {
   title: string;
   description?: string;
   image_url: string;
+  mobile_image_url?: string;
   link_url?: string;
   link_text?: string;
   position?: number;
@@ -54,6 +55,7 @@ export async function updateBanner(
     title?: string;
     description?: string;
     image_url?: string;
+    mobile_image_url?: string;
     link_url?: string;
     link_text?: string;
     position?: number;

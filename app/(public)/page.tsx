@@ -6,7 +6,7 @@ import { StatsSection } from "@/components/landing/stats-section";
 import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { PartnersSection } from "@/components/landing/partners-section";
 import { CTASection } from "@/components/landing/cta-section";
-import { BannersSection } from "@/components/landing/banners-section";
+import { BannerSlider } from "@/components/landing/banners-section";
 import { createClient } from "@/lib/supabase/server";
 
 async function getHomepageSections() {
@@ -31,8 +31,43 @@ async function getHomepageSections() {
   }
 }
 
+async function getBanners() {
+  const supabase = await createClient();
+  
+  try {
+    const { data: banners, error } = await supabase
+      .from("homepage_banners")
+      .select("*")
+      .eq("is_active", true)
+      .order("position", { ascending: true });
+
+    if (error) {
+      console.error("Error fetching banners:", error);
+      return [];
+    }
+
+    // Filter by date range if specified
+    const now = new Date();
+    const activeBanners = (banners || []).filter((banner) => {
+      const startDate = banner.start_date ? new Date(banner.start_date) : null;
+      const endDate = banner.end_date ? new Date(banner.end_date) : null;
+      
+      if (startDate && now < startDate) return false;
+      if (endDate && now > endDate) return false;
+      
+      return true;
+    });
+
+    return activeBanners;
+  } catch (error) {
+    console.error("Unexpected error fetching banners:", error);
+    return [];
+  }
+}
+
 export default async function HomePage() {
   const sections = await getHomepageSections();
+  const banners = await getBanners();
 
   // Map section types to components
   const sectionComponents: Record<string, React.ReactNode> = {};
@@ -87,7 +122,13 @@ export default async function HomePage() {
   return (
     <div className="flex min-h-screen flex-col">
       <HeroSection />
-      <BannersSection />
+      {banners && banners.length > 0 && (
+        <section className="w-full">
+          <div className="container mx-auto px-4 py-6">
+            <BannerSlider banners={banners} />
+          </div>
+        </section>
+      )}
       <FeaturesSection />
       <CategoriesSection />
       
