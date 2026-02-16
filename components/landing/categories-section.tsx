@@ -1,146 +1,112 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useEffect } from "react";
-import { CategoryCard } from "@/components/public/category-card";
-import {
-    Sparkles,
-    Wrench,
-    Droplet,
-    Zap,
-    Home as HomeIcon,
-    Car,
-    Paintbrush,
-    Hammer,
-    Settings,
-    Wind,
-    Scissors,
-    Flower,
-    Bug,
-    Grid3x3,
-} from "lucide-react";
+import { Home, UtensilsCrossed, Sofa, Bug, ArrowRight } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 
-interface CategoryData {
-    name: string;
-    description: string;
-    href: string;
-    icon: React.ReactNode;
-    serviceCount: number;
-}
-
-// Helper function to get icon for category
-const getCategoryIcon = (categoryName: string): React.ReactNode => {
-    const iconMap: Record<string, React.ReactNode> = {
-        cleaning: <Sparkles className="h-12 w-12 text-primary" />,
-        plumbing: <Droplet className="h-12 w-12 text-primary" />,
-        electrical: <Zap className="h-12 w-12 text-primary" />,
-        carpentry: <Hammer className="h-12 w-12 text-primary" />,
-        "home repair": <HomeIcon className="h-12 w-12 text-primary" />,
-        automotive: <Car className="h-12 w-12 text-primary" />,
-        painting: <Paintbrush className="h-12 w-12 text-primary" />,
-        "appliance repair": <Settings className="h-12 w-12 text-primary" />,
-        "ac repair": <Wind className="h-12 w-12 text-primary" />,
-        salon: <Scissors className="h-12 w-12 text-primary" />,
-        gardening: <Flower className="h-12 w-12 text-primary" />,
-        "pest control": <Bug className="h-12 w-12 text-primary" />,
-        handyman: <Wrench className="h-12 w-12 text-primary" />,
-    };
-
-    return iconMap[categoryName.toLowerCase()] || <Grid3x3 className="h-12 w-12 text-primary" />;
+const iconMap: Record<string, React.ReactNode> = {
+    Home: <Home className="h-12 w-12 text-blue-500" />,
+    UtensilsCrossed: <UtensilsCrossed className="h-12 w-12 text-orange-500" />,
+    Sofa: <Sofa className="h-12 w-12 text-blue-400" />,
+    Bug: <Bug className="h-12 w-12 text-purple-500" />,
 };
 
+const defaultServices = [
+    {
+        name: "Deep Cleaning",
+        description: "Complete sanitization of all rooms, bathrooms, and balconies using industrial tools.",
+        href: "/services?category=cleaning&type=deep",
+        icon: "Home",
+    },
+    {
+        name: "Kitchen Cleaning",
+        description: "Oil & grease removal, chimney cleaning, and detailed cabinet sanitization.",
+        href: "/services?category=cleaning&type=kitchen",
+        icon: "UtensilsCrossed",
+    },
+    {
+        name: "Sofa & Carpet",
+        description: "Shampooing and deep extraction cleaning for furniture and expensive rugs.",
+        href: "/services?category=cleaning&type=sofa-carpet",
+        icon: "Sofa",
+    },
+    {
+        name: "Pest Control",
+        description: "Eco-friendly pest treatment for cockroaches, ants, and termites.",
+        href: "/services?category=pest-control",
+        icon: "Bug",
+    },
+];
+
 export function CategoriesSection() {
-    const [categories, setCategories] = useState<CategoryData[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [sectionData, setSectionData] = useState({
+        title: "Our Premium Services",
+        description: "Explore our range of professional cleaning and maintenance solutions designed to keep your home pristine.",
+        services: defaultServices,
+    });
 
     useEffect(() => {
-        const fetchCategories = async () => {
+        const fetchServicesData = async () => {
             try {
                 const supabase = createClient();
-                
-                // Fetch distinct categories with service counts
-                const { data: categoryData, error } = await supabase
-                    .from("services")
-                    .select("category, description")
-                    .eq("status", "active");
+                const { data: sectionData } = await supabase
+                    .from("homepage_sections")
+                    .select("*")
+                    .eq("section_type", "services")
+                    .eq("is_active", true)
+                    .single();
 
-                if (error) {
-                    console.error("Error fetching categories:", error);
-                    setLoading(false);
-                    return;
-                }
-
-                if (categoryData) {
-                    // Group by category and count services
-                    const categoryMap = new Map<string, { count: number; description: string | null }>();
-
-                    categoryData.forEach((service) => {
-                        const category = service.category;
-                        const existing = categoryMap.get(category) || { count: 0, description: service.description };
-                        categoryMap.set(category, {
-                            count: existing.count + 1,
-                            description: existing.description || service.description,
-                        });
+                if (sectionData?.content) {
+                    setSectionData({
+                        title: sectionData.content.title || sectionData.title || "Our Premium Services",
+                        description: sectionData.content.description || sectionData.description || "",
+                        services: sectionData.content.services || defaultServices,
                     });
-
-                    // Convert to array format
-                    const categoriesList: CategoryData[] = Array.from(categoryMap.entries()).map(
-                        ([categoryName, { count, description }]) => ({
-                            name: categoryName,
-                            description: description || `Professional ${categoryName.toLowerCase()} services`,
-                            href: `/services?category=${encodeURIComponent(categoryName.toLowerCase())}`,
-                            icon: getCategoryIcon(categoryName),
-                            serviceCount: count,
-                        })
-                    );
-
-                    // Sort by service count (descending)
-                    categoriesList.sort((a, b) => b.serviceCount - a.serviceCount);
-
-                    setCategories(categoriesList);
                 }
             } catch (error) {
-                console.error("Error in fetchCategories:", error);
-            } finally {
-                setLoading(false);
+                console.error("Error fetching services data:", error);
             }
         };
-
-        fetchCategories();
+        fetchServicesData();
     }, []);
 
     return (
-        <section className="py-16 md:py-24 bg-gradient-to-b from-background to-muted/30">
-            <div className="container mx-auto px-4">
+        <section className="py-16 md:py-24 bg-white">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mx-auto max-w-2xl text-center mb-12">
-                    <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                        Popular Service Categories
+                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        {sectionData.title}
                     </h2>
-                    <p className="mt-4 text-lg text-muted-foreground">
-                        Choose from a wide range of professional services tailored to your
-                        needs
+                    <p className="text-lg text-gray-600">
+                        {sectionData.description}
                     </p>
                 </div>
-                {loading ? (
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {[...Array(6)].map((_, i) => (
-                            <div
-                                key={i}
-                                className="h-64 bg-muted animate-pulse rounded-lg"
-                            />
-                        ))}
-                    </div>
-                ) : categories.length > 0 ? (
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {categories.map((category) => (
-                            <CategoryCard key={category.name} {...category} />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="text-center py-12">
-                        <p className="text-muted-foreground">No categories available at the moment.</p>
-                    </div>
-                )}
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    {sectionData.services.map((service, index) => (
+                        <Card key={service.name || index} className="border border-gray-200 hover:shadow-lg transition-shadow">
+                            <CardContent className="p-6">
+                                <div className="mb-4">
+                                    {iconMap[service.icon] || <Home className="h-12 w-12 text-blue-500" />}
+                                </div>
+                                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                                    {service.name}
+                                </h3>
+                                <p className="text-sm text-gray-600 mb-4">
+                                    {service.description}
+                                </p>
+                                <Link
+                                    href={service.href}
+                                    className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+                                >
+                                    View Details
+                                    <ArrowRight className="ml-2 h-4 w-4" />
+                                </Link>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
             </div>
         </section>
     );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/auth-provider";
 import { useRealtimeBookings } from "@/hooks/use-realtime-bookings";
 import { createClient } from "@/lib/supabase/client";
@@ -15,29 +16,25 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import type { Booking, Payment, Profile, Address, Service, Review } from "@/lib/types/database";
+import { CategoriesSection } from "@/components/landing/categories-section";
+import { FeaturesSection } from "@/components/landing/features-section";
+import { TestimonialsSection } from "@/components/landing/testimonials-section";
+import { CTASection } from "@/components/landing/cta-section";
 import {
   Calendar,
   Clock,
   DollarSign,
   Package,
   Plus,
-  MapPin,
-  Home,
-  Wallet,
-  Bell,
-  Star,
-  TrendingUp,
-  CheckCircle,
+  CheckCircle2,
   AlertCircle,
   ArrowRight,
-  Settings,
-  HelpCircle,
-  Sparkles,
+  Search,
+  Star,
 } from "lucide-react";
-import { HeroSection } from "@/components/landing/hero-section";
-import { FeaturesSection } from "@/components/landing/features-section";
-import { CategoriesSection } from "@/components/landing/categories-section";
-import { CTASection } from "@/components/landing/cta-section";
+import Image from "next/image";
+import { CustomerDashboardHero } from "@/components/customer/dashboard-hero";
+import { CustomerDashboardSectionTitle } from "@/components/customer/dashboard-section-title";
 
 
 interface DashboardStats {
@@ -58,6 +55,7 @@ interface Notification {
 }
 
 export default function CustomerDashboard() {
+  const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [stats, setStats] = useState<DashboardStats>({
     totalBookings: 0,
@@ -71,13 +69,14 @@ export default function CustomerDashboard() {
   const [popularServices, setPopularServices] = useState<Service[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [pendingReviews, setPendingReviews] = useState<Booking[]>([]);
+  const [serviceNames, setServiceNames] = useState<Map<string, string>>(new Map());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const hasFetchedRef = useRef(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const authLoadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [authLoadingTimeout, setAuthLoadingTimeout] = useState(false);
-
+  
   // Real-time bookings hook
   const { bookings: realtimeBookings } = useRealtimeBookings({
     userId: user?.id,
@@ -89,21 +88,40 @@ export default function CustomerDashboard() {
   useEffect(() => {
     if (realtimeBookings.length > 0 || hasFetchedRef.current) {
       const upcoming = realtimeBookings.filter(
-        (b) =>
+        (b: Booking) =>
           b.status === "pending" ||
           b.status === "confirmed" ||
           b.status === "in_progress"
       ).length;
 
-      const completed = realtimeBookings.filter((b) => b.status === "completed").length;
+      const completed = realtimeBookings.filter((b: Booking) => b.status === "completed").length;
 
-      setStats((prev) => ({
+      setStats((prev: DashboardStats) => ({
         ...prev,
         totalBookings: realtimeBookings.length,
         upcomingBookings: upcoming,
         completedBookings: completed,
         recentBookings: realtimeBookings.slice(0, 5),
       }));
+
+      // Fetch service names for bookings
+      const fetchServiceNames = async () => {
+        const bookingServiceIds = [...new Set(realtimeBookings.map((b: Booking) => b.service_id))];
+        if (bookingServiceIds.length > 0) {
+          const supabase = createClient();
+          const { data: servicesData } = await supabase
+            .from("services")
+            .select("id, name")
+            .in("id", bookingServiceIds);
+          
+          if (servicesData) {
+            const nameMap = new Map<string, string>();
+            servicesData.forEach((s: { id: string; name: string }) => nameMap.set(s.id, s.name));
+            setServiceNames(nameMap);
+          }
+        }
+      };
+      fetchServiceNames();
     }
   }, [realtimeBookings]);
 
@@ -146,7 +164,7 @@ export default function CustomerDashboard() {
           .eq("customer_id", user.id)
           .eq("status", "completed"),
 
-        // 4. Popular services
+        // 4. Popular services with ratings
         supabase.from("services").select("*").eq("status", "active").limit(6),
 
         // 5. Completed bookings (for review check)
@@ -181,18 +199,49 @@ export default function CustomerDashboard() {
         console.error("Error fetching payments:", paymentsResult.error);
       }
 
-      // Process Popular Services
-      if (popularServicesResult.data) {
-        setPopularServices(popularServicesResult.data as Service[]);
+      // Process Popular Services with ratings
+      let finalServices: any[] = popularServicesResult.data || [];
+      if (finalServices.length) {
+        const serviceIds = finalServices.map((s) => s.id);
+        const { data: reviews } = await supabase
+          .from("reviews")
+          .select("service_id, rating")
+          .in("service_id", serviceIds)
+          .eq("is_visible", true);
+
+        const ratingMap = new Map<string, { sum: number; count: number }>();
+
+        reviews?.forEach((r: any) => {
+          const current = ratingMap.get(r.service_id) || { sum: 0, count: 0 };
+          ratingMap.set(r.service_id, {
+            sum: current.sum + r.rating,
+            count: current.count + 1,
+          });
+        });
+
+        finalServices = finalServices.map((s) => {
+          const r = ratingMap.get(s.id);
+          return {
+            ...s,
+            rating: r ? r.sum / r.count : undefined,
+            reviewCount: r?.count || 0,
+          };
+        });
       }
+      setPopularServices(finalServices as Service[]);
 
       // Process Notifications & Pending Reviews
-      const allCompletedBookings = completedBookingsResult.data || [];
+      const allCompletedBookings = (completedBookingsResult.data || []) as Array<{
+        id: string;
+        created_at: string;
+        completed_at: string | null;
+        status: string;
+      }>;
       const existingReviews = (reviewsResult?.data || []) as { booking_id: string }[];
 
       // Calculate pending reviews
       const reviewedBookingIds = new Set(
-        existingReviews.map((r) => r.booking_id)
+        existingReviews.map((r: { booking_id: string }) => r.booking_id)
       );
 
       const bookingsNeedingReview = allCompletedBookings.filter(
@@ -215,7 +264,7 @@ export default function CustomerDashboard() {
 
       // Use realtime bookings to find the next upcoming one for notification
       const upcomingBooking = realtimeBookings.find(
-        (b) =>
+        (b: Booking) =>
           (b.status === "confirmed" || b.status === "pending") &&
           new Date(b.scheduled_at) > new Date()
       );
@@ -236,9 +285,9 @@ export default function CustomerDashboard() {
       setNotifications([...reviewNotifications, ...reminderNotifications]);
 
       // Calculate stats (total spent is still from payments)
-      const totalSpent = payments.reduce((sum, p) => sum + Number(p.amount), 0);
+      const totalSpent = payments.reduce((sum: number, p: { amount: number | string }) => sum + Number(p.amount), 0);
 
-      setStats((prev) => ({
+      setStats((prev: DashboardStats) => ({
         ...prev,
         totalSpent,
       }));
@@ -252,7 +301,7 @@ export default function CustomerDashboard() {
       setLoading(false);
       hasFetchedRef.current = true;
     }
-  }, [user]);
+  }, [user, realtimeBookings]);
 
   // Handle auth loading timeout
   useEffect(() => {
@@ -337,424 +386,189 @@ export default function CustomerDashboard() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Header Section */}
-        <div className="mb-10">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Welcome back, {profile?.full_name || "Customer"}!
-              </h1>
-              <p className="text-gray-600 text-lg">
-                Here's an overview of your service bookings and activity.
-              </p>
+    <div className="w-full flex min-h-screen flex-col">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-white via-purple-50/30 to-teal-50/30 py-16 md:py-24">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+          <div className="max-w-4xl">
+            {/* Stats & Welcome */}
+            <div className="space-y-6">
+              <CustomerDashboardHero 
+                profileName={profile?.full_name || "Customer"}
+              />
+              
+              {/* Stats Grid */}
+              <div className="grid grid-cols-2 gap-4 pt-4">
+                <Link href="/customer/bookings" className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all cursor-pointer">
+                  <div className="text-2xl font-bold text-gray-900">{stats.totalBookings}</div>
+                  <div className="text-sm text-gray-600">Total Bookings</div>
+                </Link>
+                <Link href="/customer/bookings?status=upcoming" className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all cursor-pointer">
+                  <div className="text-2xl font-bold text-purple-600">{stats.upcomingBookings}</div>
+                  <div className="text-sm text-gray-600">Upcoming</div>
+                </Link>
+                <Link href="/customer/bookings?status=completed" className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-teal-200 transition-all cursor-pointer">
+                  <div className="text-2xl font-bold text-teal-600">{stats.completedBookings}</div>
+                  <div className="text-sm text-gray-600">Completed</div>
+                </Link>
+                <Link href="/customer/payments" className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all cursor-pointer">
+                  <div className="text-2xl font-bold text-gray-900">₹{stats.totalSpent.toLocaleString()}</div>
+                  <div className="text-sm text-gray-600">Total Spent</div>
+                </Link>
+              </div>
             </div>
-            {profile?.is_verified && (
-              <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 px-4 py-2">
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Verified Account
-              </Badge>
-            )}
           </div>
         </div>
+      </section>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-10">
-          <Link href="/customer/book-service">
-            <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border-blue-200 bg-gradient-to-br from-blue-50 via-blue-50 to-white hover:scale-105 hover:border-blue-300 group">
-              <CardContent className="pt-6 pb-6 text-center">
-                <div className="h-14 w-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
-                  <Plus className="h-7 w-7 text-white" />
-                </div>
-                <p className="font-semibold text-blue-900 text-sm md:text-base">Book Service</p>
-              </CardContent>
-            </Card>
-          </Link>
+      {/* Categories Section - Similar to Public Dashboard */}
+      <CategoriesSection />
 
-          <Link href="/customer/bookings">
-            <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border-purple-200 bg-gradient-to-br from-purple-50 via-purple-50 to-white hover:scale-105 hover:border-purple-300 group">
-              <CardContent className="pt-6 pb-6 text-center">
-                <div className="h-14 w-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
-                  <Calendar className="h-7 w-7 text-white" />
-                </div>
-                <p className="font-semibold text-purple-900 text-sm md:text-base">My Bookings</p>
-              </CardContent>
-            </Card>
-          </Link>
+      {/* Features Section - Similar to Public Dashboard */}
+      <FeaturesSection />
 
-          <Link href="/customer/profile">
-            <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border-green-200 bg-gradient-to-br from-green-50 via-green-50 to-white hover:scale-105 hover:border-green-300 group">
-              <CardContent className="pt-6 pb-6 text-center">
-                <div className="h-14 w-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
-                  <Settings className="h-7 w-7 text-white" />
-                </div>
-                <p className="font-semibold text-green-900 text-sm md:text-base">Manage Profile</p>
-              </CardContent>
-            </Card>
-          </Link>
+      {/* Popular Services Section */}
+      <section className="py-16 md:py-20 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <CustomerDashboardSectionTitle 
+                titleKey="popular_services_title"
+                descriptionKey="popular_services_description"
+                defaultTitle="Popular Services"
+                defaultDescription="The most booked services in your neighborhood"
+              />
+            </div>
+            <Link href="/customer/services" className="text-purple-600 hover:text-purple-700 font-medium flex items-center gap-2">
+              View All Services <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
 
-          <a href="mailto:support@urbanservices.com">
-            <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border-orange-200 bg-gradient-to-br from-orange-50 via-orange-50 to-white hover:scale-105 hover:border-orange-300 group">
-              <CardContent className="pt-6 pb-6 text-center">
-                <div className="h-14 w-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
-                  <HelpCircle className="h-7 w-7 text-white" />
-                </div>
-                <p className="font-semibold text-orange-900 text-sm md:text-base">Get Help</p>
-              </CardContent>
-            </Card>
-          </a>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-10">
-          <Card className="border-blue-100 bg-gradient-to-br from-blue-50 via-white to-white hover:shadow-xl transition-all duration-300 hover:border-blue-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-sm font-semibold text-gray-700">
-                Total Bookings
-              </CardTitle>
-              <div className="h-12 w-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
-                <Package className="h-6 w-6 text-white" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl md:text-4xl font-bold text-blue-900 mb-1">{stats.totalBookings}</div>
-              <p className="text-xs text-gray-500 flex items-center">
-                <TrendingUp className="h-3 w-3 mr-1" />
-                All time bookings
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-purple-100 bg-gradient-to-br from-purple-50 via-white to-white hover:shadow-xl transition-all duration-300 hover:border-purple-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-sm font-semibold text-gray-700">
-                Upcoming
-              </CardTitle>
-              <div className="h-12 w-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
-                <Calendar className="h-6 w-6 text-white" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl md:text-4xl font-bold text-purple-900 mb-1">{stats.upcomingBookings}</div>
-              <p className="text-xs text-gray-500">Scheduled services</p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-green-100 bg-gradient-to-br from-green-50 via-white to-white hover:shadow-xl transition-all duration-300 hover:border-green-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-sm font-semibold text-gray-700">
-                Completed
-              </CardTitle>
-              <div className="h-12 w-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md">
-                <CheckCircle className="h-6 w-6 text-white" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl md:text-4xl font-bold text-green-900 mb-1">{stats.completedBookings}</div>
-              <p className="text-xs text-gray-500">Finished services</p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-orange-100 bg-gradient-to-br from-orange-50 via-white to-white hover:shadow-xl transition-all duration-300 hover:border-orange-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-sm font-semibold text-gray-700">
-                Total Spent
-              </CardTitle>
-              <div className="h-12 w-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md">
-                <DollarSign className="h-6 w-6 text-white" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl md:text-4xl font-bold text-orange-900 mb-1">
-                ₹{stats.totalSpent.toFixed(2)}
-              </div>
-              <p className="text-xs text-gray-500">Lifetime spending</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-10">
-          {/* Default Address */}
-          <Card className="border-blue-100 hover:shadow-xl transition-all duration-300 bg-white">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <MapPin className="h-5 w-5 text-blue-600" />
-                  Default Address
-                </CardTitle>
-                <Link href="/customer/profile">
-                  <Button variant="ghost" size="sm">
-                    <Settings className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {defaultAddress ? (
-                <div className="space-y-2">
-                  <div className="flex items-start gap-2">
-                    <Home className="h-5 w-5 text-gray-400 mt-0.5" />
-                    <div>
-                      <p className="font-semibold text-sm">{defaultAddress.label}</p>
-                      <p className="text-sm text-gray-600">{defaultAddress.address_line1}</p>
-                      {defaultAddress.address_line2 && (
-                        <p className="text-sm text-gray-600">{defaultAddress.address_line2}</p>
-                      )}
-                      <p className="text-sm text-gray-600">
-                        {defaultAddress.city}, {defaultAddress.state} {defaultAddress.postal_code}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-4">
-                  <MapPin className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-                  <p className="text-sm text-gray-500 mb-3">No address saved</p>
-                  <Link href="/customer/profile">
-                    <Button size="sm" variant="outline">
-                      <Plus className="h-4 w-4 mr-1" />
-                      Add Address
-                    </Button>
-                  </Link>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Wallet Summary */}
-          <Card className="border-green-100 hover:shadow-xl transition-all duration-300 bg-white">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Wallet className="h-5 w-5 text-green-600" />
-                Wallet Summary
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm text-gray-500">Total Spent</p>
-                  <p className="text-2xl font-bold text-green-900">₹{stats.totalSpent.toFixed(2)}</p>
-                </div>
-                <div className="pt-3 border-t">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Completed Payments</span>
-                    <span className="font-semibold">{stats.completedBookings}</span>
-                  </div>
-                </div>
-                <Link href="/customer/payments">
-                  <Button variant="outline" size="sm" className="w-full mt-2">
-                    View Payment History
-                    <ArrowRight className="h-4 w-4 ml-2" />
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Notifications */}
-          <Card className="border-purple-100 hover:shadow-xl transition-all duration-300 bg-white">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Bell className="h-5 w-5 text-purple-600" />
-                Notifications
-                {notifications.length > 0 && (
-                  <Badge className="bg-purple-600">{notifications.length}</Badge>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {notifications.length > 0 ? (
-                <div className="space-y-3">
-                  {notifications.map((notif) => (
-                    <div
-                      key={notif.id}
-                      className="p-3 bg-purple-50 rounded-lg border border-purple-100"
-                    >
-                      <div className="flex items-start gap-2">
-                        {notif.type === "review" && (
-                          <Star className="h-4 w-4 text-purple-600 mt-0.5" />
-                        )}
-                        {notif.type === "reminder" && (
-                          <Clock className="h-4 w-4 text-purple-600 mt-0.5" />
-                        )}
-                        <div className="flex-1">
-                          <p className="font-semibold text-sm">{notif.title}</p>
-                          <p className="text-xs text-gray-600">{notif.message}</p>
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="h-64 bg-gray-200 rounded-xl animate-pulse"></div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {popularServices.slice(0, 4).map((service: Service) => (
+                <div key={service.id} className="relative group">
+                  <Link href={`/customer/book-service?serviceId=${service.id}`}>
+                    <div className="relative h-64 rounded-xl overflow-hidden">
+                      {service.image_url ? (
+                        <Image
+                          src={service.image_url}
+                          alt={service.name}
+                          fill
+                          className="object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-purple-100 to-teal-100 flex items-center justify-center">
+                          <span className="text-4xl font-bold text-purple-300">
+                            {service.name[0]}
+                          </span>
                         </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                        <p className="text-sm font-medium mb-1">
+                          Starting at ₹{service.base_price}
+                        </p>
+                        <h3 className="text-lg font-bold mb-2">{service.name}</h3>
+                        {(service as any).rating !== undefined && (service as any).reviewCount !== undefined && (
+                          <div className="flex items-center gap-1">
+                            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                            <span className="text-sm font-semibold">
+                              {(service as any).rating.toFixed(1)}
+                            </span>
+                            <span className="text-sm text-gray-300">
+                              ({(service as any).reviewCount.toLocaleString()} reviews)
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-4">
-                  <Bell className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-                  <p className="text-sm text-gray-500">No new notifications</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Popular Services */}
-        {popularServices.length > 0 && (
-          <Card className="mb-10 border-indigo-100 bg-white shadow-sm">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <Sparkles className="h-5 w-5 text-indigo-600" />
-                    Popular Services
-                  </CardTitle>
-                  <CardDescription>Explore our most requested services</CardDescription>
-                </div>
-                <Link href="/customer/services">
-                  <Button variant="outline">
-                    View All
-                    <ArrowRight className="h-4 w-4 ml-2" />
-                  </Button>
-                </Link>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                {popularServices.map((service) => (
-                  <Link key={service.id} href={`/customer/book-service?service=${service.id}`}>
-                    <Card className="hover:shadow-md transition-all cursor-pointer border-gray-200 hover:border-indigo-300">
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-lg mb-1">{service.name}</h3>
-                            <Badge variant="secondary" className="text-xs">
-                              {service.category}
-                            </Badge>
-                          </div>
-                        </div>
-                        {service.description && (
-                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                            {service.description}
-                          </p>
-                        )}
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-lg font-bold text-indigo-600">
-                              ₹{Number(service.base_price).toFixed(2)}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {service.duration_minutes} mins
-                            </p>
-                          </div>
-                          <Button size="sm">Book Now</Button>
-                        </div>
-                      </CardContent>
-                    </Card>
                   </Link>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
-        {/* Recent Bookings */}
-        <Card className="border-gray-200 bg-white shadow-sm">
-          <CardHeader>
-            <div className="flex items-center justify-between">
+      {/* Testimonials Section - Similar to Public Dashboard */}
+      <TestimonialsSection />
+
+      {/* Recent Bookings Section */}
+      {stats.recentBookings.length > 0 && (
+        <section className="py-16 md:py-20 bg-white">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+            <div className="flex items-center justify-between mb-8">
               <div>
-                <CardTitle>Recent Bookings</CardTitle>
-                <CardDescription>
-                  Your latest service bookings and their status
-                </CardDescription>
+                <CustomerDashboardSectionTitle
+                  titleKey="recent_bookings_title"
+                  descriptionKey="recent_bookings_description"
+                  defaultTitle="Recent Bookings"
+                  defaultDescription="Your latest service bookings and their status"
+                />
               </div>
-              <Link href="/customer/bookings">
-                <Button variant="outline">View All</Button>
+              <Link href="/customer/bookings" className="text-purple-600 hover:text-purple-700 font-medium flex items-center gap-2">
+                View All <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
-          </CardHeader>
-          <CardContent>
-            {stats.recentBookings.length === 0 ? (
-              <div className="text-center py-12">
-                <Package className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                <p className="text-lg text-gray-500 mb-2">No bookings yet</p>
-                <p className="text-sm text-gray-400 mb-4">
-                  Start by booking your first service
-                </p>
-                <Link href="/customer/book-service">
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Book Your First Service
-                  </Button>
-                </Link>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {stats.recentBookings.map((booking) => (
-                  <Link
-                    key={booking.id}
-                    href={`/customer/bookings/${booking.id}`}
-                    className="block"
-                  >
-                    <div className="flex items-center justify-between p-5 border-2 rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:shadow-lg hover:border-blue-200 transition-all duration-300 cursor-pointer group">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-semibold text-lg">
-                            Booking #{booking.id.slice(0, 8)}
-                          </h3>
-                          <Badge
-                            variant={
-                              booking.status === "completed"
-                                ? "default"
-                                : booking.status === "cancelled"
-                                  ? "destructive"
-                                  : "secondary"
-                            }
-                            className={
-                              booking.status === "confirmed"
-                                ? "bg-blue-100 text-blue-700"
-                                : booking.status === "in_progress"
-                                  ? "bg-purple-100 text-purple-700"
-                                  : ""
-                            }
-                          >
-                            {booking.status}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center gap-4 text-sm text-gray-600">
-                          <div className="flex items-center gap-1">
-                            <Calendar className="h-4 w-4" />
-                            {new Date(booking.scheduled_at).toLocaleDateString()}
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Clock className="h-4 w-4" />
-                            {new Date(booking.scheduled_at).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xl font-bold text-gray-900">
-                          ₹{Number(booking.final_amount).toFixed(2)}
-                        </p>
-                        <Button variant="ghost" size="sm" className="mt-1">
-                          View Details
-                          <ArrowRight className="h-4 w-4 ml-1" />
-                        </Button>
-                      </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {stats.recentBookings.slice(0, 6).map((booking: Booking) => (
+                <Card key={booking.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg">{serviceNames.get(booking.service_id) || "Service"}</CardTitle>
+                      <Badge
+                        variant={
+                          booking.status === "completed"
+                            ? ("default" as const)
+                            : booking.status === "confirmed" || booking.status === "in_progress"
+                            ? ("secondary" as const)
+                            : ("outline" as const)
+                        }
+                      >
+                        {booking.status.replace("_", " ")}
+                      </Badge>
                     </div>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-      <div className="w-full">
-        <HeroSection />
-        <FeaturesSection />
-        <CategoriesSection />
-        <CTASection />
-      </div>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Calendar className="h-4 w-4" />
+                      <span>{new Date(booking.scheduled_at).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Clock className="h-4 w-4" />
+                      <span>{new Date(booking.scheduled_at).toLocaleTimeString()}</span>
+                    </div>
+                    {booking.total_amount && (
+                      <div className="flex items-center gap-2 text-sm font-semibold text-gray-900">
+                        <DollarSign className="h-4 w-4" />
+                        <span>₹{Number(booking.total_amount).toLocaleString()}</span>
+                      </div>
+                    )}
+                  </CardContent>
+                  <CardContent>
+                    <Link href={`/customer/bookings/${booking.id}`}>
+                      <Button variant="outline" className="w-full">
+                        View Details <ArrowRight className="h-4 w-4 ml-2" />
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* CTA Section - Similar to Public Dashboard */}
+      <CTASection />
     </div>
   );
 }

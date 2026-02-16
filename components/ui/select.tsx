@@ -124,8 +124,8 @@ const SelectItem = React.forwardRef<
             ref={ref}
             onClick={handleSelect}
             className={cn(
-                "relative flex w-full cursor-default select-none items-center py-2 pl-10 pr-4 text-gray-900 hover:bg-blue-50 hover:text-blue-900",
-                isSelected && "bg-blue-50 text-blue-900 font-medium",
+                "relative flex w-full cursor-default select-none items-center py-2 pl-10 pr-4 text-[#0F172A] hover:bg-[#DBEAFE] hover:text-[#1E3A8A]",
+                isSelected && "bg-[#DBEAFE] text-[#1E3A8A] font-medium",
                 className
             )}
             {...props}

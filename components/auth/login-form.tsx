@@ -18,6 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
+import Image from "next/image";
 import { LoadingBar } from "@/components/ui/loading-bar";
 
 type LoginMethod = "email" | "otp";
@@ -159,12 +160,21 @@ export function LoginForm() {
   return (
     <Card className="w-full max-w-md shadow-xl border-2 border-gray-100 bg-white">
       <CardHeader className="space-y-2 text-center pb-6">
+        <div className="flex justify-center mb-4">
+          <Image
+            src="/logo.png"
+            alt="Vera Company"
+            width={64}
+            height={64}
+            className="rounded-lg shadow-sm object-contain"
+          />
+        </div>
         <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Welcome back</CardTitle>
         <CardDescription className="text-base">Sign in to your account to continue</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Login Method Toggle */}
-        <div className="flex gap-2 border-2 border-gray-200 rounded-lg p-1 bg-gray-50">
+        <div className="flex gap-2 border-2 border-[#E2E8F0] rounded-lg p-1 bg-[#F1F5F9]">
           <button
             type="button"
             onClick={() => {

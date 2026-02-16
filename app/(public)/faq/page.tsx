@@ -144,20 +144,22 @@ export default function FAQPage() {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-primary/5 py-20 md:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50/50 via-white to-purple-50/30 py-20 md:py-32">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute left-1/4 top-1/4 h-72 w-72 rounded-full bg-primary/5 blur-3xl"></div>
-          <div className="absolute right-1/4 bottom-1/4 h-96 w-96 rounded-full bg-primary/5 blur-3xl"></div>
+          <div className="absolute left-1/4 top-1/4 h-96 w-96 rounded-full bg-blue-400/20 blur-3xl animate-pulse"></div>
+          <div className="absolute right-1/4 bottom-1/4 h-[500px] w-[500px] rounded-full bg-purple-400/15 blur-3xl animate-pulse delay-1000"></div>
         </div>
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 relative z-10">
           <div className="mx-auto max-w-3xl text-center">
             <div className="mb-6 flex justify-center">
-              <HelpCircle className="h-16 w-16 text-primary" />
+              <div className="p-4 rounded-2xl bg-blue-100">
+                <HelpCircle className="h-12 w-12 text-primary" />
+              </div>
             </div>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent animate-in fade-in slide-in-from-bottom-4 duration-700">
               Frequently Asked <span className="text-primary">Questions</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600 sm:text-xl leading-relaxed">
               Find quick answers to the most common questions about our platform
             </p>
           </div>
@@ -178,25 +180,27 @@ export default function FAQPage() {
                     return (
                       <Card
                         key={questionIdx}
-                        className="transition-all hover:shadow-md"
+                        className="transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 border border-gray-200/60 hover:border-blue-300/60 bg-white/80 backdrop-blur-sm"
                       >
                         <CardContent className="p-0">
                           <button
                             onClick={() => toggleQuestion(currentIndex)}
-                            className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-muted/50"
+                            className="flex w-full items-center justify-between p-6 text-left transition-all duration-300 hover:bg-gray-50/80 rounded-t-lg"
                           >
-                            <span className="pr-8 font-semibold text-lg">
+                            <span className="pr-8 font-semibold text-lg text-gray-900">
                               {faq.question}
                             </span>
-                            {isOpen ? (
-                              <ChevronUp className="h-5 w-5 flex-shrink-0 text-muted-foreground" />
-                            ) : (
-                              <ChevronDown className="h-5 w-5 flex-shrink-0 text-muted-foreground" />
-                            )}
+                            <div className={`flex-shrink-0 p-1.5 rounded-lg transition-all duration-300 ${isOpen ? 'bg-blue-100 text-primary rotate-180' : 'bg-gray-100 text-gray-600'}`}>
+                              {isOpen ? (
+                                <ChevronUp className="h-4 w-4" />
+                              ) : (
+                                <ChevronDown className="h-4 w-4" />
+                              )}
+                            </div>
                           </button>
                           {isOpen && (
-                            <div className="border-t px-6 pb-6 pt-4">
-                              <p className="text-muted-foreground leading-relaxed">
+                            <div className="border-t border-gray-200/60 px-6 pb-6 pt-4 animate-in slide-in-from-top-2 duration-300">
+                              <p className="text-gray-600 leading-relaxed">
                                 {faq.answer}
                               </p>
                             </div>
@@ -213,20 +217,20 @@ export default function FAQPage() {
       </section>
 
       {/* Still Have Questions */}
-      <section className="bg-muted/50 py-16">
+      <section className="bg-gradient-to-br from-slate-50 via-white to-blue-50/30 py-16">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-gray-900">
               Still Have Questions?
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground">
+            <p className="mt-4 text-lg text-gray-600">
               Can't find what you're looking for? Our support team is here to
               help.
             </p>
             <div className="mt-8">
               <a
                 href="/contact"
-                className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-8 text-base font-medium text-primary-foreground shadow-lg transition-all hover:shadow-xl"
+                className="inline-flex h-12 items-center justify-center rounded-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary px-8 text-base font-medium text-white shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5"
               >
                 Contact Support
               </a>

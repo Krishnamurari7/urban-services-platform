@@ -89,15 +89,15 @@ export default function AuditLogPage() {
             case "user_suspended":
             case "service_deleted":
             case "booking_cancelled":
-                return "bg-red-100 text-red-700 border-red-200";
+                return "bg-[#FEE2E2] text-[#991B1B] border-[#FCA5A5]"; // Error red variant
             case "user_activated":
             case "service_created":
-                return "bg-green-100 text-green-700 border-green-200";
+                return "bg-[#D1FAE5] text-[#065F46] border-[#6EE7B7]"; // Success green variant
             case "service_updated":
             case "payment_refunded":
-                return "bg-blue-100 text-blue-700 border-blue-200";
+                return "bg-[#DBEAFE] text-[#1E3A8A] border-[#93C5FD]"; // Primary blue variant
             default:
-                return "bg-gray-100 text-gray-700 border-gray-200";
+                return "bg-[#F1F5F9] text-[#475569] border-[#CBD5E1]"; // Light background variant
         }
     };
 

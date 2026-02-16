@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { checkAdmin } from "@/lib/auth/admin-check";
 
 export async function createSection(data: {
   section_type: string;
@@ -16,33 +17,19 @@ export async function createSection(data: {
   display_order?: number;
   is_active?: boolean;
 }) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { error: "Unauthorized" };
+  // Check if user is admin
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    return { error: error || "Unauthorized" };
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
-  }
-
-  const { error } = await supabase.from("homepage_sections").insert({
+  const { error: dbError } = await supabase.from("homepage_sections").insert({
     ...data,
     created_by: user.id,
   });
 
-  if (error) {
-    return { error: error.message };
+  if (dbError) {
+    return { error: dbError.message };
   }
 
   revalidatePath("/admin/sections");
@@ -65,33 +52,19 @@ export async function updateSection(
     is_active?: boolean;
   }
 ) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { error: "Unauthorized" };
+  // Check if user is admin
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    return { error: error || "Unauthorized" };
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
-  }
-
-  const { error } = await supabase
+  const { error: dbError } = await supabase
     .from("homepage_sections")
     .update(data)
     .eq("id", sectionId);
 
-  if (error) {
-    return { error: error.message };
+  if (dbError) {
+    return { error: dbError.message };
   }
 
   revalidatePath("/admin/sections");
@@ -100,33 +73,19 @@ export async function updateSection(
 }
 
 export async function deleteSection(sectionId: string) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { error: "Unauthorized" };
+  // Check if user is admin
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    return { error: error || "Unauthorized" };
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
-  }
-
-  const { error } = await supabase
+  const { error: dbError } = await supabase
     .from("homepage_sections")
     .delete()
     .eq("id", sectionId);
 
-  if (error) {
-    return { error: error.message };
+  if (dbError) {
+    return { error: dbError.message };
   }
 
   revalidatePath("/admin/sections");
@@ -135,33 +94,19 @@ export async function deleteSection(sectionId: string) {
 }
 
 export async function toggleSectionStatus(sectionId: string, isActive: boolean) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { error: "Unauthorized" };
+  // Check if user is admin
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    return { error: error || "Unauthorized" };
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
-  }
-
-  const { error } = await supabase
+  const { error: dbError } = await supabase
     .from("homepage_sections")
     .update({ is_active: isActive })
     .eq("id", sectionId);
 
-  if (error) {
-    return { error: error.message };
+  if (dbError) {
+    return { error: dbError.message };
   }
 
   revalidatePath("/admin/sections");

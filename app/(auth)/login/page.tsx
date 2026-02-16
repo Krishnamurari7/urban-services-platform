@@ -15,7 +15,7 @@ async function LoginMessages({
   return (
     <>
       {params.message && (
-        <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-800">
+        <div className="rounded-lg border border-[#6EE7B7] bg-[#D1FAE5] p-4 text-sm text-[#065F46]">
           {params.message}
         </div>
       )}

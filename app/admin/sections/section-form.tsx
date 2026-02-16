@@ -160,10 +160,14 @@ export function SectionForm({ section }: { section?: Section }) {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   >
                     <option value="">Select type</option>
+                    <option value="hero">Hero Section</option>
+                    <option value="services">Services Section</option>
+                    <option value="features">Features Section</option>
                     <option value="testimonials">Testimonials</option>
                     <option value="stats">Stats</option>
                     <option value="how_it_works">How It Works</option>
                     <option value="partners">Partners</option>
+                    <option value="cta">CTA Section</option>
                     <option value="custom">Custom</option>
                   </select>
                 </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Star, Quote } from "lucide-react";
+import { Star } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 interface Testimonial {
@@ -26,8 +26,10 @@ export function TestimonialsSection({
   description = "Read what our satisfied customers have to say about our services",
   testimonials: propTestimonials,
 }: TestimonialsSectionProps) {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>(propTestimonials || []);
-  const [loading, setLoading] = useState(!propTestimonials);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(
+    Array.isArray(propTestimonials) ? propTestimonials : []
+  );
+  const [loading, setLoading] = useState(!propTestimonials || !Array.isArray(propTestimonials));
 
   useEffect(() => {
     if (propTestimonials) return;
@@ -44,30 +46,30 @@ export function TestimonialsSection({
           .eq("is_active", true)
           .single();
 
-        if (sectionData?.content?.testimonials) {
+        if (sectionData?.content?.testimonials && Array.isArray(sectionData.content.testimonials)) {
           setTestimonials(sectionData.content.testimonials);
         } else {
           // Default testimonials if none in DB
           setTestimonials([
             {
               id: "1",
-              name: "Rajesh Kumar",
+              name: "Sarah Jenkins",
               role: "Homeowner",
-              content: "Excellent service! The professional was punctual, skilled, and very courteous. Highly recommended!",
+              content: "The deep cleaning service was incredible. My kitchen looks brand new! The staff was professional and very thorough.",
               rating: 5,
             },
             {
               id: "2",
-              name: "Priya Sharma",
+              name: "Michael Ross",
               role: "Business Owner",
-              content: "Great platform for finding reliable professionals. The booking process is smooth and hassle-free.",
+              content: "I've used several services before, but Vera Company is by far the most reliable. Their pricing is fair and the quality is top-notch.",
               rating: 5,
             },
             {
               id: "3",
-              name: "Amit Patel",
-              role: "Customer",
-              content: "Best service experience I've had. Professional, timely, and quality work guaranteed.",
+              name: "Elena G.",
+              role: "Real Estate Agent",
+              content: "Very impressed with the pest control service. They explained everything and the follow-up was excellent. Highly recommended.",
               rating: 5,
             },
           ]);
@@ -96,58 +98,54 @@ export function TestimonialsSection({
     );
   }
 
-  if (testimonials.length === 0) return null;
+  if (!Array.isArray(testimonials) || testimonials.length === 0) return null;
 
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-muted/30 to-background">
-      <div className="container mx-auto px-4">
+    <section className="py-16 md:py-24 bg-white">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center mb-12">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2>
-          {subtitle && (
-            <p className="mt-2 text-lg text-primary font-medium">{subtitle}</p>
-          )}
-          {description && (
-            <p className="mt-4 text-muted-foreground">{description}</p>
-          )}
+          <p className="text-sm font-semibold text-blue-600 uppercase tracking-wider mb-2">
+            TESTIMONIALS
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">{title}</h2>
         </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {testimonials.map((testimonial) => (
+          {Array.isArray(testimonials) && testimonials.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="group relative rounded-lg border bg-card p-6 shadow-sm transition-all hover:shadow-lg hover:-translate-y-1"
+              className="rounded-xl bg-gray-800 p-6 text-white"
             >
-              <Quote className="absolute top-4 right-4 h-8 w-8 text-primary/10" />
               <div className="mb-4 flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
                     className={`h-5 w-5 ${
                       i < testimonial.rating
-                        ? "text-yellow-500 fill-yellow-500"
-                        : "text-gray-300"
+                        ? "text-yellow-400 fill-yellow-400"
+                        : "text-gray-600"
                     }`}
                   />
                 ))}
               </div>
-              <p className="mb-4 text-muted-foreground italic">"{testimonial.content}"</p>
+              <p className="mb-6 text-gray-200 leading-relaxed">"{testimonial.content}"</p>
               <div className="flex items-center gap-3">
                 {testimonial.image_url ? (
                   <img
                     src={testimonial.image_url}
                     alt={testimonial.name}
-                    className="h-10 w-10 rounded-full object-cover"
+                    className="h-12 w-12 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <span className="text-primary font-semibold">
+                  <div className="h-12 w-12 rounded-full bg-blue-600 flex items-center justify-center">
+                    <span className="text-white font-semibold text-lg">
                       {testimonial.name.charAt(0)}
                     </span>
                   </div>
                 )}
                 <div>
-                  <p className="font-semibold">{testimonial.name}</p>
+                  <p className="font-semibold text-white">{testimonial.name}</p>
                   {testimonial.role && (
-                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                    <p className="text-sm text-gray-400">{testimonial.role}</p>
                   )}
                 </div>
               </div>

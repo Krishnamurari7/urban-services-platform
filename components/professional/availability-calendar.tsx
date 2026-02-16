@@ -130,13 +130,13 @@ export function AvailabilityCalendar() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "available":
-        return "bg-green-100 text-green-800";
+        return "bg-[#D1FAE5] text-[#065F46]"; // Success green variant
       case "booked":
-        return "bg-blue-100 text-blue-800";
+        return "bg-[#DBEAFE] text-[#1E3A8A]"; // Primary blue variant
       case "unavailable":
-        return "bg-gray-100 text-gray-800";
+        return "bg-[#F1F5F9] text-[#475569]"; // Light background variant
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-[#F1F5F9] text-[#475569]"; // Light background variant
     }
   };
 

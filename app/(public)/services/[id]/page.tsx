@@ -109,11 +109,6 @@ export default async function ServiceDetailPage({
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
       : null;
 
-
-  if (!service) {
-    notFound();
-  }
-
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Service",

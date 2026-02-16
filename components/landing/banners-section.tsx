@@ -59,16 +59,18 @@ function BannerSlider({ banners }: BannersSectionProps) {
   }
 
   return (
-    <section className="relative w-full">
-      <div className="relative overflow-hidden rounded-lg shadow-2xl">
+    <section className="relative w-full -mt-4 md:-mt-8">
+      <div className="relative overflow-hidden rounded-2xl md:rounded-3xl shadow-2xl ring-1 ring-gray-200/50">
         {/* Slider Container */}
-        <div className="relative w-full aspect-[4/5] sm:aspect-[16/6] md:aspect-[16/6]">
+        <div className="relative w-full aspect-[16/9] sm:aspect-[21/6] md:aspect-[21/7] lg:aspect-[21/8]">
           {banners.map((banner, index) => {
             return (
               <div
                 key={banner.id}
-                className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-                  index === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0"
+                className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+                  index === currentIndex 
+                    ? "opacity-100 z-10 scale-100" 
+                    : "opacity-0 z-0 scale-105"
                 }`}
               >
                 {banner.link_url ? (
@@ -104,20 +106,20 @@ function BannerSlider({ banners }: BannersSectionProps) {
                         />
                       )}
                       {(banner.title || banner.description) && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 p-4 md:p-8">
-                          <div className="text-center text-white px-4">
+                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-r from-black/60 via-black/50 to-black/60 p-4 md:p-8">
+                          <div className="text-center text-white px-4 max-w-4xl">
                             {banner.title && (
-                              <h2 className="text-xl font-bold sm:text-2xl md:text-4xl lg:text-5xl mb-2 animate-fade-in">
+                              <h2 className="text-2xl font-extrabold sm:text-3xl md:text-5xl lg:text-6xl mb-3 md:mb-4 drop-shadow-2xl animate-fade-in leading-tight">
                                 {banner.title}
                               </h2>
                             )}
                             {banner.description && (
-                              <p className="text-sm sm:text-base md:text-xl lg:text-2xl mb-3 md:mb-4 animate-fade-in">
+                              <p className="text-sm sm:text-base md:text-lg lg:text-xl mb-4 md:mb-6 animate-fade-in drop-shadow-lg text-gray-100">
                                 {banner.description}
                               </p>
                             )}
                             {banner.link_text && (
-                              <span className="inline-block rounded-full bg-primary px-4 py-2 md:px-6 md:py-3 text-xs md:text-sm font-semibold text-white hover:bg-primary/90 transition-colors mt-2 md:mt-4 animate-fade-in">
+                              <span className="inline-block rounded-full bg-primary px-6 py-2.5 md:px-8 md:py-3 text-sm md:text-base font-bold text-white hover:bg-primary/90 transition-all duration-300 mt-2 md:mt-4 animate-fade-in shadow-xl hover:scale-105 hover:shadow-2xl">
                                 {banner.link_text}
                               </span>
                             )}
@@ -158,15 +160,15 @@ function BannerSlider({ banners }: BannersSectionProps) {
                       />
                     )}
                     {(banner.title || banner.description) && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/40 p-4 md:p-8">
-                        <div className="text-center text-white px-4">
+                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-r from-black/60 via-black/50 to-black/60 p-4 md:p-8">
+                        <div className="text-center text-white px-4 max-w-4xl">
                           {banner.title && (
-                            <h2 className="text-xl font-bold sm:text-2xl md:text-4xl lg:text-5xl mb-2 animate-fade-in">
+                            <h2 className="text-2xl font-extrabold sm:text-3xl md:text-5xl lg:text-6xl mb-3 md:mb-4 drop-shadow-2xl animate-fade-in leading-tight">
                               {banner.title}
                             </h2>
                           )}
                           {banner.description && (
-                            <p className="text-sm sm:text-base md:text-xl lg:text-2xl animate-fade-in">
+                            <p className="text-sm sm:text-base md:text-lg lg:text-xl animate-fade-in drop-shadow-lg text-gray-100">
                               {banner.description}
                             </p>
                           )}
@@ -186,34 +188,34 @@ function BannerSlider({ banners }: BannersSectionProps) {
                 variant="ghost"
                 size="lg"
                 onClick={goToPrevious}
-                className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white/90 text-gray-900 rounded-full p-1.5 md:p-2 shadow-lg hidden sm:flex"
+                className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-gray-900 rounded-full p-2 md:p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hidden sm:flex backdrop-blur-sm border border-white/20"
                 aria-label="Previous banner"
               >
-                <ChevronLeft className="h-4 w-4 md:h-6 md:w-6" />
+                <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
               </Button>
               <Button
                 variant="ghost"
                 size="lg"
                 onClick={goToNext}
-                className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white/90 text-gray-900 rounded-full p-1.5 md:p-2 shadow-lg hidden sm:flex"
+                className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-gray-900 rounded-full p-2 md:p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hidden sm:flex backdrop-blur-sm border border-white/20"
                 aria-label="Next banner"
               >
-                <ChevronRight className="h-4 w-4 md:h-6 md:w-6" />
+                <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
               </Button>
             </>
           )}
 
           {/* Dot Indicators */}
           {banners.length > 1 && (
-            <div className="absolute bottom-2 md:bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-1.5 md:gap-2">
+            <div className="absolute bottom-3 md:bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2 md:gap-2.5 items-center bg-black/20 backdrop-blur-sm px-3 py-2 rounded-full">
               {banners.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => goToSlide(index)}
                   className={`rounded-full transition-all duration-300 ${
                     index === currentIndex
-                      ? "w-6 md:w-8 h-2 bg-white"
-                      : "w-2 h-2 bg-white/50 hover:bg-white/75"
+                      ? "w-8 md:w-10 h-2.5 bg-white shadow-lg"
+                      : "w-2.5 h-2.5 bg-white/60 hover:bg-white/80"
                   }`}
                   aria-label={`Go to slide ${index + 1}`}
                 />

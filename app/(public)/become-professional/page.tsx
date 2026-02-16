@@ -74,23 +74,23 @@ export default function BecomeProfessionalPage() {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-primary/5 py-16 md:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50/50 via-white to-purple-50/30 py-16 md:py-24">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute left-1/4 top-1/4 h-72 w-72 rounded-full bg-primary/5 blur-3xl"></div>
-          <div className="absolute right-1/4 bottom-1/4 h-96 w-96 rounded-full bg-primary/5 blur-3xl"></div>
+          <div className="absolute left-1/4 top-1/4 h-96 w-96 rounded-full bg-blue-400/20 blur-3xl animate-pulse"></div>
+          <div className="absolute right-1/4 bottom-1/4 h-[500px] w-[500px] rounded-full bg-purple-400/15 blur-3xl animate-pulse delay-1000"></div>
         </div>
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 relative z-10">
           <div className="mx-auto max-w-3xl text-center">
-            <div className="mb-6 inline-flex items-center rounded-full border bg-background/50 px-4 py-2 text-sm backdrop-blur-sm">
+            <div className="mb-6 inline-flex items-center rounded-full border border-gray-200/60 bg-white/80 backdrop-blur-sm px-4 py-2 text-sm shadow-sm">
               <TrendingUp className="mr-2 h-4 w-4 text-primary" />
-              <span className="text-muted-foreground">
+              <span className="text-gray-600">
                 Join 500+ professionals
               </span>
             </div>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent animate-in fade-in slide-in-from-bottom-4 duration-700">
               Become a <span className="text-primary">Professional</span>
             </h1>
-            <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
+            <p className="mt-6 text-lg text-gray-600 sm:text-xl leading-relaxed">
               Join thousands of professionals earning a great income by
               providing quality services to customers
             </p>
@@ -114,17 +114,17 @@ export default function BecomeProfessionalPage() {
               {benefits.map((benefit, index) => (
                 <Card
                   key={index}
-                  className="group transition-all hover:shadow-lg hover:-translate-y-1"
+                  className="group transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1 border border-gray-200/60 hover:border-blue-300/60 bg-white/80 backdrop-blur-sm"
                 >
                   <CardContent className="flex items-start gap-4 p-6">
-                    <div className="rounded-lg bg-primary/10 p-3 text-primary transition-transform group-hover:scale-110">
+                    <div className="rounded-xl bg-blue-50 p-3 text-primary transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:bg-blue-100">
                       {benefit.icon}
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg mb-1">
+                      <h3 className="font-semibold text-lg mb-1 text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
                         {benefit.title}
                       </h3>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-gray-600">
                         {benefit.description}
                       </p>
                     </div>
@@ -136,10 +136,10 @@ export default function BecomeProfessionalPage() {
 
           {/* Registration Form */}
           <div>
-            <Card className="sticky top-24">
-              <CardHeader className="border-b">
-                <CardTitle className="text-2xl">Get Started Today</CardTitle>
-                <p className="mt-2 text-sm text-muted-foreground">
+            <Card className="sticky top-24 border border-gray-200/60 hover:border-blue-300/60 bg-white/80 backdrop-blur-sm shadow-xl shadow-blue-500/10 transition-all duration-300">
+              <CardHeader className="border-b border-gray-200/60">
+                <CardTitle className="text-2xl text-gray-900">Get Started Today</CardTitle>
+                <p className="mt-2 text-sm text-gray-600">
                   Fill out the form and our team will get in touch with you
                   within 24 hours
                 </p>
@@ -241,7 +241,7 @@ export default function BecomeProfessionalPage() {
                   )}
                   <Button
                     type="submit"
-                    className="w-full h-12 text-base shadow-lg hover:shadow-xl transition-all"
+                    className="w-full h-12 text-base bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5 rounded-xl"
                   >
                     Submit Application
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -251,16 +251,16 @@ export default function BecomeProfessionalPage() {
             </Card>
 
             {/* Requirements */}
-            <Card className="mt-6 border-primary/20">
-              <CardHeader className="border-b">
-                <CardTitle className="text-lg">Requirements</CardTitle>
+            <Card className="mt-6 border border-blue-200/60 hover:border-blue-300/60 bg-white/80 backdrop-blur-sm transition-all duration-300">
+              <CardHeader className="border-b border-gray-200/60">
+                <CardTitle className="text-lg text-gray-900">Requirements</CardTitle>
               </CardHeader>
               <CardContent className="pt-6">
                 <ul className="space-y-3">
                   {requirements.map((requirement, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-sm text-gray-600">
                         {requirement}
                       </span>
                     </li>
@@ -272,11 +272,11 @@ export default function BecomeProfessionalPage() {
         </div>
 
         {/* CTA Section */}
-        <section className="mt-16 rounded-lg bg-gradient-to-br from-primary via-primary/95 to-primary/90 p-8 md:p-12 text-center text-primary-foreground">
+        <section className="mt-16 rounded-2xl bg-gradient-to-br from-primary via-primary/95 to-primary/90 p-8 md:p-12 text-center text-white shadow-xl shadow-primary/30">
           <h2 className="text-2xl font-bold md:text-3xl">
             Ready to Start Earning?
           </h2>
-          <p className="mt-2 text-primary-foreground/90 text-lg">
+          <p className="mt-2 text-white/90 text-lg">
             Join our platform and start providing services today
           </p>
           <div className="mt-6">
@@ -285,7 +285,7 @@ export default function BecomeProfessionalPage() {
                 <Button
                   size="lg"
                   variant="secondary"
-                  className="h-12 px-8 text-base shadow-lg hover:shadow-xl transition-all"
+                  className="h-12 px-8 text-base bg-white text-primary shadow-lg hover:shadow-xl hover:shadow-white/20 transition-all duration-300 hover:-translate-y-0.5 rounded-xl"
                 >
                   Create Account
                 </Button>
@@ -295,7 +295,7 @@ export default function BecomeProfessionalPage() {
                 size="lg"
                 variant="secondary"
                 onClick={handleSubmit}
-                className="h-12 px-8 text-base shadow-lg hover:shadow-xl transition-all"
+                className="h-12 px-8 text-base bg-white text-primary shadow-lg hover:shadow-xl hover:shadow-white/20 transition-all duration-300 hover:-translate-y-0.5 rounded-xl"
               >
                 Apply Now
               </Button>

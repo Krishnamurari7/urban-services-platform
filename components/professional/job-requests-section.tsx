@@ -128,17 +128,17 @@ export function JobRequestsSection({ onRefresh }: { onRefresh: () => void }) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-[#FEF3C7] text-[#92400E]";
       case "confirmed":
-        return "bg-blue-100 text-blue-800";
+        return "bg-[#DBEAFE] text-[#1E3A8A]";
       case "in_progress":
-        return "bg-purple-100 text-purple-800";
+        return "bg-[#E9D5FF] text-[#6B21A8]";
       case "completed":
-        return "bg-green-100 text-green-800";
+        return "bg-[#D1FAE5] text-[#065F46]";
       case "cancelled":
-        return "bg-red-100 text-red-800";
+        return "bg-[#FEE2E2] text-[#991B1B]";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-[#F1F5F9] text-[#475569]";
     }
   };
 

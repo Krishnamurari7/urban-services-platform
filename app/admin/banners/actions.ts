@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { checkAdmin } from "@/lib/auth/admin-check";
 
 export async function createBanner(data: {
   title: string;
@@ -15,33 +16,19 @@ export async function createBanner(data: {
   start_date?: string | null;
   end_date?: string | null;
 }) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { error: "Unauthorized" };
+  // Check if user is admin
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    return { error: error || "Unauthorized" };
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
-  }
-
-  const { error } = await supabase.from("homepage_banners").insert({
+  const { error: dbError } = await supabase.from("homepage_banners").insert({
     ...data,
     created_by: user.id,
   });
 
-  if (error) {
-    return { error: error.message };
+  if (dbError) {
+    return { error: dbError.message };
   }
 
   revalidatePath("/admin/banners");
@@ -64,33 +51,19 @@ export async function updateBanner(
     end_date?: string | null;
   }
 ) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { error: "Unauthorized" };
+  // Check if user is admin
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    return { error: error || "Unauthorized" };
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
-  }
-
-  const { error } = await supabase
+  const { error: dbError } = await supabase
     .from("homepage_banners")
     .update(data)
     .eq("id", bannerId);
 
-  if (error) {
-    return { error: error.message };
+  if (dbError) {
+    return { error: dbError.message };
   }
 
   revalidatePath("/admin/banners");
@@ -99,33 +72,19 @@ export async function updateBanner(
 }
 
 export async function deleteBanner(bannerId: string) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { error: "Unauthorized" };
+  // Check if user is admin
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    return { error: error || "Unauthorized" };
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
-  }
-
-  const { error } = await supabase
+  const { error: dbError } = await supabase
     .from("homepage_banners")
     .delete()
     .eq("id", bannerId);
 
-  if (error) {
-    return { error: error.message };
+  if (dbError) {
+    return { error: dbError.message };
   }
 
   revalidatePath("/admin/banners");
@@ -134,33 +93,19 @@ export async function deleteBanner(bannerId: string) {
 }
 
 export async function toggleBannerStatus(bannerId: string, isActive: boolean) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { error: "Unauthorized" };
+  // Check if user is admin
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    return { error: error || "Unauthorized" };
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
-  }
-
-  const { error } = await supabase
+  const { error: dbError } = await supabase
     .from("homepage_banners")
     .update({ is_active: isActive })
     .eq("id", bannerId);
 
-  if (error) {
-    return { error: error.message };
+  if (dbError) {
+    return { error: dbError.message };
   }
 
   revalidatePath("/admin/banners");

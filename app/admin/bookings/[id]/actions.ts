@@ -2,36 +2,20 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { checkAdmin } from "@/lib/auth/admin-check";
 
-export async function updateBookingStatus(formData: FormData) {
-  const supabase = await createClient();
+export async function updateBookingStatus(formData: FormData): Promise<void> {
   const bookingId = formData.get("bookingId") as string;
   const status = formData.get("status") as string;
 
   if (!bookingId || !status) {
-    console.error("Booking ID and status are required");
-    return;
+    throw new Error("Booking ID and status are required");
   }
 
   // Check if user is admin
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    console.error("Unauthorized: No user found");
-    return;
-  }
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    console.error("Unauthorized: User is not an admin");
-    return;
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    throw new Error(error || "Unauthorized");
   }
 
   const updateData: any = {
@@ -42,14 +26,13 @@ export async function updateBookingStatus(formData: FormData) {
     updateData.completed_at = new Date().toISOString();
   }
 
-  const { error } = await supabase
+  const { error: updateError } = await supabase
     .from("bookings")
     .update(updateData)
     .eq("id", bookingId);
 
-  if (error) {
-    console.error("Error updating booking status:", error.message);
-    return;
+  if (updateError) {
+    throw new Error(`Error updating booking status: ${updateError.message}`);
   }
 
   // Log admin action
@@ -65,38 +48,21 @@ export async function updateBookingStatus(formData: FormData) {
   revalidatePath("/admin/bookings");
 }
 
-export async function cancelBooking(formData: FormData) {
-  const supabase = await createClient();
+export async function cancelBooking(formData: FormData): Promise<void> {
   const bookingId = formData.get("bookingId") as string;
   const reason = (formData.get("reason") as string) || "Cancelled by admin";
 
   if (!bookingId) {
-    console.error("Booking ID is required");
-    return;
+    throw new Error("Booking ID is required");
   }
 
   // Check if user is admin
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    console.error("Unauthorized: No user found");
-    return;
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    throw new Error(error || "Unauthorized");
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    console.error("Unauthorized: User is not an admin");
-    return;
-  }
-
-  const { error } = await supabase
+  const { error: updateError } = await supabase
     .from("bookings")
     .update({
       status: "cancelled",
@@ -105,9 +71,8 @@ export async function cancelBooking(formData: FormData) {
     })
     .eq("id", bookingId);
 
-  if (error) {
-    console.error("Error cancelling booking:", error.message);
-    return;
+  if (updateError) {
+    throw new Error(`Error cancelling booking: ${updateError.message}`);
   }
 
   // Log admin action
@@ -123,32 +88,18 @@ export async function cancelBooking(formData: FormData) {
   revalidatePath("/admin/bookings");
 }
 
-export async function assignProfessional(formData: FormData) {
-  const supabase = await createClient();
+export async function assignProfessional(formData: FormData): Promise<void> {
   const bookingId = formData.get("bookingId") as string;
   const professionalId = formData.get("professionalId") as string;
 
   if (!bookingId || !professionalId) {
-    return { error: "Booking ID and Professional ID are required" };
+    throw new Error("Booking ID and Professional ID are required");
   }
 
   // Check if user is admin
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { error: "Unauthorized" };
-  }
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    throw new Error(error || "Unauthorized");
   }
 
   // Verify professional exists and is active
@@ -160,7 +111,7 @@ export async function assignProfessional(formData: FormData) {
     .single();
 
   if (!professional || !professional.is_active) {
-    return { error: "Invalid or inactive professional" };
+    throw new Error("Invalid or inactive professional");
   }
 
   // Get booking to verify service
@@ -171,7 +122,7 @@ export async function assignProfessional(formData: FormData) {
     .single();
 
   if (!booking) {
-    return { error: "Booking not found" };
+    throw new Error("Booking not found");
   }
 
   // Verify professional offers this service
@@ -184,11 +135,11 @@ export async function assignProfessional(formData: FormData) {
     .single();
 
   if (!professionalService) {
-    return { error: "Professional does not offer this service" };
+    throw new Error("Professional does not offer this service");
   }
 
   // Update booking
-  const { error } = await supabase
+  const { error: updateError } = await supabase
     .from("bookings")
     .update({
       professional_id: professionalId,
@@ -196,8 +147,8 @@ export async function assignProfessional(formData: FormData) {
     })
     .eq("id", bookingId);
 
-  if (error) {
-    return { error: error.message };
+  if (updateError) {
+    throw new Error(updateError.message);
   }
 
   // Log admin action
@@ -211,5 +162,4 @@ export async function assignProfessional(formData: FormData) {
 
   revalidatePath(`/admin/bookings/${bookingId}`);
   revalidatePath("/admin/bookings");
-  return { success: true };
 }

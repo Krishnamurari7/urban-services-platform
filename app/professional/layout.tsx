@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/components/auth/auth-provider";
 import { signOut } from "@/lib/auth/actions";
@@ -22,6 +23,7 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import type { Profile } from "@/lib/types/database";
 import { ProtectedRoute } from "@/components/auth/protected-route";
+import { Footer } from "@/components/layout/footer";
 
 const navigation = [
   { name: "Dashboard", href: "/professional/dashboard", icon: LayoutDashboard },
@@ -84,9 +86,13 @@ function ProfessionalLayoutContent({
         <div className="flex flex-col flex-grow border-r border-gray-200 bg-white">
           <div className="flex items-center flex-shrink-0 px-4 py-4 border-b border-gray-200">
             <Link href="/professional/dashboard" className="flex items-center">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
-                <span className="text-lg font-bold">U</span>
-              </div>
+              <Image
+                src="/logo.png"
+                alt="Vera Company"
+                width={32}
+                height={32}
+                className="rounded-lg object-contain"
+              />
               <span className="ml-2 text-xl font-bold">
                 Professional Portal
               </span>
@@ -181,9 +187,13 @@ function ProfessionalLayoutContent({
       <div className="md:hidden bg-white border-b border-gray-200">
         <div className="flex items-center justify-between px-4 py-3">
           <Link href="/professional/dashboard" className="flex items-center">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
-              <span className="text-lg font-bold">U</span>
-            </div>
+            <Image
+              src="/logo.png"
+              alt="Vera Company"
+              width={32}
+              height={32}
+              className="rounded-lg object-contain"
+            />
             <span className="ml-2 text-lg font-bold">Professional Portal</span>
           </Link>
           <button
@@ -282,6 +292,9 @@ function ProfessionalLayoutContent({
       <div className="md:pl-64">
         <main>{children}</main>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

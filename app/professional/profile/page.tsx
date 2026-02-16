@@ -48,17 +48,20 @@ export default function ProfessionalProfilePage() {
   });
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      if (!user) {
-        window.location.href = "/login";
-        return;
-      }
-      // Check if user has professional role
-      if (role === "admin" || role === "customer") {
-        router.push(getRoleBasedRedirect(role));
-      } else {
-        window.location.href = "/login?error=unauthorized";
-      }
+    if (authLoading) return;
+
+    if (!user) {
+      window.location.href = "/login";
+      return;
+    }
+
+    // Check if user has professional role
+    if (role === "admin" || role === "customer") {
+      router.push(getRoleBasedRedirect(role));
+      return;
+    }
+
+    if (role === "professional") {
       fetchProfileData();
     }
   }, [user, role, authLoading]);

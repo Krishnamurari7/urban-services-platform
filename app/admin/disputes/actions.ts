@@ -2,37 +2,21 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { checkAdmin } from "@/lib/auth/admin-check";
 
-export async function processRefund(formData: FormData) {
-  const supabase = await createClient();
+export async function processRefund(formData: FormData): Promise<void> {
   const bookingId = formData.get("bookingId") as string;
   const refundReason =
     (formData.get("reason") as string) || "Refund processed by admin";
 
   if (!bookingId) {
-    console.error("Booking ID is required");
-    return;
+    throw new Error("Booking ID is required");
   }
 
   // Check if user is admin
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    console.error("Unauthorized: No user found");
-    return;
-  }
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    console.error("Unauthorized: User is not an admin");
-    return;
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    throw new Error(error || "Unauthorized");
   }
 
   // Get booking details
@@ -43,8 +27,7 @@ export async function processRefund(formData: FormData) {
     .single();
 
   if (!booking) {
-    console.error("Booking not found");
-    return;
+    throw new Error("Booking not found");
   }
 
   // Get payment for this booking
@@ -55,8 +38,7 @@ export async function processRefund(formData: FormData) {
     .single();
 
   if (!payment) {
-    console.error("Payment not found");
-    return;
+    throw new Error("Payment not found");
   }
 
   // Update payment status to refunded
@@ -71,8 +53,7 @@ export async function processRefund(formData: FormData) {
     .eq("id", payment.id);
 
   if (paymentError) {
-    console.error("Error updating payment:", paymentError.message);
-    return;
+    throw new Error(`Error updating payment: ${paymentError.message}`);
   }
 
   // Update booking status
@@ -85,7 +66,7 @@ export async function processRefund(formData: FormData) {
     .eq("id", bookingId);
 
   if (bookingError) {
-    console.error("Error updating booking:", bookingError);
+    throw new Error(`Error updating booking: ${bookingError.message}`);
   }
 
   // Log admin action
@@ -100,36 +81,19 @@ export async function processRefund(formData: FormData) {
   revalidatePath("/admin/disputes");
 }
 
-export async function resolveDispute(formData: FormData) {
-  const supabase = await createClient();
+export async function resolveDispute(formData: FormData): Promise<void> {
   const bookingId = formData.get("bookingId") as string;
   const resolution =
     (formData.get("resolution") as string) || "Dispute resolved by admin";
 
   if (!bookingId) {
-    console.error("Booking ID is required");
-    return;
+    throw new Error("Booking ID is required");
   }
 
   // Check if user is admin
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    console.error("Unauthorized: No user found");
-    return;
-  }
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    console.error("Unauthorized: User is not an admin");
-    return;
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    throw new Error(error || "Unauthorized");
   }
 
   // Update booking - mark as resolved (you might want to add a resolved status)

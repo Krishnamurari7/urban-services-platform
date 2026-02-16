@@ -1,66 +1,149 @@
+"use client";
+
 import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Sparkles, CheckCircle2, Shield, Star } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Search, MapPin, Users, CheckCircle2 } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 export function HeroSection() {
+    const router = useRouter();
+    const [serviceQuery, setServiceQuery] = useState("");
+    const [location, setLocation] = useState("");
+    const [heroData, setHeroData] = useState({
+        title: "Professional Home Services at Your Doorstep",
+        subtitle: "Home Services",
+        description: "Book verified experts for home cleaning, sanitization, and maintenance. Reliable, affordable, and just a click away.",
+        trustText: "Trusted by 10,000+ households",
+        certificationText: "CERTIFIED EXPERTS",
+        certificationSubtext: "100% Background Checked",
+        imageUrl: "",
+    });
+
+    useEffect(() => {
+        const fetchHeroData = async () => {
+            try {
+                const supabase = createClient();
+                const { data: sectionData } = await supabase
+                    .from("homepage_sections")
+                    .select("*")
+                    .eq("section_type", "hero")
+                    .eq("is_active", true)
+                    .single();
+
+                if (sectionData?.content) {
+                    setHeroData({
+                        title: sectionData.content.title || heroData.title,
+                        subtitle: sectionData.content.subtitle || heroData.subtitle,
+                        description: sectionData.content.description || heroData.description,
+                        trustText: sectionData.content.trustText || heroData.trustText,
+                        certificationText: sectionData.content.certificationText || heroData.certificationText,
+                        certificationSubtext: sectionData.content.certificationSubtext || heroData.certificationSubtext,
+                        imageUrl: sectionData.content.imageUrl || sectionData.image_url || heroData.imageUrl,
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching hero data:", error);
+            }
+        };
+        fetchHeroData();
+    }, []);
+
+    const handleSearch = () => {
+        const params = new URLSearchParams();
+        if (serviceQuery) params.set("search", serviceQuery);
+        if (location) params.set("location", location);
+        router.push(`/services?${params.toString()}`);
+    };
+
     return (
-        <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-primary/5 py-20 md:py-32">
-            {/* Decorative background elements */}
-            <div className="absolute inset-0 -z-10">
-                <div className="absolute left-1/4 top-1/4 h-72 w-72 rounded-full bg-primary/5 blur-3xl"></div>
-                <div className="absolute right-1/4 bottom-1/4 h-96 w-96 rounded-full bg-primary/5 blur-3xl"></div>
-            </div>
-            <div className="container mx-auto px-4">
-                <div className="mx-auto max-w-4xl text-center">
-                    <div className="mb-6 inline-flex items-center rounded-full border bg-background/50 px-4 py-2 text-sm backdrop-blur-sm">
-                        <Sparkles className="mr-2 h-4 w-4 text-primary" />
-                        <span className="text-muted-foreground">
-                            Trusted by 10,000+ customers
-                        </span>
-                    </div>
-                    <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-                        Professional Services
-                        <span className="block bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                            At Your Doorstep
-                        </span>
-                    </h1>
-                    <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-                        Connect with verified professionals for all your home and business
-                        service needs. Book instantly, pay securely, and get quality
-                        service guaranteed.
-                    </p>
-                    <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                        <Link href="/services">
+        <section className="relative overflow-hidden bg-white py-16 md:py-24">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid lg:grid-cols-2 gap-12 items-center">
+                    {/* Left Content */}
+                    <div>
+                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+                            {heroData.title.split(heroData.subtitle)[0]}
+                            <span className="text-blue-600">{heroData.subtitle}</span>
+                            {heroData.title.split(heroData.subtitle)[1] || " at Your Doorstep"}
+                        </h1>
+                        
+                        <p className="text-lg text-gray-600 mb-8">
+                            {heroData.description}
+                        </p>
+
+                        {/* Search Bar */}
+                        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-2 flex flex-col sm:flex-row gap-2 mb-6">
+                            <div className="relative flex-1">
+                                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                <Input
+                                    value={location}
+                                    onChange={(e) => setLocation(e.target.value)}
+                                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                                    placeholder="Your Location"
+                                    className="pl-10 h-12 text-base border-0 focus-visible:ring-0"
+                                />
+                            </div>
+                            <div className="relative flex-1">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                <Input
+                                    value={serviceQuery}
+                                    onChange={(e) => setServiceQuery(e.target.value)}
+                                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                                    placeholder="Search for deep clean"
+                                    className="pl-10 h-12 text-base border-0 focus-visible:ring-0"
+                                />
+                            </div>
                             <Button
-                                size="lg"
-                                className="w-full sm:w-auto text-base px-8 h-12 shadow-lg hover:shadow-xl transition-all"
+                                onClick={handleSearch}
+                                className="h-12 px-6 bg-blue-600 hover:bg-blue-700 text-white"
                             >
-                                Explore Services
+                                Search
                             </Button>
-                        </Link>
-                        <Link href="/become-professional">
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                className="w-full sm:w-auto text-base px-8 h-12 border-2 hover:bg-primary/5 transition-all"
-                            >
-                                Become a Professional
-                            </Button>
-                        </Link>
+                        </div>
+
+                        {/* Trust Indicator */}
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <Users className="h-4 w-4" />
+                            <span>{heroData.trustText}</span>
+                        </div>
                     </div>
-                    {/* Trust indicators */}
-                    <div className="mt-12 flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-2">
-                            <CheckCircle2 className="h-5 w-5 text-green-500" />
-                            <span>Verified Professionals</span>
+
+                    {/* Right Image */}
+                    <div className="relative">
+                        <div className="relative rounded-2xl overflow-hidden bg-blue-100 aspect-[4/5]">
+                            {heroData.imageUrl ? (
+                                <Image
+                                    src={heroData.imageUrl}
+                                    alt="Professional Service"
+                                    fill
+                                    className="object-cover"
+                                />
+                            ) : (
+                                <div className="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                                    <div className="text-center p-8">
+                                        <div className="w-32 h-32 mx-auto mb-4 bg-white rounded-full flex items-center justify-center">
+                                            <Users className="h-16 w-16 text-blue-600" />
+                                        </div>
+                                        <p className="text-gray-600">Professional Service Image</p>
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                        <div className="flex items-center gap-2">
-                            <Shield className="h-5 w-5 text-primary" />
-                            <span>Secure Payments</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
-                            <span>4.8+ Rating</span>
+                        {/* Certification Badge */}
+                        <div className="absolute -bottom-4 -left-4 bg-white rounded-xl shadow-lg p-4 border border-gray-200">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                                    <CheckCircle2 className="h-6 w-6 text-green-600" />
+                                </div>
+                                <div>
+                                    <p className="text-xs font-semibold text-gray-900">{heroData.certificationText}</p>
+                                    <p className="text-xs text-gray-600">{heroData.certificationSubtext}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

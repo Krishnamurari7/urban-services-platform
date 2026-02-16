@@ -2,26 +2,13 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { checkAdmin } from "@/lib/auth/admin-check";
 
 export async function deleteService(serviceId: string) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { error: "Unauthorized" };
-  }
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
+  // Check if user is admin
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    return { error: error || "Unauthorized" };
   }
 
   // Check if service has active bookings
@@ -39,13 +26,13 @@ export async function deleteService(serviceId: string) {
     };
   }
 
-  const { error } = await supabase
+  const { error: deleteError } = await supabase
     .from("services")
     .delete()
     .eq("id", serviceId);
 
-  if (error) {
-    return { error: error.message };
+  if (deleteError) {
+    return { error: deleteError.message };
   }
 
   // Log admin action

@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/components/auth/auth-provider";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import type { UserRole } from "@/lib/types/auth";
 import { getRoleBasedRedirect } from "@/lib/auth/utils";
 import { LoadingBar } from "@/components/ui/loading-bar";
@@ -21,6 +21,19 @@ export function ProtectedRoute({
   const { user, role, loading, isAuthenticated } = useAuth();
   const router = useRouter();
   const [roleLoading, setRoleLoading] = useState(true);
+  const maxWaitTime = 8000; // Maximum wait time: 8 seconds
+  const waitStartRef = useRef<number | null>(null);
+
+  // Track when we start waiting for role
+  useEffect(() => {
+    if (isAuthenticated && user && role === null && !loading) {
+      if (waitStartRef.current === null) {
+        waitStartRef.current = Date.now();
+      }
+    } else if (role !== null) {
+      waitStartRef.current = null;
+    }
+  }, [isAuthenticated, user, role, loading]);
 
   useEffect(() => {
     if (!loading) {
@@ -32,8 +45,20 @@ export function ProtectedRoute({
 
       // Check role if required
       if (requiredRole) {
-        // If role is still null/undefined, we need to wait for it
+        // If role is still null/undefined, wait for it with a timeout
         if (role === null || role === undefined) {
+          // Check if we've waited long enough
+          const waitTime = waitStartRef.current ? Date.now() - waitStartRef.current : 0;
+          
+          // For customer routes, be more lenient - allow access after reasonable wait time
+          // This handles cases where profile creation is delayed by database trigger
+          if (requiredRole === "customer" && waitTime >= maxWaitTime) {
+            // After waiting, assume customer role if user is authenticated
+            // This prevents blocking legitimate customers whose profile is being created
+            setRoleLoading(false);
+            return;
+          }
+          
           // Role is loading, keep showing loading state
           return;
         }
@@ -61,7 +86,12 @@ export function ProtectedRoute({
     }
   }, [role]);
 
-  if (loading || (isAuthenticated && roleLoading && role === null)) {
+  // Show loading state while auth is loading or role is being fetched
+  const waitTime = waitStartRef.current ? Date.now() - waitStartRef.current : 0;
+  const shouldWaitForRole = isAuthenticated && roleLoading && role === null && 
+    (requiredRole !== "customer" || waitTime < maxWaitTime);
+  
+  if (loading || shouldWaitForRole) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-white">
         <div className="w-full max-w-md px-4">
@@ -76,6 +106,7 @@ export function ProtectedRoute({
   }
 
   // Check if user has required role - only show Access Denied if role is loaded and doesn't match
+  // For customer routes, be lenient if role is null after retries (assume customer)
   if (requiredRole && role !== null && role !== requiredRole) {
     return (
       <div className="flex items-center justify-center min-h-screen">

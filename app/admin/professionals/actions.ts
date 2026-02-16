@@ -3,35 +3,19 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { logger } from "@/lib/logger";
+import { checkAdmin } from "@/lib/auth/admin-check";
 
-export async function approveProfessional(formData: FormData) {
-  const supabase = await createClient();
+export async function approveProfessional(formData: FormData): Promise<void> {
   const professionalId = formData.get("professionalId") as string;
 
   if (!professionalId) {
-    console.error("Professional ID is required");
-    return;
+    throw new Error("Professional ID is required");
   }
 
   // Check if user is admin
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    console.error("Unauthorized: No user found");
-    return;
-  }
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    console.error("Unauthorized: User is not an admin");
-    return;
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    throw new Error(error || "Unauthorized");
   }
 
   // Update professional verification status
@@ -45,8 +29,7 @@ export async function approveProfessional(formData: FormData) {
     .eq("role", "professional");
 
   if (profileError) {
-    console.error("Error updating profile:", profileError.message);
-    return;
+    throw new Error(`Error updating profile: ${profileError.message}`);
   }
 
   // Update all pending documents to approved
@@ -61,7 +44,7 @@ export async function approveProfessional(formData: FormData) {
     .eq("status", "pending");
 
   if (docError) {
-    console.error("Error updating documents:", docError);
+    logger.error("Error updating documents:", docError);
   }
 
   // Log admin action
@@ -77,35 +60,18 @@ export async function approveProfessional(formData: FormData) {
   revalidatePath("/admin/professionals");
 }
 
-export async function rejectProfessional(formData: FormData) {
-  const supabase = await createClient();
+export async function rejectProfessional(formData: FormData): Promise<void> {
   const professionalId = formData.get("professionalId") as string;
   const reason = formData.get("reason") as string;
 
   if (!professionalId) {
-    console.error("Professional ID is required");
-    return;
+    throw new Error("Professional ID is required");
   }
 
   // Check if user is admin
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    console.error("Unauthorized: No user found");
-    return;
-  }
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    console.error("Unauthorized: User is not an admin");
-    return;
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    throw new Error(error || "Unauthorized");
   }
 
   // Update professional status
@@ -119,8 +85,7 @@ export async function rejectProfessional(formData: FormData) {
     .eq("role", "professional");
 
   if (profileError) {
-    console.error("Error updating profile:", profileError.message);
-    return;
+    throw new Error(`Error updating profile: ${profileError.message}`);
   }
 
   // Reject all pending documents
@@ -136,7 +101,7 @@ export async function rejectProfessional(formData: FormData) {
     .eq("status", "pending");
 
   if (docError) {
-    console.error("Error updating documents:", docError);
+    logger.error("Error updating documents:", docError);
   }
 
   // Log admin action

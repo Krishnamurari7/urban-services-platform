@@ -13,6 +13,15 @@ export async function middleware(request: NextRequest) {
   const publicRoutes = [
     "/",
     "/about",
+    "/contact",
+    "/careers",
+    "/faq",
+    "/help-center",
+    "/cookies",
+    "/privacy",
+    "/privacy-policy",
+    "/terms",
+    "/terms-of-service",
     "/login",
     "/register",
     "/auth",
@@ -27,6 +36,11 @@ export async function middleware(request: NextRequest) {
     }
     return pathname.startsWith(route);
   });
+
+  // Allow public routes to pass through without authentication checks
+  if (isPublicRoute) {
+    return response;
+  }
 
   // Auth routes (login, register) - redirect if already authenticated
   const authRoutes = ["/login", "/register"];
@@ -108,32 +122,35 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  // If user is authenticated but doesn't have a role, redirect to profile setup
+  // If user is authenticated but doesn't have a role yet, allow them to pass through
+  // The client-side ProtectedRoute will handle role checking and show loading state
+  // This prevents redirect loops when profile is being created asynchronously
   if (isRoleRoute && user && !userRole) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/login";
-    redirectUrl.searchParams.set("error", "role_not_set");
-    return NextResponse.redirect(redirectUrl);
+    // Allow access - ProtectedRoute will handle role checking on client side
+    // This is especially important for newly signed up users where profile creation
+    // might be slightly delayed due to database trigger execution
+    return response;
   }
 
   // Protect role-specific routes based on user role
+  // Only redirect if we have a confirmed role mismatch
   if (isRoleRoute && user && userRole) {
     if (pathname.startsWith("/admin") && userRole !== "admin") {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = getRoleBasedRedirect(userRole);
-      redirectUrl.searchParams.set("error", "unauthorized");
+      // Don't add error param to prevent redirect loops
       return NextResponse.redirect(redirectUrl);
     }
     if (pathname.startsWith("/professional") && userRole !== "professional") {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = getRoleBasedRedirect(userRole);
-      redirectUrl.searchParams.set("error", "unauthorized");
+      // Don't add error param to prevent redirect loops
       return NextResponse.redirect(redirectUrl);
     }
     if (pathname.startsWith("/customer") && userRole !== "customer") {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = getRoleBasedRedirect(userRole);
-      redirectUrl.searchParams.set("error", "unauthorized");
+      // Don't add error param to prevent redirect loops
       return NextResponse.redirect(redirectUrl);
     }
   }

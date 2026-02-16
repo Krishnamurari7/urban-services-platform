@@ -125,12 +125,12 @@ export default async function AdminBookingsPage() {
                       <div className="font-bold text-lg">₹{booking.final_amount}</div>
                       <span
                         className={`inline-block mt-1 px-2 py-1 rounded text-xs ${booking.status === "completed"
-                            ? "bg-green-100 text-green-700"
+                            ? "bg-[#D1FAE5] text-[#065F46]"
                             : booking.status === "cancelled" || booking.status === "refunded"
-                              ? "bg-red-100 text-red-700"
+                              ? "bg-[#FEE2E2] text-[#991B1B]"
                               : booking.status === "in_progress"
-                                ? "bg-blue-100 text-blue-700"
-                                : "bg-yellow-100 text-yellow-700"
+                                ? "bg-[#DBEAFE] text-[#1E3A8A]"
+                                : "bg-[#FEF3C7] text-[#92400E]"
                           }`}
                       >
                         {booking.status.replace("_", " ")}
@@ -215,13 +215,13 @@ export default async function AdminBookingsPage() {
                     <td className="p-2">
                       <span
                         className={`px-2 py-1 rounded text-xs ${booking.status === "completed"
-                            ? "bg-green-100 text-green-700"
+                            ? "bg-[#D1FAE5] text-[#065F46]"
                             : booking.status === "cancelled" ||
                               booking.status === "refunded"
-                              ? "bg-red-100 text-red-700"
+                              ? "bg-[#FEE2E2] text-[#991B1B]"
                               : booking.status === "in_progress"
-                                ? "bg-blue-100 text-blue-700"
-                                : "bg-yellow-100 text-yellow-700"
+                                ? "bg-[#DBEAFE] text-[#1E3A8A]"
+                                : "bg-[#FEF3C7] text-[#92400E]"
                           }`}
                       >
                         {booking.status.replace("_", " ")}
@@ -231,10 +231,10 @@ export default async function AdminBookingsPage() {
                       {booking.payment ? (
                         <span
                           className={`px-2 py-1 rounded text-xs ${booking.payment.status === "completed"
-                              ? "bg-green-100 text-green-700"
+                              ? "bg-[#D1FAE5] text-[#065F46]"
                               : booking.payment.status === "refunded"
-                                ? "bg-red-100 text-red-700"
-                                : "bg-yellow-100 text-yellow-700"
+                                ? "bg-[#FEE2E2] text-[#991B1B]"
+                                : "bg-[#FEF3C7] text-[#92400E]"
                             }`}
                         >
                           {booking.payment.status}

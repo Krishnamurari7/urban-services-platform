@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import type { UserRole } from "@/lib/types/auth";
 import Link from "next/link";
+import Image from "next/image";
 
 export function RegisterForm() {
   const [email, setEmail] = useState("");
@@ -73,6 +74,15 @@ export function RegisterForm() {
   return (
     <Card className="w-full max-w-md shadow-xl border-2 border-gray-100 bg-white">
       <CardHeader className="space-y-2 text-center pb-6">
+        <div className="flex justify-center mb-4">
+          <Image
+            src="/logo.png"
+            alt="Vera Company"
+            width={64}
+            height={64}
+            className="rounded-lg shadow-sm object-contain"
+          />
+        </div>
         <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Create an account</CardTitle>
         <CardDescription className="text-base">Enter your information to get started</CardDescription>
       </CardHeader>

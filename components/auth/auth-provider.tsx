@@ -25,7 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const supabase = useMemo(() => createClient(), []);
 
-  const fetchUserRole = async (userId: string) => {
+  const fetchUserRole = async (userId: string, retryCount = 0): Promise<void> => {
     try {
       const { data, error } = await supabase
         .from("profiles")
@@ -33,14 +33,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq("id", userId)
         .single();
 
-      if (!error && data) {
+      if (!error && data && data.role) {
         setRole(data.role as UserRole);
       } else {
-        setRole(null);
+        // If profile doesn't exist yet and it's a new user, retry a few times
+        // This handles the case where profile creation is delayed by database trigger
+        if (retryCount < 3 && error?.code === "PGRST116") {
+          // PGRST116 = no rows returned
+          setTimeout(() => {
+            fetchUserRole(userId, retryCount + 1);
+          }, 1000 * (retryCount + 1)); // Exponential backoff: 1s, 2s, 3s
+        } else {
+          setRole(null);
+        }
       }
     } catch (error) {
       console.error("Error fetching user role:", error);
-      setRole(null);
+      // Retry on network errors
+      if (retryCount < 2) {
+        setTimeout(() => {
+          fetchUserRole(userId, retryCount + 1);
+        }, 1000 * (retryCount + 1));
+      } else {
+        setRole(null);
+      }
     }
   };
 
@@ -57,12 +73,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const currentUser = session?.user ?? null;
           setUser(currentUser);
           if (currentUser) {
-            // Fetch role with timeout to prevent infinite loading
+            // Fetch role - it will retry internally if needed
             try {
               await Promise.race([
                 fetchUserRole(currentUser.id),
                 new Promise<void>((resolve) =>
-                  setTimeout(() => resolve(), 5000)
+                  setTimeout(() => resolve(), 10000) // Increased timeout to 10s
                 ),
               ]);
             } catch (roleError) {
@@ -98,7 +114,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           await Promise.race([
             fetchUserRole(currentUser.id),
-            new Promise<void>((resolve) => setTimeout(() => resolve(), 3000)),
+            new Promise<void>((resolve) => setTimeout(() => resolve(), 8000)), // Increased timeout to 8s
           ]);
         } catch (roleError) {
           console.error("Error fetching role:", roleError);

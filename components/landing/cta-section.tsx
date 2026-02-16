@@ -1,65 +1,83 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Smartphone } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 export function CTASection() {
+    const [ctaData, setCtaData] = useState({
+        title: "Ready to Experience a Spotless Home?",
+        description: "Join over 10,000 happy customers and book your first service today with a 20% discount.",
+        primaryButtonText: "Book a Service Now",
+        primaryButtonLink: "/services",
+        secondaryButtonText: "Download App",
+        secondaryButtonLink: "/#download-app",
+        backgroundColor: "#2563EB",
+    });
+
+    useEffect(() => {
+        const fetchCTAData = async () => {
+            try {
+                const supabase = createClient();
+                const { data: sectionData } = await supabase
+                    .from("homepage_sections")
+                    .select("*")
+                    .eq("section_type", "cta")
+                    .eq("is_active", true)
+                    .single();
+
+                if (sectionData?.content) {
+                    setCtaData({
+                        title: sectionData.content.title || sectionData.title || ctaData.title,
+                        description: sectionData.content.description || sectionData.description || ctaData.description,
+                        primaryButtonText: sectionData.content.primaryButtonText || ctaData.primaryButtonText,
+                        primaryButtonLink: sectionData.content.primaryButtonLink || ctaData.primaryButtonLink,
+                        secondaryButtonText: sectionData.content.secondaryButtonText || ctaData.secondaryButtonText,
+                        secondaryButtonLink: sectionData.content.secondaryButtonLink || ctaData.secondaryButtonLink,
+                        backgroundColor: sectionData.background_color || ctaData.backgroundColor,
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching CTA data:", error);
+            }
+        };
+        fetchCTAData();
+    }, []);
+
     return (
-        <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary/95 to-primary/90 py-16 md:py-24">
-            <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,white,transparent)]"></div>
-            <div className="container relative mx-auto px-4">
-                <div className="mx-auto max-w-3xl text-center">
-                    <h2 className="text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl md:text-5xl">
-                        Ready to Get Started?
+        <section 
+            className="relative overflow-hidden py-16 md:py-24"
+            style={{ backgroundColor: ctaData.backgroundColor }}
+        >
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-4xl text-center">
+                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                        {ctaData.title}
                     </h2>
-                    <p className="mt-4 text-lg text-primary-foreground/90 sm:text-xl">
-                        Join thousands of satisfied customers who trust us for their
-                        service needs
+                    <p className="text-lg text-white/90 mb-8">
+                        {ctaData.description}
                     </p>
-                    <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                        <Link href="/register">
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <Link href={ctaData.primaryButtonLink}>
                             <Button
                                 size="lg"
-                                variant="secondary"
-                                className="w-full sm:w-auto text-base px-8 h-12 shadow-lg hover:shadow-xl transition-all"
+                                className="w-full sm:w-auto text-base px-8 h-12 bg-white text-blue-600 hover:bg-gray-100 shadow-lg"
                             >
-                                Sign Up Now
+                                {ctaData.primaryButtonText}
                             </Button>
                         </Link>
-                        <Link href="/services">
+                        <Link href={ctaData.secondaryButtonLink}>
                             <Button
                                 size="lg"
                                 variant="outline"
-                                className="w-full sm:w-auto text-base px-8 h-12 border-2 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 backdrop-blur-sm"
+                                className="w-full sm:w-auto text-base px-8 h-12 border-2 border-white text-white hover:bg-white/10"
                             >
-                                Browse Services
+                                <Smartphone className="mr-2 h-5 w-5" />
+                                {ctaData.secondaryButtonText}
                             </Button>
                         </Link>
-                    </div>
-                    {/* Stats */}
-                    <div className="mt-12 grid grid-cols-3 gap-8 border-t border-primary-foreground/20 pt-8">
-                        <div>
-                            <div className="text-3xl font-bold text-primary-foreground">
-                                10K+
-                            </div>
-                            <div className="mt-1 text-sm text-primary-foreground/80">
-                                Happy Customers
-                            </div>
-                        </div>
-                        <div>
-                            <div className="text-3xl font-bold text-primary-foreground">
-                                500+
-                            </div>
-                            <div className="mt-1 text-sm text-primary-foreground/80">
-                                Verified Professionals
-                            </div>
-                        </div>
-                        <div>
-                            <div className="text-3xl font-bold text-primary-foreground">
-                                4.8★
-                            </div>
-                            <div className="mt-1 text-sm text-primary-foreground/80">
-                                Average Rating
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

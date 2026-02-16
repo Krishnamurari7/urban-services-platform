@@ -149,13 +149,13 @@ export default async function BookingDetailPage(
                   <div className="mt-1">
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${bookingData.status === "completed"
-                        ? "bg-green-100 text-green-700"
+                        ? "bg-[#D1FAE5] text-[#065F46]"
                         : bookingData.status === "cancelled" ||
                           bookingData.status === "refunded"
-                          ? "bg-red-100 text-red-700"
+                          ? "bg-[#FEE2E2] text-[#991B1B]"
                           : bookingData.status === "in_progress"
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-yellow-100 text-yellow-700"
+                            ? "bg-[#DBEAFE] text-[#1E3A8A]"
+                            : "bg-[#FEF3C7] text-[#92400E]"
                         }`}
                     >
                       {bookingData.status.replace("_", " ").toUpperCase()}
@@ -363,10 +363,10 @@ export default async function BookingDetailPage(
                     <span className="text-gray-600">Payment Status</span>
                     <span
                       className={`px-2 py-1 rounded text-xs ${bookingData.payment.status === "completed"
-                        ? "bg-green-100 text-green-700"
+                        ? "bg-[#D1FAE5] text-[#065F46]"
                         : bookingData.payment.status === "refunded"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-yellow-100 text-yellow-700"
+                          ? "bg-[#FEE2E2] text-[#991B1B]"
+                          : "bg-[#FEF3C7] text-[#92400E]"
                         }`}
                     >
                       {bookingData.payment.status}

@@ -1,10 +1,19 @@
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ServiceForm } from "./service-form";
 import { DeleteServiceButton } from "@/components/admin/delete-service-button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 async function getServices() {
   const supabase = await createClient();
@@ -52,64 +61,81 @@ export default async function AdminServicesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
             Service Management
           </h1>
-          <p className="text-gray-600 mt-1">Manage services and pricing</p>
+          <p className="text-gray-600 mt-1">Manage services, pricing, and availability</p>
         </div>
         <ServiceForm />
       </div>
 
-      <Card>
+      <Card className="border-gray-200 shadow-sm">
         <CardHeader>
-          <CardTitle>All Services ({services.length})</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-xl">All Services</CardTitle>
+            <Badge variant="secondary" className="text-sm">
+              {services.length} total
+            </Badge>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left p-2">Name</th>
-                  <th className="text-left p-2">Category</th>
-                  <th className="text-left p-2">Base Price</th>
-                  <th className="text-left p-2">Duration</th>
-                  <th className="text-left p-2">Status</th>
-                  <th className="text-left p-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {services.map((service) => (
-                  <tr key={service.id} className="border-b">
-                    <td className="p-2 font-medium">{service.name}</td>
-                    <td className="p-2">
-                      <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
-                        {service.category}
-                      </span>
-                    </td>
-                    <td className="p-2">₹{service.base_price}</td>
-                    <td className="p-2">{service.duration_minutes} min</td>
-                    <td className="p-2">
-                      <span
-                        className={`px-2 py-1 rounded text-xs ${service.status === "active"
-                            ? "bg-green-100 text-green-700"
-                            : service.status === "suspended"
-                              ? "bg-red-100 text-red-700"
-                              : "bg-gray-100 text-gray-700"
-                          }`}
-                      >
-                        {service.status}
-                      </span>
-                    </td>
-                    <td className="p-2">
-                      <div className="flex gap-2">
-                        <ServiceForm service={service} />
-                        <DeleteServiceButton serviceId={service.id} />
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-gray-50">
+                  <TableHead className="font-semibold">Name</TableHead>
+                  <TableHead className="font-semibold">Category</TableHead>
+                  <TableHead className="font-semibold">Base Price</TableHead>
+                  <TableHead className="font-semibold">Duration</TableHead>
+                  <TableHead className="font-semibold">Status</TableHead>
+                  <TableHead className="font-semibold text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {services.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                      No services found. Add your first service to get started.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  services.map((service) => (
+                    <TableRow key={service.id} className="hover:bg-gray-50 transition-colors">
+                      <TableCell className="font-medium">{service.name}</TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className="capitalize">
+                          {service.category}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="font-semibold text-primary">
+                        ₹{service.base_price}
+                      </TableCell>
+                      <TableCell>{service.duration_minutes} min</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            service.status === "active"
+                              ? "default"
+                              : service.status === "suspended"
+                                ? "destructive"
+                                : "secondary"
+                          }
+                          className="capitalize"
+                        >
+                          {service.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <ServiceForm service={service} />
+                          <DeleteServiceButton serviceId={service.id} />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
           </div>
         </CardContent>
       </Card>

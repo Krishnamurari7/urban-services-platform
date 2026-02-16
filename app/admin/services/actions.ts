@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { checkAdmin } from "@/lib/auth/admin-check";
 
 export async function createService(data: {
   name: string;
@@ -13,33 +14,19 @@ export async function createService(data: {
   image_url?: string;
   status?: "active" | "inactive" | "suspended";
 }) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { error: "Unauthorized" };
+  // Check if user is admin
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    return { error: error || "Unauthorized" };
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
-  }
-
-  const { error } = await supabase.from("services").insert({
+  const { error: insertError } = await supabase.from("services").insert({
     ...data,
     created_by: user.id,
   });
 
-  if (error) {
-    return { error: error.message };
+  if (insertError) {
+    return { error: insertError.message };
   }
 
   // Log admin action
@@ -67,33 +54,19 @@ export async function updateService(
     status?: "active" | "inactive" | "suspended";
   }
 ) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { error: "Unauthorized" };
+  // Check if user is admin
+  const { error, user, supabase } = await checkAdmin();
+  if (error || !user || !supabase) {
+    return { error: error || "Unauthorized" };
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    return { error: "Unauthorized" };
-  }
-
-  const { error } = await supabase
+  const { error: updateError } = await supabase
     .from("services")
     .update(data)
     .eq("id", serviceId);
 
-  if (error) {
-    return { error: error.message };
+  if (updateError) {
+    return { error: updateError.message };
   }
 
   // Log admin action

@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { SectionForm } from "./section-form";
 
 async function getSections() {
@@ -61,6 +63,37 @@ export default async function AdminSectionsPage() {
         </div>
         <SectionForm />
       </div>
+
+      {/* Quick Access to Section Editors */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Quick Section Editors</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Link href="/admin/sections/hero">
+              <Button variant="outline" className="w-full">
+                🏠 Edit Hero Section
+              </Button>
+            </Link>
+            <Link href="/admin/sections/services">
+              <Button variant="outline" className="w-full">
+                🧹 Edit Services Section
+              </Button>
+            </Link>
+            <Link href="/admin/sections/features">
+              <Button variant="outline" className="w-full">
+                ✨ Edit Features Section
+              </Button>
+            </Link>
+            <Link href="/admin/sections/cta">
+              <Button variant="outline" className="w-full">
+                📢 Edit CTA Section
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Active Sections */}
       {activeSections.length > 0 && (

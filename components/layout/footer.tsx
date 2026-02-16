@@ -1,121 +1,124 @@
-import Link from "next/link";
+"use client";
 
-import { Mail, Phone, MapPin } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { useState } from "react";
+import { Mail, Phone, MapPin, Facebook, Twitter, Instagram } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export function Footer() {
+  const [email, setEmail] = useState("");
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle newsletter subscription
+    console.log("Subscribing:", email);
+    setEmail("");
+  };
+
   return (
-    <footer className="border-t bg-gradient-to-b from-background via-background to-muted/20">
-      <div className="container mx-auto px-4 py-12 md:py-16 max-w-7xl">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-          {/* Company Info */}
-          <div className="space-y-4 md:col-span-1">
-            <div className="flex items-center space-x-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-md">
-                <span className="text-lg font-bold">V</span>
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
+    <footer className="border-t border-gray-200 bg-white">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          {/* Left Column - Company Info */}
+          <div className="space-y-4">
+            <div className="flex items-center space-x-3">
+              <Image
+                src="/logo.png"
+                alt="Vera Company"
+                width={40}
+                height={40}
+                className="rounded-lg shadow-sm object-contain"
+              />
+              <span className="text-xl font-bold text-gray-900">
                 Vera Company
               </span>
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Your trusted partner for all home and professional services.
-              Connecting you with verified professionals.
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Your one-stop destination for reliable and professional home services. We bring the experts to you.
             </p>
-            <div className="space-y-2 pt-2">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Phone className="h-4 w-4" />
-                <span>+91 1800-XXX-XXXX</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            {/* Social Media Links */}
+            <div className="flex items-center gap-3 pt-2">
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-blue-600 hover:text-white transition-all"
+                aria-label="Facebook"
+              >
+                <Facebook className="h-4 w-4" />
+              </a>
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-blue-600 hover:text-white transition-all"
+                aria-label="Instagram"
+              >
+                <Instagram className="h-4 w-4" />
+              </a>
+              <a
+                href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-blue-600 hover:text-white transition-all"
+                aria-label="Twitter"
+              >
+                <Twitter className="h-4 w-4" />
+              </a>
+              <a
+                href="mailto:support@veracompany.com"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-blue-600 hover:text-white transition-all"
+                aria-label="Email"
+              >
                 <Mail className="h-4 w-4" />
-                <span>support@veracompany.com</span>
-              </div>
+              </a>
             </div>
           </div>
 
-          {/* Services */}
+          {/* Middle Column - Quick Links */}
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold uppercase tracking-wider">
-              Services
+            <h3 className="text-sm font-bold uppercase tracking-wider text-gray-900">
+              Quick Links
             </h3>
-            <ul className="space-y-3 text-sm text-muted-foreground">
-              <li>
-                <Link
-                  href="/services"
-                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
-                >
-                  All Services
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/services?category=cleaning"
-                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
-                >
-                  Cleaning
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/services?category=plumbing"
-                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
-                >
-                  Plumbing
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/services?category=electrical"
-                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
-                >
-                  Electrical
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/services?category=carpentry"
-                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
-                >
-                  Carpentry
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-semibold uppercase tracking-wider">
-              Company
-            </h3>
-            <ul className="space-y-3 text-sm text-muted-foreground">
+            <ul className="space-y-3 text-sm text-gray-600">
               <li>
                 <Link
                   href="/about"
-                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                  className="hover:text-gray-900 transition-colors"
                 >
                   About Us
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/become-professional"
-                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                  href="/services"
+                  className="hover:text-gray-900 transition-colors"
                 >
-                  Become a Professional
+                  Our Services
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/contact"
-                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                  href="/become-professional"
+                  className="hover:text-gray-900 transition-colors"
                 >
-                  Contact
+                  Expert Partners
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/#pricing"
+                  className="hover:text-gray-900 transition-colors"
+                >
+                  Pricing Plans
                 </Link>
               </li>
               <li>
                 <Link
                   href="/careers"
-                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
+                  className="hover:text-gray-900 transition-colors"
                 >
                   Careers
                 </Link>
@@ -123,71 +126,80 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Support */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-semibold uppercase tracking-wider">
-              Support
-            </h3>
-            <ul className="space-y-3 text-sm text-muted-foreground">
-              <li>
-                <Link
-                  href="/help-center"
-                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
-                >
-                  Help Center
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/privacy-policy"
-                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
-                >
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/terms-of-service"
-                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
-                >
-                  Terms of Service
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/faq"
-                  className="hover:text-foreground transition-colors inline-block hover:translate-x-1"
-                >
-                  FAQ
-                </Link>
-              </li>
-            </ul>
+          {/* Right Column - Contact Info & Newsletter */}
+          <div className="space-y-6">
+            {/* Contact Info */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-gray-900">
+                Contact Info
+              </h3>
+              <div className="space-y-3 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 flex-shrink-0" />
+                  <a href="tel:+15551234567" className="hover:text-gray-900 transition-colors">
+                    +1 (555) 123-4567
+                  </a>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 flex-shrink-0" />
+                  <a href="mailto:support@veracompany.com" className="hover:text-gray-900 transition-colors">
+                    support@veracompany.com
+                  </a>
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 flex-shrink-0" />
+                  <span>123 Main St, Suite 500, San Francisco, CA 94107</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Newsletter */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-gray-900">
+                Newsletter
+              </h3>
+              <p className="text-sm text-gray-600">
+                Subscribe for latest updates and offers.
+              </p>
+              <form onSubmit={handleSubscribe} className="flex gap-2">
+                <Input
+                  type="email"
+                  placeholder="Your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-1"
+                />
+                <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
+                  Subscribe
+                </Button>
+              </form>
+            </div>
           </div>
         </div>
 
-        <div className="mt-12 border-t pt-8">
+        <div className="mt-12 border-t border-gray-200 pt-8">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <p className="text-sm text-muted-foreground text-center md:text-left">
+            <p className="text-sm text-gray-600 text-center md:text-left">
               © {new Date().getFullYear()} Vera Company. All rights reserved.
             </p>
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-gray-600">
               <Link
-                href="/privacy"
-                className="hover:text-foreground transition-colors"
+                href="/privacy-policy"
+                className="hover:text-gray-900 transition-colors"
               >
-                Privacy
+                Privacy Policy
               </Link>
               <Link
-                href="/terms"
-                className="hover:text-foreground transition-colors"
+                href="/terms-of-service"
+                className="hover:text-gray-900 transition-colors"
               >
-                Terms
+                Terms of Service
               </Link>
               <Link
                 href="/cookies"
-                className="hover:text-foreground transition-colors"
+                className="hover:text-gray-900 transition-colors"
               >
-                Cookies
+                Cookie Policy
               </Link>
             </div>
           </div>

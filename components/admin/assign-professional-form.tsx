@@ -84,13 +84,13 @@ export function AssignProfessionalForm({
     formData.append("bookingId", bookingId);
     formData.append("professionalId", selectedProfessionalId);
 
-    const result = await assignProfessional(formData);
-    setSubmitting(false);
-
-    if (result.success) {
+    try {
+      await assignProfessional(formData);
       router.refresh();
-    } else {
-      alert(result.error || "Failed to assign professional");
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Failed to assign professional");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -132,7 +132,7 @@ export function AssignProfessionalForm({
       </CardHeader>
       <CardContent className="space-y-4">
         {currentProfessionalId ? (
-          <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="p-3 bg-[#DBEAFE] border border-[#93C5FD] rounded-lg">
             <p className="text-sm text-blue-800">
               Professional already assigned. Select a different one to reassign.
             </p>

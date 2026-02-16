@@ -20,6 +20,7 @@ const navigation = [
     { name: "Disputes", href: "/admin/disputes", icon: "⚖️" },
     { name: "Banners", href: "/admin/banners", icon: "🎨" },
     { name: "Sections", href: "/admin/sections", icon: "📄" },
+    { name: "Page Content", href: "/admin/page-content", icon: "✏️" },
     { name: "Audit Logs", href: "/admin/audit-logs", icon: "📋" },
 ];
 
@@ -66,10 +67,10 @@ export function AdminSidebar() {
             )}
 
             {/* Desktop Sidebar */}
-            <div className="hidden md:flex fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 z-30">
+            <div className="hidden md:flex fixed inset-y-0 left-0 w-64 bg-gray-900 border-r border-gray-800 z-30">
                 <div className="flex flex-col h-full w-full">
                     {/* Logo */}
-                    <div className="flex items-center justify-center h-16 border-b border-gray-200 px-4">
+                    <div className="flex items-center justify-center h-16 border-b border-gray-800 px-4">
                         <Link href="/admin/dashboard" className="flex items-center space-x-2">
                             <Image
                                 src="/logo.png"
@@ -78,7 +79,7 @@ export function AdminSidebar() {
                                 height={32}
                                 className="object-contain"
                             />
-                            <span className="text-sm font-bold text-gray-900">Admin Panel</span>
+                            <span className="text-sm font-bold text-white">Admin Panel</span>
                         </Link>
                     </div>
 
@@ -91,10 +92,10 @@ export function AdminSidebar() {
                                     key={item.name}
                                     href={item.href}
                                     className={cn(
-                                        "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
+                                        "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200",
                                         isActive
-                                            ? "bg-blue-50 text-blue-700"
-                                            : "text-gray-700 hover:bg-gray-100"
+                                            ? "bg-blue-600 text-white shadow-lg"
+                                            : "text-gray-300 hover:bg-gray-800 hover:text-white"
                                     )}
                                 >
                                     <span className="text-lg">{item.icon}</span>
@@ -105,9 +106,9 @@ export function AdminSidebar() {
                     </nav>
 
                     {/* Logout */}
-                    <div className="p-4 border-t border-gray-200">
+                    <div className="p-4 border-t border-gray-800">
                         <form action={signOut}>
-                            <Button type="submit" variant="outline" className="w-full">
+                            <Button type="submit" variant="outline" className="w-full bg-gray-800 text-white border-gray-700 hover:bg-gray-700">
                                 Sign Out
                             </Button>
                         </form>
@@ -118,13 +119,13 @@ export function AdminSidebar() {
             {/* Mobile Sidebar */}
             <div
                 className={cn(
-                    "md:hidden fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 z-50 transform transition-transform duration-300 ease-in-out",
+                    "md:hidden fixed inset-y-0 left-0 w-64 bg-gray-900 border-r border-gray-800 z-50 transform transition-transform duration-300 ease-in-out",
                     mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
                 )}
             >
                 <div className="flex flex-col h-full">
                     {/* Logo */}
-                    <div className="flex items-center justify-between h-16 border-b border-gray-200 px-4">
+                    <div className="flex items-center justify-between h-16 border-b border-gray-800 px-4">
                         <Link href="/admin/dashboard" className="flex items-center space-x-2">
                             <Image
                                 src="/logo.png"
@@ -133,11 +134,11 @@ export function AdminSidebar() {
                                 height={32}
                                 className="object-contain"
                             />
-                            <span className="text-sm font-bold text-gray-900">Admin Panel</span>
+                            <span className="text-sm font-bold text-white">Admin Panel</span>
                         </Link>
                         <button
                             onClick={() => setMobileMenuOpen(false)}
-                            className="p-2 touch-manipulation"
+                            className="p-2 touch-manipulation text-white"
                             aria-label="Close menu"
                         >
                             <X className="h-6 w-6" />
@@ -154,10 +155,10 @@ export function AdminSidebar() {
                                     href={item.href}
                                     onClick={() => setMobileMenuOpen(false)}
                                     className={cn(
-                                        "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
+                                        "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200",
                                         isActive
-                                            ? "bg-blue-50 text-blue-700"
-                                            : "text-gray-700 hover:bg-gray-100"
+                                            ? "bg-blue-600 text-white shadow-lg"
+                                            : "text-gray-300 hover:bg-gray-800 hover:text-white"
                                     )}
                                 >
                                     <span className="text-lg">{item.icon}</span>
@@ -168,9 +169,9 @@ export function AdminSidebar() {
                     </nav>
 
                     {/* Logout */}
-                    <div className="p-4 border-t border-gray-200">
+                    <div className="p-4 border-t border-gray-800">
                         <form action={signOut}>
-                            <Button type="submit" variant="outline" className="w-full">
+                            <Button type="submit" variant="outline" className="w-full bg-gray-800 text-white border-gray-700 hover:bg-gray-700">
                                 Sign Out
                             </Button>
                         </form>

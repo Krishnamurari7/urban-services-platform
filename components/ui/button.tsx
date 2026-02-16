@@ -16,12 +16,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           size === "sm" && "px-3 py-1.5 text-sm",
           size === "md" && "px-4 py-2.5 text-sm",
           size === "lg" && "px-6 py-3 text-base",
-          // Variant styles
-          variant === "default" && "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md focus:ring-blue-500 active:scale-[0.98]",
-          variant === "outline" && "border-2 border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 focus:ring-gray-500 active:scale-[0.98]",
-          variant === "ghost" && "hover:bg-gray-100 focus:ring-gray-500 active:scale-[0.98]",
-          variant === "secondary" && "bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500 active:scale-[0.98]",
-          variant === "destructive" && "bg-red-600 text-white hover:bg-red-700 hover:shadow-md focus:ring-red-500 active:scale-[0.98]",
+          // Variant styles - Modern color scheme
+          variant === "default" && "bg-[#2563EB] text-white hover:bg-[#1E3A8A] hover:shadow-md focus:ring-[#2563EB] active:scale-[0.98]",
+          variant === "outline" && "border-2 border-[#E2E8F0] bg-white hover:bg-[#F1F5F9] hover:border-[#2563EB] focus:ring-[#2563EB] active:scale-[0.98]",
+          variant === "ghost" && "hover:bg-[#F1F5F9] focus:ring-[#2563EB] active:scale-[0.98]",
+          variant === "secondary" && "bg-[#F1F5F9] text-[#0F172A] hover:bg-[#E2E8F0] focus:ring-[#2563EB] active:scale-[0.98]",
+          variant === "destructive" && "bg-[#DC2626] text-white hover:bg-[#B91C1C] hover:shadow-md focus:ring-[#DC2626] active:scale-[0.98]",
           className
         )}
         ref={ref}

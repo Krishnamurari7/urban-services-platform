@@ -63,17 +63,17 @@ export default function AboutPage() {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 py-20 md:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50/50 via-white to-purple-50/30 py-20 md:py-32">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute left-1/4 top-1/4 h-72 w-72 rounded-full bg-blue-200/30 blur-3xl"></div>
-          <div className="absolute right-1/4 bottom-1/4 h-96 w-96 rounded-full bg-purple-200/30 blur-3xl"></div>
+          <div className="absolute left-1/4 top-1/4 h-96 w-96 rounded-full bg-blue-400/20 blur-3xl animate-pulse"></div>
+          <div className="absolute right-1/4 bottom-1/4 h-[500px] w-[500px] rounded-full bg-purple-400/15 blur-3xl animate-pulse delay-1000"></div>
         </div>
-        <div className="container mx-auto px-4 max-w-7xl">
+        <div className="container mx-auto px-4 max-w-7xl relative z-10">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-in fade-in slide-in-from-bottom-4 duration-700">
               About <span className="text-blue-600">Vera Company</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600 sm:text-xl">
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600 sm:text-xl leading-relaxed">
               We're revolutionizing the way people connect with professional
               services, making it easier, safer, and more convenient than ever
               before.
@@ -116,16 +116,16 @@ export default function AboutPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="bg-gradient-to-br from-gray-50 to-white py-16">
+      <section className="bg-gradient-to-br from-slate-50 via-white to-blue-50/30 py-16">
         <div className="container mx-auto px-4 max-w-7xl">
-          <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 md:gap-6 md:grid-cols-4">
             {stats.map((stat, index) => (
-              <Card key={index} className="text-center border-2 border-gray-100 hover:shadow-xl transition-all duration-300 hover:border-blue-200 bg-white">
+              <Card key={index} className="text-center border border-gray-200/60 hover:border-blue-300/60 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 bg-white/80 backdrop-blur-sm">
                 <CardContent className="pt-6 pb-6">
-                  <div className="mb-4 flex justify-center text-blue-600">
+                  <div className="mb-4 flex justify-center text-blue-600 transition-transform duration-300 group-hover:scale-110">
                     {stat.icon}
                   </div>
-                  <div className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{stat.value}</div>
+                  <div className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">{stat.value}</div>
                   <div className="text-sm text-gray-600 font-medium">
                     {stat.label}
                   </div>
@@ -151,13 +151,15 @@ export default function AboutPage() {
             {values.map((value, index) => (
               <Card
                 key={index}
-                className="group transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border-2 border-gray-100 bg-white"
+                className="group transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-2 border border-gray-200/60 hover:border-blue-300/60 bg-white/80 backdrop-blur-sm"
               >
                 <CardContent className="p-6 text-center">
-                  <div className="mb-4 flex justify-center text-blue-600 transition-transform group-hover:scale-110">
-                    {value.icon}
+                  <div className="mb-4 flex justify-center text-blue-600 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+                    <div className="p-3 rounded-xl bg-blue-50 group-hover:bg-blue-100 transition-colors duration-300">
+                      {value.icon}
+                    </div>
                   </div>
-                  <h3 className="mb-2 font-bold text-lg text-gray-900">{value.title}</h3>
+                  <h3 className="mb-2 font-bold text-lg text-gray-900 group-hover:text-blue-600 transition-colors duration-300">{value.title}</h3>
                   <p className="text-sm text-gray-600 leading-relaxed">
                     {value.description}
                   </p>
@@ -169,17 +171,19 @@ export default function AboutPage() {
       </section>
 
       {/* Mission Section */}
-      <section className="bg-gradient-to-br from-primary/10 via-background to-primary/5 py-16 md:py-24">
+      <section className="bg-gradient-to-br from-blue-50/50 via-white to-purple-50/30 py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-4xl">
-            <div className="grid gap-8 md:grid-cols-2">
-              <Card>
+            <div className="grid gap-6 md:gap-8 md:grid-cols-2">
+              <Card className="border border-gray-200/60 hover:border-blue-300/60 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 bg-white/80 backdrop-blur-sm">
                 <CardContent className="p-8">
                   <div className="mb-4 flex items-center gap-3">
-                    <Target className="h-8 w-8 text-primary" />
-                    <h3 className="text-2xl font-bold">Our Mission</h3>
+                    <div className="p-2 rounded-lg bg-blue-100">
+                      <Target className="h-6 w-6 text-primary" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900">Our Mission</h3>
                   </div>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     To make professional services accessible, reliable, and
                     convenient for everyone, while creating meaningful
                     opportunities for skilled professionals to grow their
@@ -187,13 +191,15 @@ export default function AboutPage() {
                   </p>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="border border-gray-200/60 hover:border-purple-300/60 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1 bg-white/80 backdrop-blur-sm">
                 <CardContent className="p-8">
                   <div className="mb-4 flex items-center gap-3">
-                    <TrendingUp className="h-8 w-8 text-primary" />
-                    <h3 className="text-2xl font-bold">Our Vision</h3>
+                    <div className="p-2 rounded-lg bg-purple-100">
+                      <TrendingUp className="h-6 w-6 text-primary" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900">Our Vision</h3>
                   </div>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     To become the most trusted platform for professional
                     services, recognized for our commitment to quality,
                     innovation, and customer satisfaction across all communities
@@ -220,13 +226,13 @@ export default function AboutPage() {
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <a
                 href="/register"
-                className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-8 text-base font-medium text-primary-foreground shadow-lg transition-all hover:shadow-xl"
+                className="inline-flex h-12 items-center justify-center rounded-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary px-8 text-base font-medium text-white shadow-lg shadow-primary/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
               >
                 Get Started
               </a>
               <a
                 href="/become-professional"
-                className="inline-flex h-12 items-center justify-center rounded-md border-2 border-border bg-background px-8 text-base font-medium transition-all hover:bg-muted"
+                className="inline-flex h-12 items-center justify-center rounded-xl border-2 border-gray-300 hover:border-primary bg-white px-8 text-base font-medium transition-all duration-300 hover:bg-gray-50 hover:shadow-md"
               >
                 Become a Professional
               </a>

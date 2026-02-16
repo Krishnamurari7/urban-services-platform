@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 import type {
   Service,
   Address,
@@ -463,13 +464,13 @@ export default function BookServicePage() {
             <span className="text-sm font-medium text-gray-600">
               Step {steps.findIndex((s) => s.id === currentStep) + 1} of {steps.length}
             </span>
-            <span className="text-sm font-semibold text-blue-600">
+            <span className="text-sm font-semibold text-[#2563EB]">
               {steps.find((s) => s.id === currentStep)?.label}
             </span>
           </div>
-          <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div className="mt-2 h-2 bg-[#E2E8F0] rounded-full overflow-hidden">
             <div
-              className="h-full bg-blue-600 transition-all duration-300"
+              className="h-full bg-[#2563EB] transition-all duration-300"
               style={{
                 width: `${((steps.findIndex((s) => s.id === currentStep) + 1) / steps.length) * 100}%`,
               }}
@@ -490,7 +491,7 @@ export default function BookServicePage() {
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${
                       isActive
-                        ? "bg-blue-600 text-white border-blue-600"
+                        ? "bg-[#2563EB] text-white border-[#2563EB]"
                         : isCompleted
                           ? "bg-green-500 text-white border-green-500"
                           : "bg-white border-gray-300 text-gray-400"
@@ -528,17 +529,42 @@ export default function BookServicePage() {
                   <div
                     key={service.id}
                     onClick={() => handleServiceSelect(service)}
-                    className="p-4 border rounded-lg cursor-pointer hover:border-blue-500 hover:shadow-md transition-all"
+                    className="border rounded-lg cursor-pointer hover:border-blue-500 hover:shadow-md transition-all overflow-hidden"
                   >
-                    <h3 className="font-semibold mb-2">{service.name}</h3>
-                    <p className="text-sm text-gray-600 mb-2">
-                      {service.description}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <Badge>{service.category}</Badge>
-                      <span className="font-bold">
-                        ₹{Number(service.base_price).toFixed(2)}
-                      </span>
+                    <div className="relative h-40 w-full overflow-hidden bg-muted">
+                      {service.image_url ? (
+                        <Image
+                          src={service.image_url}
+                          alt={service.name}
+                          fill
+                          className="object-cover transition-transform duration-300 hover:scale-110"
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
+                          <span className="text-4xl font-bold text-primary/30">
+                            {service.name[0]}
+                          </span>
+                        </div>
+                      )}
+                      <Badge className="absolute right-3 top-3 capitalize shadow-md">
+                        {service.category}
+                      </Badge>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-semibold mb-2">{service.name}</h3>
+                      {service.description && (
+                        <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                          {service.description}
+                        </p>
+                      )}
+                      <div className="flex items-center justify-between mt-3">
+                        <span className="font-bold text-lg">
+                          ₹{Number(service.base_price).toFixed(2)}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {service.duration_minutes} min
+                        </span>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -691,7 +717,7 @@ export default function BookServicePage() {
                       onClick={() => handleAddressSelect(address.id)}
                       className={`p-4 border rounded-lg cursor-pointer hover:border-blue-500 hover:shadow-md transition-all ${
                         formData.addressId === address.id
-                          ? "border-blue-500 bg-blue-50"
+                          ? "border-[#2563EB] bg-[#DBEAFE]"
                           : ""
                       }`}
                     >
@@ -854,7 +880,7 @@ export default function BookServicePage() {
                   </div>
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="bg-[#DBEAFE] border border-[#93C5FD] rounded-lg p-4">
                   <p className="text-sm text-blue-800">
                     <strong>Secure Payment:</strong> You will be redirected to
                     Razorpay's secure payment gateway to complete your payment.

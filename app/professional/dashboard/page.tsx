@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { getRoleBasedRedirect } from "@/lib/auth/utils";
 import { useRealtimeBookings } from "@/hooks/use-realtime-bookings";
 import { createClient } from "@/lib/supabase/client";
+import { motion } from "framer-motion";
 import {
   Card,
   CardContent,
@@ -217,7 +218,7 @@ export default function ProfessionalDashboard() {
           >
             Job Requests
             {stats.pendingRequests > 0 && (
-              <Badge className="ml-2 bg-red-500 text-white">{stats.pendingRequests}</Badge>
+              <Badge className="ml-2 bg-[#DC2626] text-white">{stats.pendingRequests}</Badge>
             )}
           </button>
           <button
@@ -273,7 +274,13 @@ export default function ProfessionalDashboard() {
         <>
           {/* Stats Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-10">
-            <Card className="border-blue-100 bg-gradient-to-br from-blue-50 via-white to-white hover:shadow-xl transition-all duration-300">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              whileHover={{ scale: 1.02 }}
+            >
+              <Card className="border-blue-100 bg-gradient-to-br from-blue-50 via-white to-white hover:shadow-xl transition-all duration-300">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                 <CardTitle className="text-sm font-semibold text-gray-700">
                   Total Bookings
@@ -289,8 +296,15 @@ export default function ProfessionalDashboard() {
                 </p>
               </CardContent>
             </Card>
+            </motion.div>
 
-            <Card className="border-orange-100 bg-gradient-to-br from-orange-50 via-white to-white hover:shadow-xl transition-all duration-300">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              whileHover={{ scale: 1.02 }}
+            >
+              <Card className="border-orange-100 bg-gradient-to-br from-orange-50 via-white to-white hover:shadow-xl transition-all duration-300">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                 <CardTitle className="text-sm font-semibold text-gray-700">
                   Pending Requests
@@ -308,28 +322,42 @@ export default function ProfessionalDashboard() {
                 </p>
               </CardContent>
             </Card>
+            </motion.div>
 
-            <Card className="border-green-100 bg-gradient-to-br from-green-50 via-white to-white hover:shadow-xl transition-all duration-300">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              whileHover={{ scale: 1.02 }}
+            >
+              <Card className="border-green-100 bg-gradient-to-br from-green-50 via-white to-white hover:shadow-xl transition-all duration-300">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                 <CardTitle className="text-sm font-semibold text-gray-700">Confirmed</CardTitle>
-                <div className="h-12 w-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md">
+                <div className="h-12 w-12 bg-gradient-to-br from-[#16A34A] to-[#15803D] rounded-xl flex items-center justify-center shadow-md">
                   <CheckCircle className="h-6 w-6 text-white" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl md:text-4xl font-bold text-green-600 mb-1">
+                <div className="text-3xl md:text-4xl font-bold text-[#16A34A] mb-1">
                   {stats.confirmedBookings}
                 </div>
-                <p className="text-xs text-gray-500">Upcoming jobs</p>
+                <p className="text-xs text-[#64748B]">Upcoming jobs                </p>
               </CardContent>
             </Card>
+            </motion.div>
 
-            <Card className="border-purple-100 bg-gradient-to-br from-purple-50 via-white to-white hover:shadow-xl transition-all duration-300">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              whileHover={{ scale: 1.02 }}
+            >
+              <Card className="border-[#E9D5FF] bg-gradient-to-br from-[#F3E8FF] via-white to-white hover:shadow-xl transition-all duration-300">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                <CardTitle className="text-sm font-semibold text-gray-700">
+                <CardTitle className="text-sm font-semibold text-[#0F172A]">
                   Total Earnings
                 </CardTitle>
-                <div className="h-12 w-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
+                <div className="h-12 w-12 bg-gradient-to-br from-[#2563EB] to-[#1E3A8A] rounded-xl flex items-center justify-center shadow-md">
                   <DollarSign className="h-6 w-6 text-white" />
                 </div>
               </CardHeader>
@@ -342,6 +370,7 @@ export default function ProfessionalDashboard() {
                 </p>
               </CardContent>
             </Card>
+            </motion.div>
           </div>
 
           {/* Recent Bookings */}
