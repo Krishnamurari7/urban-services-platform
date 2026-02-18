@@ -53,10 +53,13 @@ export default function ProfessionalBookingsPage() {
       // Check if user has professional role
       if (role === "admin" || role === "customer") {
         router.push(getRoleBasedRedirect(role));
-      } else {
-        router.push("/login?error=unauthorized");
+        return;
       }
-      fetchBookings();
+      // If role is professional or still loading, allow access and fetch bookings
+      if (role === "professional") {
+        fetchBookings();
+      }
+      // If role is null/undefined, wait for it to load (ProtectedRoute will handle it)
     }
   }, [user, role, authLoading, router, filter]);
 

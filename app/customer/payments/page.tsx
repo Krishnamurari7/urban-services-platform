@@ -284,12 +284,12 @@ export default function PaymentHistoryPage() {
               <CardContent className="p-6">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
+                      <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-xl font-semibold">
                         {payment.booking?.service?.name || "Service"}
                       </h3>
                       <Badge variant={getStatusBadgeVariant(payment.status)}>
-                        {payment.status}
+                        {payment.status.replace("_", " ")}
                       </Badge>
                     </div>
 
@@ -328,7 +328,8 @@ export default function PaymentHistoryPage() {
                         </div>
                       )}
                       {payment.status === "refunded" &&
-                        payment.refund_amount > 0 && (
+                        payment.refund_amount &&
+                        Number(payment.refund_amount) > 0 && (
                           <div>
                             <span className="text-green-600">
                               <strong>Refunded:</strong> ₹

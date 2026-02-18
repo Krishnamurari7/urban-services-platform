@@ -442,6 +442,17 @@ export default function BookServicePage() {
   const getSelectedAddress = () =>
     addresses.find((a) => a.id === formData.addressId);
 
+  // Validate form data before proceeding
+  const canProceedToPayment = () => {
+    return (
+      formData.serviceId &&
+      formData.professionalId &&
+      formData.scheduledAt &&
+      formData.addressId &&
+      formData.finalAmount > 0
+    );
+  };
+
   if (authLoading || loading) {
     return (
       <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[60vh]">
@@ -915,11 +926,16 @@ export default function BookServicePage() {
                 </Button>
                 <Button
                   onClick={handleSubmit}
-                  disabled={submitting}
+                  disabled={submitting || !canProceedToPayment()}
                   className="ml-auto"
                 >
                   {submitting ? "Processing..." : "Proceed to Payment"}
                 </Button>
+                {!canProceedToPayment() && (
+                  <p className="text-sm text-red-600 mt-2">
+                    Please complete all required fields before proceeding.
+                  </p>
+                )}
               </div>
             </div>
           )}

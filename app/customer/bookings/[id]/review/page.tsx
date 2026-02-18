@@ -30,6 +30,7 @@ export default function ReviewPage() {
   const bookingId = params.id as string;
   const [booking, setBooking] = useState<BookingDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   useEffect(() => {
@@ -41,10 +42,12 @@ export default function ReviewPage() {
   const fetchBookingDetails = async () => {
     if (!user) return;
 
+    setLoading(true);
+    setError(null);
     try {
       const supabase = createClient();
 
-      const { data, error } = await supabase
+      const { data, error: fetchError } = await supabase
         .from("bookings")
         .select(
           `
@@ -60,7 +63,7 @@ export default function ReviewPage() {
         .eq("customer_id", user.id)
         .single();
 
-      if (error) throw error;
+      if (fetchError) throw fetchError;
 
       if (data) {
         setBooking({
@@ -71,9 +74,16 @@ export default function ReviewPage() {
           service: data.service as any,
           professional: data.professional as any,
         });
+      } else {
+        setError("Booking not found");
       }
-    } catch (error) {
-      console.error("Error fetching booking details:", error);
+    } catch (err) {
+      console.error("Error fetching booking details:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to load booking details"
+      );
     } finally {
       setLoading(false);
     }
@@ -97,15 +107,17 @@ export default function ReviewPage() {
     );
   }
 
-  if (!booking) {
+  if (error || (!loading && !booking)) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card>
           <CardContent className="p-12 text-center">
-            <h2 className="text-xl font-semibold mb-2">Booking not found</h2>
+            <h2 className="text-xl font-semibold mb-2">
+              {error || "Booking not found"}
+            </h2>
             <p className="text-gray-600 mb-4">
-              The booking you're looking for doesn't exist or you don't have
-              access to it.
+              {error ||
+                "The booking you're looking for doesn't exist or you don't have access to it."}
             </p>
             <Link href="/customer/bookings">
               <Button>Back to Bookings</Button>
@@ -114,6 +126,10 @@ export default function ReviewPage() {
         </Card>
       </div>
     );
+  }
+
+  if (!booking) {
+    return null;
   }
 
   if (booking.status !== "completed") {
@@ -181,10 +197,11 @@ export default function ReviewPage() {
         <h1 className="text-3xl font-bold mb-2">Write a Review</h1>
         <div className="text-gray-600">
           <p>
-            <strong>Service:</strong> {booking.service.name}
+            <strong>Service:</strong> {booking.service?.name || "Service"}
           </p>
           <p>
-            <strong>Professional:</strong> {booking.professional.full_name}
+            <strong>Professional:</strong>{" "}
+            {booking.professional?.full_name || "Professional"}
           </p>
         </div>
       </div>

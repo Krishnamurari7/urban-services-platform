@@ -19,9 +19,14 @@ export const metadata: Metadata = {
   title: "Vera Company",
   description: "Professional home services marketplace",
   icons: {
-    icon: "/logo.png",
+    icon: [
+      { url: "/logo.png", sizes: "any" },
+      { url: "/logo.png", type: "image/png" },
+    ],
     shortcut: "/logo.png",
-    apple: "/logo.png",
+    apple: [
+      { url: "/logo.png", sizes: "180x180", type: "image/png" },
+    ],
   },
 };
 

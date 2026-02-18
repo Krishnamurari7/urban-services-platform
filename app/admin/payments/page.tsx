@@ -92,94 +92,94 @@ export default async function AdminPaymentsPage() {
   const { payments, stats } = await getPayments();
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">
+    <div className="space-y-6 pb-8">
+      <div className="bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 rounded-2xl p-6 text-white shadow-xl">
+        <h1 className="text-3xl font-bold">
           Payments & Commission
         </h1>
-        <p className="text-gray-600 mt-1">
+        <p className="text-emerald-100 mt-1">
           Track payments and platform commission
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
+        <Card className="bg-gradient-to-br from-green-500 to-emerald-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <span className="text-2xl">💰</span>
+            <CardTitle className="text-sm font-medium text-white">Total Revenue</CardTitle>
+            <span className="text-3xl">💰</span>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-3xl font-bold">
               ₹{stats.totalRevenue.toLocaleString()}
             </div>
-            <p className="text-xs text-gray-500 mt-1">All time</p>
+            <p className="text-xs text-green-100 mt-1">All time</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-br from-blue-500 to-cyan-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-sm font-medium text-white">
               Platform Commission
             </CardTitle>
-            <span className="text-2xl">💵</span>
+            <span className="text-3xl">💵</span>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-3xl font-bold">
               ₹{stats.totalCommission.toLocaleString()}
             </div>
-            <p className="text-xs text-gray-500 mt-1">Service fees collected</p>
+            <p className="text-xs text-blue-100 mt-1">Service fees collected</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-br from-teal-500 to-cyan-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Completed</CardTitle>
-            <span className="text-2xl">✅</span>
+            <CardTitle className="text-sm font-medium text-white">Completed</CardTitle>
+            <span className="text-3xl">✅</span>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.completed}</div>
-            <p className="text-xs text-gray-500 mt-1">Successful payments</p>
+            <div className="text-3xl font-bold">{stats.completed}</div>
+            <p className="text-xs text-teal-100 mt-1">Successful payments</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-br from-orange-500 to-red-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Refunded</CardTitle>
-            <span className="text-2xl">↩️</span>
+            <CardTitle className="text-sm font-medium text-white">Refunded</CardTitle>
+            <span className="text-3xl">↩️</span>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.refunded}</div>
-            <p className="text-xs text-gray-500 mt-1">Refunded payments</p>
+            <div className="text-3xl font-bold">{stats.refunded}</div>
+            <p className="text-xs text-orange-100 mt-1">Refunded payments</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Payments Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>All Payments ({payments.length})</CardTitle>
+      <Card className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 border-2 border-green-200 shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+          <CardTitle className="text-xl font-bold">All Payments ({payments.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b">
-                  <th className="text-left p-2">Transaction ID</th>
-                  <th className="text-left p-2">Customer</th>
-                  <th className="text-left p-2">Service</th>
-                  <th className="text-left p-2">Amount</th>
-                  <th className="text-left p-2">Commission</th>
-                  <th className="text-left p-2">Method</th>
-                  <th className="text-left p-2">Status</th>
-                  <th className="text-left p-2">Date</th>
+                <tr className="border-b bg-gradient-to-r from-green-500 to-emerald-500 text-white">
+                  <th className="text-left p-2 text-white font-semibold">Transaction ID</th>
+                  <th className="text-left p-2 text-white font-semibold">Customer</th>
+                  <th className="text-left p-2 text-white font-semibold">Service</th>
+                  <th className="text-left p-2 text-white font-semibold">Amount</th>
+                  <th className="text-left p-2 text-white font-semibold">Commission</th>
+                  <th className="text-left p-2 text-white font-semibold">Method</th>
+                  <th className="text-left p-2 text-white font-semibold">Status</th>
+                  <th className="text-left p-2 text-white font-semibold">Date</th>
                 </tr>
               </thead>
               <tbody>
-                {payments.map((payment: any) => {
+                {payments.map((payment: any, index: number) => {
                   const booking = payment.booking as any;
                   return (
-                    <tr key={payment.id} className="border-b">
+                    <tr key={payment.id} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-green-50'} hover:bg-green-100 transition-colors`}>
                       <td className="p-2 text-sm font-mono">
                         {payment.transaction_id || payment.id.substring(0, 8)}
                       </td>

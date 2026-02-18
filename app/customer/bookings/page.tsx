@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import type { Booking, Service, Profile, Address } from "@/lib/types/database";
 import { Calendar, Clock, MapPin, Package, Search, Filter } from "lucide-react";
 
@@ -25,6 +26,7 @@ interface BookingWithDetails extends Booking {
 
 export default function CustomerBookingsPage() {
   const { user, loading: authLoading } = useAuth();
+  const searchParams = useSearchParams();
   const [bookings, setBookings] = useState<BookingWithDetails[]>([]);
   const [filteredBookings, setFilteredBookings] = useState<
     BookingWithDetails[]
@@ -32,6 +34,22 @@ export default function CustomerBookingsPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+
+  // Read status filter from URL params on mount
+  useEffect(() => {
+    const statusParam = searchParams.get("status");
+    if (statusParam) {
+      // Map URL param values to actual status values
+      const statusMap: Record<string, string> = {
+        upcoming: "confirmed",
+        pending: "pending",
+        completed: "completed",
+        cancelled: "cancelled",
+        in_progress: "in_progress",
+      };
+      setStatusFilter(statusMap[statusParam] || statusParam);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -85,16 +103,26 @@ export default function CustomerBookingsPage() {
     let filtered = [...bookings];
 
     if (statusFilter !== "all") {
-      filtered = filtered.filter((b) => b.status === statusFilter);
+      // Handle "upcoming" filter which includes multiple statuses
+      if (statusFilter === "upcoming") {
+        filtered = filtered.filter(
+          (b) =>
+            b.status === "pending" ||
+            b.status === "confirmed" ||
+            b.status === "in_progress"
+        );
+      } else {
+        filtered = filtered.filter((b) => b.status === statusFilter);
+      }
     }
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (b) =>
-          b.service.name.toLowerCase().includes(query) ||
-          b.professional.full_name.toLowerCase().includes(query) ||
-          b.address.city.toLowerCase().includes(query)
+          b.service?.name?.toLowerCase().includes(query) ||
+          b.professional?.full_name?.toLowerCase().includes(query) ||
+          b.address?.city?.toLowerCase().includes(query)
       );
     }
 
@@ -156,6 +184,7 @@ export default function CustomerBookingsPage() {
                 className="px-3 sm:px-4 py-2 border rounded-md text-sm sm:text-base min-h-[44px] flex-1 sm:flex-none"
               >
                 <option value="all">All Status</option>
+                <option value="upcoming">Upcoming</option>
                 <option value="pending">Pending</option>
                 <option value="confirmed">Confirmed</option>
                 <option value="in_progress">In Progress</option>
@@ -195,7 +224,7 @@ export default function CustomerBookingsPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
                         <h3 className="text-lg sm:text-xl font-semibold truncate">
-                          {booking.service.name}
+                          {booking.service?.name || "Service"}
                         </h3>
                         <Badge variant={getStatusBadgeVariant(booking.status)} className="self-start sm:self-auto">
                           {booking.status.replace("_", " ")}
@@ -207,31 +236,34 @@ export default function CustomerBookingsPage() {
                           <Package className="h-4 w-4" />
                           <span>
                             <strong>Professional:</strong>{" "}
-                            {booking.professional.full_name}
+                            {booking.professional?.full_name || "N/A"}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Calendar className="h-4 w-4" />
                           <span>
                             <strong>Scheduled:</strong>{" "}
-                            {new Date(booking.scheduled_at).toLocaleDateString(
-                              "en-US",
-                              {
-                                weekday: "short",
-                                year: "numeric",
-                                month: "short",
-                                day: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              }
-                            )}
+                            {booking.scheduled_at
+                              ? new Date(booking.scheduled_at).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    weekday: "short",
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )
+                              : "N/A"}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <MapPin className="h-4 w-4" />
                           <span>
-                            <strong>Location:</strong> {booking.address.city},{" "}
-                            {booking.address.state}
+                            <strong>Location:</strong>{" "}
+                            {booking.address?.city || "N/A"}
+                            {booking.address?.state && `, ${booking.address.state}`}
                           </span>
                         </div>
                         {booking.completed_at && (

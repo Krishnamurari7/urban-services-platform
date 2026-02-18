@@ -83,78 +83,88 @@ export default async function AdminReviewsPage() {
   const pendingReviews = reviews.filter((r: any) => !r.is_verified);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Review Moderation</h1>
-        <p className="text-gray-600 mt-1">
+    <div className="space-y-6 pb-8">
+      <div className="bg-gradient-to-r from-amber-600 via-yellow-600 to-orange-600 rounded-2xl p-6 text-white shadow-xl">
+        <h1 className="text-3xl font-bold">Review Moderation</h1>
+        <p className="text-amber-100 mt-1">
           Manage and moderate customer reviews
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card>
+        <Card className="bg-gradient-to-br from-amber-500 to-yellow-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Reviews</CardTitle>
-            <span className="text-2xl">📝</span>
+            <CardTitle className="text-sm font-medium text-white">Total Reviews</CardTitle>
+            <span className="text-3xl">📝</span>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{reviews.length}</div>
-            <p className="text-xs text-gray-500 mt-1">All reviews</p>
+            <div className="text-3xl font-bold">{reviews.length}</div>
+            <p className="text-xs text-amber-100 mt-1">All reviews</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-br from-green-500 to-emerald-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Visible</CardTitle>
-            <span className="text-2xl">👁️</span>
+            <CardTitle className="text-sm font-medium text-white">Visible</CardTitle>
+            <span className="text-3xl">👁️</span>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{visibleReviews.length}</div>
-            <p className="text-xs text-gray-500 mt-1">Public reviews</p>
+            <div className="text-3xl font-bold">{visibleReviews.length}</div>
+            <p className="text-xs text-green-100 mt-1">Public reviews</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-br from-red-500 to-rose-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Hidden</CardTitle>
-            <span className="text-2xl">🚫</span>
+            <CardTitle className="text-sm font-medium text-white">Hidden</CardTitle>
+            <span className="text-3xl">🚫</span>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{hiddenReviews.length}</div>
-            <p className="text-xs text-gray-500 mt-1">Hidden reviews</p>
+            <div className="text-3xl font-bold">{hiddenReviews.length}</div>
+            <p className="text-xs text-red-100 mt-1">Hidden reviews</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-br from-orange-500 to-amber-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending</CardTitle>
-            <span className="text-2xl">⏳</span>
+            <CardTitle className="text-sm font-medium text-white">Pending</CardTitle>
+            <span className="text-3xl">⏳</span>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{pendingReviews.length}</div>
-            <p className="text-xs text-gray-500 mt-1">Need verification</p>
+            <div className="text-3xl font-bold">{pendingReviews.length}</div>
+            <p className="text-xs text-orange-100 mt-1">Need verification</p>
           </CardContent>
         </Card>
       </div>
 
       {/* All Reviews */}
-      <Card>
-        <CardHeader>
-          <CardTitle>All Reviews ({reviews.length})</CardTitle>
+      <Card className="bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 border-2 border-amber-200 shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-amber-600 to-yellow-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+          <CardTitle className="text-xl font-bold">All Reviews ({reviews.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {reviews.length === 0 ? (
               <p className="text-center text-gray-500 py-8">No reviews found</p>
             ) : (
-              reviews.map((review: any) => (
+              reviews.map((review: any, index: number) => {
+                const gradients = review.is_visible 
+                  ? [
+                      "from-blue-400 to-cyan-500",
+                      "from-purple-400 to-pink-500",
+                      "from-green-400 to-emerald-500",
+                      "from-indigo-400 to-blue-500",
+                    ]
+                  : [
+                      "from-red-400 to-rose-500",
+                      "from-orange-400 to-red-500",
+                    ];
+                const gradient = gradients[index % gradients.length];
+                return (
                 <div
                   key={review.id}
-                  className={`p-4 border rounded-lg ${review.is_visible
-                    ? "border-gray-200 bg-white"
-                    : "border-red-200 bg-red-50"
-                    }`}
+                  className={`p-4 border-2 rounded-xl bg-gradient-to-br ${gradient} text-white shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300 ${!review.is_visible ? 'border-red-300' : 'border-transparent'}`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -286,7 +296,8 @@ export default async function AdminReviewsPage() {
                     </div>
                   </div>
                 </div>
-              ))
+                );
+              })
             )}
           </div>
         </CardContent>

@@ -40,10 +40,10 @@ export default async function AdminPageContentPage() {
   });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Page Content Management</h1>
-        <p className="text-gray-600 mt-1">
+    <div className="space-y-6 pb-8">
+      <div className="bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 rounded-2xl p-6 text-white shadow-xl">
+        <h1 className="text-3xl font-bold">Page Content Management</h1>
+        <p className="text-sky-100 mt-1">
           Edit all content on public and customer pages
         </p>
       </div>

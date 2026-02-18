@@ -72,36 +72,63 @@ export default async function AdminBookingsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Booking Management</h1>
-        <p className="text-gray-600 mt-1">View and manage all bookings</p>
+    <div className="space-y-6 pb-8">
+      <div className="bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600 rounded-2xl p-6 text-white shadow-xl">
+        <h1 className="text-3xl font-bold">Booking Management</h1>
+        <p className="text-teal-100 mt-1">View and manage all bookings</p>
       </div>
 
       {/* Status Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-        {Object.entries(statusCounts).map(([status, count]) => (
-          <Card key={status}>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">{count}</div>
-              <div className="text-sm text-gray-600 capitalize mt-1">
-                {status.replace("_", " ")}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        {Object.entries(statusCounts).map(([status, count], index) => {
+          const gradients = [
+            "from-yellow-400 to-orange-500",
+            "from-blue-400 to-cyan-500",
+            "from-purple-400 to-pink-500",
+            "from-green-400 to-emerald-500",
+            "from-red-400 to-rose-500",
+            "from-indigo-400 to-blue-500",
+          ];
+          const gradient = gradients[index % gradients.length];
+          return (
+            <Card key={status} className={`bg-gradient-to-br ${gradient} text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300`}>
+              <CardContent className="p-4">
+                <div className="text-3xl font-bold">{count}</div>
+                <div className="text-sm text-white/90 capitalize mt-1">
+                  {status.replace("_", " ")}
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Bookings Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl sm:text-2xl">All Bookings ({bookings.length})</CardTitle>
+      <Card className="bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 border-2 border-cyan-200 shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-cyan-600 to-blue-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+          <CardTitle className="text-xl sm:text-2xl font-bold">
+            <span className="inline-flex items-center gap-2">
+              All Bookings
+              <span className="px-3 py-1 rounded-full bg-white text-cyan-600 text-sm font-semibold">
+                ({bookings.length})
+              </span>
+            </span>
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {/* Mobile: Card View */}
           <div className="md:hidden space-y-4">
-            {bookings.map((booking: any) => (
-              <Card key={booking.id} className="border">
+            {bookings.map((booking: any, index: number) => {
+              const gradients = [
+                "from-pink-400 to-rose-500",
+                "from-blue-400 to-indigo-500",
+                "from-purple-400 to-pink-500",
+                "from-cyan-400 to-blue-500",
+                "from-orange-400 to-red-500",
+              ];
+              const gradient = gradients[index % gradients.length];
+              return (
+              <Card key={booking.id} className={`border-2 bg-gradient-to-br ${gradient} text-white shadow-lg`}>
                 <CardContent className="p-4 space-y-3">
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
@@ -137,38 +164,39 @@ export default async function AdminBookingsPage() {
                       </span>
                     </div>
                   </div>
-                  <div className="pt-2 border-t">
+                  <div className="pt-2 border-t border-white/30">
                     <Link
                       href={`/admin/bookings/${booking.id}`}
-                      className="block w-full text-center px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                      className="block w-full text-center px-3 py-2 text-sm font-medium bg-white/20 hover:bg-white/30 text-white rounded-md transition-colors"
                     >
                       View Details
                     </Link>
                   </div>
                 </CardContent>
               </Card>
-            ))}
+              );
+            })}
           </div>
 
           {/* Desktop: Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full min-w-[800px]">
               <thead>
-                <tr className="border-b">
-                  <th className="text-left p-2">ID</th>
-                  <th className="text-left p-2">Customer</th>
-                  <th className="text-left p-2">Professional</th>
-                  <th className="text-left p-2">Service</th>
-                  <th className="text-left p-2">Scheduled</th>
-                  <th className="text-left p-2">Amount</th>
-                  <th className="text-left p-2">Status</th>
-                  <th className="text-left p-2">Payment</th>
-                  <th className="text-left p-2">Actions</th>
+                <tr className="border-b bg-gradient-to-r from-cyan-500 to-blue-500 text-white">
+                  <th className="text-left p-2 text-white font-semibold">ID</th>
+                  <th className="text-left p-2 text-white font-semibold">Customer</th>
+                  <th className="text-left p-2 text-white font-semibold">Professional</th>
+                  <th className="text-left p-2 text-white font-semibold">Service</th>
+                  <th className="text-left p-2 text-white font-semibold">Scheduled</th>
+                  <th className="text-left p-2 text-white font-semibold">Amount</th>
+                  <th className="text-left p-2 text-white font-semibold">Status</th>
+                  <th className="text-left p-2 text-white font-semibold">Payment</th>
+                  <th className="text-left p-2 text-white font-semibold">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {bookings.map((booking: any) => (
-                  <tr key={booking.id} className="border-b">
+                {bookings.map((booking: any, index: number) => (
+                  <tr key={booking.id} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-cyan-50'} hover:bg-cyan-100 transition-colors`}>
                     <td className="p-2 text-sm font-mono">
                       {booking.id.substring(0, 8)}...
                     </td>

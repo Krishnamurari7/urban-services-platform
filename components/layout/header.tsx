@@ -4,10 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut, Bell, Home, Star } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { signOut } from "@/lib/auth/actions";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 import { getRoleBasedRedirect } from "@/lib/auth/utils";
 
@@ -15,11 +16,30 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, role, isAuthenticated, loading } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
 
   // Close mobile menu when route changes
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
+
+  // Handle logout with immediate state update
+  const handleLogout = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      // Sign out on client side first for immediate UI update
+      await supabase.auth.signOut();
+      // Refresh the router to update server-side state
+      router.refresh();
+      // Redirect to home page
+      router.push("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Fallback to server action if client-side fails
+      await signOut();
+    }
+  };
 
   // Check if a link is active
   const isActive = (href: string) => {
@@ -102,7 +122,7 @@ export function Header() {
                         <span className="hidden lg:inline">Dashboard</span>
                       </Button>
                     </Link>
-                    <form action={signOut}>
+                    <form onSubmit={handleLogout}>
                       <Button 
                         variant="outline" 
                         size="sm" 
@@ -199,7 +219,7 @@ export function Header() {
                         Dashboard
                       </Link>
                       <form
-                        action={signOut}
+                        onSubmit={handleLogout}
                         className="w-full"
                       >
                         <Button

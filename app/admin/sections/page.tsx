@@ -51,13 +51,13 @@ export default async function AdminSectionsPage() {
   const inactiveSections = sections.filter((s: any) => !s.is_active);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 pb-8">
+      <div className="flex items-center justify-between bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 rounded-2xl p-6 text-white shadow-xl">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold">
             Homepage Sections CMS
           </h1>
-          <p className="text-gray-600 mt-1">
+          <p className="text-indigo-100 mt-1">
             Manage homepage sections content and layout
           </p>
         </div>
@@ -65,29 +65,29 @@ export default async function AdminSectionsPage() {
       </div>
 
       {/* Quick Access to Section Editors */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Quick Section Editors</CardTitle>
+      <Card className="bg-gradient-to-br from-indigo-50 via-purple-50 to-violet-50 border-2 border-indigo-200 shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+          <CardTitle className="text-xl font-bold">Quick Section Editors</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Link href="/admin/sections/hero">
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white border-0 hover:from-pink-600 hover:to-rose-600 shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                 🏠 Edit Hero Section
               </Button>
             </Link>
             <Link href="/admin/sections/services">
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white border-0 hover:from-blue-600 hover:to-cyan-600 shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                 🧹 Edit Services Section
               </Button>
             </Link>
             <Link href="/admin/sections/features">
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:from-purple-600 hover:to-pink-600 shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                 ✨ Edit Features Section
               </Button>
             </Link>
             <Link href="/admin/sections/cta">
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 hover:from-green-600 hover:to-emerald-600 shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                 📢 Edit CTA Section
               </Button>
             </Link>
@@ -97,9 +97,9 @@ export default async function AdminSectionsPage() {
 
       {/* Active Sections */}
       {activeSections.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Active Sections ({activeSections.length})</CardTitle>
+        <Card className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 border-2 border-green-200 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+            <CardTitle className="text-xl font-bold">Active Sections ({activeSections.length})</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -156,9 +156,9 @@ export default async function AdminSectionsPage() {
 
       {/* Inactive Sections */}
       {inactiveSections.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Inactive Sections ({inactiveSections.length})</CardTitle>
+        <Card className="bg-gradient-to-br from-gray-50 via-slate-50 to-zinc-50 border-2 border-gray-200 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-gray-600 to-slate-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+            <CardTitle className="text-xl font-bold">Inactive Sections ({inactiveSections.length})</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -206,9 +206,9 @@ export default async function AdminSectionsPage() {
       )}
 
       {sections.length === 0 && (
-        <Card>
+        <Card className="bg-gradient-to-br from-indigo-50 via-purple-50 to-violet-50 border-2 border-indigo-200 shadow-lg">
           <CardContent className="py-12 text-center">
-            <p className="text-gray-500">
+            <p className="text-gray-600 font-medium">
               No sections created yet. Create your first section!
             </p>
           </CardContent>

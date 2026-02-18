@@ -18,7 +18,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="border-t border-gray-200 bg-white">
+    <footer className="border-t border-gray-200 bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {/* Left Column - Company Info */}
@@ -134,21 +134,21 @@ export function Footer() {
                 Contact Info
               </h3>
               <div className="space-y-3 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 flex-shrink-0" />
-                  <a href="tel:+15551234567" className="hover:text-gray-900 transition-colors">
+                <div className="flex items-start gap-2">
+                  <Phone className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                  <a href="tel:+15551234567" className="hover:text-gray-900 transition-colors break-words">
                     +1 (555) 123-4567
                   </a>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 flex-shrink-0" />
-                  <a href="mailto:support@veracompany.com" className="hover:text-gray-900 transition-colors">
+                <div className="flex items-start gap-2">
+                  <Mail className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                  <a href="mailto:support@veracompany.com" className="hover:text-gray-900 transition-colors break-words">
                     support@veracompany.com
                   </a>
                 </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 flex-shrink-0" />
-                  <span>123 Main St, Suite 500, San Francisco, CA 94107</span>
+                <div className="flex items-start gap-2">
+                  <MapPin className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                  <span className="break-words">123 Main St, Suite 500, San Francisco, CA 94107</span>
                 </div>
               </div>
             </div>

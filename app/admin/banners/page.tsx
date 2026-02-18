@@ -50,22 +50,22 @@ export default async function AdminBannersPage() {
   const inactiveBanners = banners.filter((b) => !b.is_active);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 pb-8">
+      <div className="flex items-center justify-between bg-gradient-to-r from-pink-600 via-rose-600 to-fuchsia-600 rounded-2xl p-6 text-white shadow-xl">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold">
             Homepage Banners CMS
           </h1>
-          <p className="text-gray-600 mt-1">Manage homepage banner content</p>
+          <p className="text-pink-100 mt-1">Manage homepage banner content</p>
         </div>
         <BannerForm />
       </div>
 
       {/* Active Banners */}
       {activeBanners.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Active Banners ({activeBanners.length})</CardTitle>
+        <Card className="bg-gradient-to-br from-pink-50 via-rose-50 to-fuchsia-50 border-2 border-pink-200 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-pink-600 to-rose-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+            <CardTitle className="text-xl font-bold">Active Banners ({activeBanners.length})</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -115,9 +115,9 @@ export default async function AdminBannersPage() {
 
       {/* Inactive Banners */}
       {inactiveBanners.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Inactive Banners ({inactiveBanners.length})</CardTitle>
+        <Card className="bg-gradient-to-br from-gray-50 via-slate-50 to-zinc-50 border-2 border-gray-200 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-gray-600 to-slate-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+            <CardTitle className="text-xl font-bold">Inactive Banners ({inactiveBanners.length})</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -166,9 +166,9 @@ export default async function AdminBannersPage() {
       )}
 
       {banners.length === 0 && (
-        <Card>
+        <Card className="bg-gradient-to-br from-pink-50 via-rose-50 to-fuchsia-50 border-2 border-pink-200 shadow-lg">
           <CardContent className="py-12 text-center">
-            <p className="text-gray-500">
+            <p className="text-gray-600 font-medium">
               No banners created yet. Create your first banner!
             </p>
           </CardContent>

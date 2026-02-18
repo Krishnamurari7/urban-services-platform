@@ -129,48 +129,55 @@ export default async function AdminProfessionalsPage() {
   );
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">
+    <div className="space-y-6 pb-8">
+      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 rounded-2xl p-6 text-white shadow-xl">
+        <h1 className="text-3xl font-bold">
           Professional Management
         </h1>
-        <p className="text-gray-600 mt-1">Approve and manage professionals</p>
+        <p className="text-violet-100 mt-1">Approve and manage professionals</p>
       </div>
 
       {/* Pending Approvals */}
       {pendingProfessionals.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>
+        <Card className="bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50 border-2 border-yellow-200 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-yellow-500 to-orange-500 rounded-t-lg -m-6 mb-4 p-6 text-white">
+            <CardTitle className="text-xl font-bold">
               Pending Approvals ({pendingProfessionals.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {pendingProfessionals.map((professional: any) => (
+              {pendingProfessionals.map((professional: any, index: number) => {
+                const gradients = [
+                  "from-yellow-400 to-orange-500",
+                  "from-amber-400 to-yellow-500",
+                  "from-orange-400 to-red-500",
+                ];
+                const gradient = gradients[index % gradients.length];
+                return (
                 <div
                   key={professional.id}
-                  className="p-4 border border-gray-200 rounded-lg"
+                  className={`p-4 border-2 border-yellow-300 rounded-xl bg-gradient-to-br ${gradient} text-white shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg">
+                      <h3 className="font-semibold text-lg text-white">
                         {professional.full_name}
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-white/90">
                         {professional.email || "Email N/A"}
                       </p>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-white/90">
                         {professional.phone || "Phone N/A"}
                       </p>
                       {professional.bio && (
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-white/80 mt-1">
                           {professional.bio}
                         </p>
                       )}
 
                       {professional.experience_years && (
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-white/80 mt-1">
                           Experience: {professional.experience_years} years
                         </p>
                       )}
@@ -178,38 +185,38 @@ export default async function AdminProfessionalsPage() {
                       {professional.documents &&
                         professional.documents.length > 0 && (
                           <div className="mt-3">
-                            <p className="text-sm font-medium mb-2">
+                            <p className="text-sm font-medium mb-2 text-white">
                               Documents:
                             </p>
                             <div className="space-y-2">
                               {professional.documents.map((doc: any) => (
                                 <div
                                   key={doc.id}
-                                  className="flex items-center gap-2 text-sm"
+                                  className="flex items-center gap-2 text-sm flex-wrap"
                                 >
-                                  <span className="capitalize">
+                                  <span className="capitalize text-white/90">
                                     {doc.document_type}:
                                   </span>
                                   <a
                                     href={doc.file_url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-blue-600 hover:underline"
+                                    className="text-white hover:text-yellow-200 underline font-medium"
                                   >
                                     {doc.document_name}
                                   </a>
                                   <span
-                                    className={`px-2 py-1 rounded text-xs ${doc.status === "approved"
-                                      ? "bg-green-100 text-green-700"
+                                    className={`px-2 py-1 rounded text-xs font-semibold ${doc.status === "approved"
+                                      ? "bg-green-500 text-white"
                                       : doc.status === "rejected"
-                                        ? "bg-red-100 text-red-700"
-                                        : "bg-yellow-100 text-yellow-700"
+                                        ? "bg-red-500 text-white"
+                                        : "bg-yellow-500 text-white"
                                       }`}
                                   >
                                     {doc.status}
                                   </span>
                                   {doc.rejection_reason && (
-                                    <span className="text-red-600 text-xs">
+                                    <span className="text-white/90 text-xs bg-red-500/30 px-2 py-1 rounded">
                                       {doc.rejection_reason}
                                     </span>
                                   )}
@@ -219,14 +226,17 @@ export default async function AdminProfessionalsPage() {
                           </div>
                         )}
                     </div>
-                    <div className="flex gap-2 ml-4">
+                    <div className="flex flex-col gap-2 ml-4">
                       <form action={approveProfessional}>
                         <input
                           type="hidden"
                           name="professionalId"
                           value={professional.id}
                         />
-                        <Button type="submit" variant="default">
+                        <Button 
+                          type="submit" 
+                          className="bg-green-600 hover:bg-green-700 text-white border-0 shadow-md hover:shadow-lg min-w-[100px]"
+                        >
                           Approve
                         </Button>
                       </form>
@@ -236,45 +246,49 @@ export default async function AdminProfessionalsPage() {
                           name="professionalId"
                           value={professional.id}
                         />
-                        <Button type="submit" variant="outline">
+                        <Button 
+                          type="submit" 
+                          className="bg-red-600 hover:bg-red-700 text-white border-0 shadow-md hover:shadow-lg min-w-[100px]"
+                        >
                           Reject
                         </Button>
                       </form>
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </CardContent>
         </Card>
       )}
 
       {/* All Professionals */}
-      <Card>
-        <CardHeader>
-          <CardTitle>All Professionals ({professionals.length})</CardTitle>
+      <Card className="bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 border-2 border-purple-200 shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+          <CardTitle className="text-xl font-bold">All Professionals ({professionals.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b">
-                  <th className="text-left p-2">Name</th>
-                  <th className="text-left p-2">Email</th>
-                  <th className="text-left p-2">Phone</th>
-                  <th className="text-left p-2">Rating</th>
-                  <th className="text-left p-2">Jobs</th>
-                  <th className="text-left p-2">Completed</th>
-                  <th className="text-left p-2">Experience</th>
-                  <th className="text-left p-2">Status</th>
-                  <th className="text-left p-2">Actions</th>
+                <tr className="border-b bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+                  <th className="text-left p-2 text-white font-semibold">Name</th>
+                  <th className="text-left p-2 text-white font-semibold">Email</th>
+                  <th className="text-left p-2 text-white font-semibold">Phone</th>
+                  <th className="text-left p-2 text-white font-semibold">Rating</th>
+                  <th className="text-left p-2 text-white font-semibold">Jobs</th>
+                  <th className="text-left p-2 text-white font-semibold">Completed</th>
+                  <th className="text-left p-2 text-white font-semibold">Experience</th>
+                  <th className="text-left p-2 text-white font-semibold">Status</th>
+                  <th className="text-left p-2 text-white font-semibold">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {professionals.map((professional: any) => (
+                {professionals.map((professional: any, index: number) => (
                   <tr
                     key={professional.id}
-                    className="border-b hover:bg-gray-50"
+                    className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-purple-50'} hover:bg-purple-100 transition-colors`}
                   >
                     <td className="p-2 font-medium">
                       {professional.full_name}

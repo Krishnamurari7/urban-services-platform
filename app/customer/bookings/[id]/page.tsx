@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import type {
   Booking,
@@ -33,6 +33,8 @@ import {
   Phone,
   Mail,
   FileText,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
 
 interface BookingWithDetails extends Booking {
@@ -46,16 +48,29 @@ export default function BookingDetailPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
   const bookingId = params.id as string;
   const [booking, setBooking] = useState<BookingWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && user && bookingId) {
       fetchBookingDetails();
     }
   }, [user, authLoading, bookingId]);
+
+  // Handle payment success/failure messages from URL params
+  useEffect(() => {
+    const paymentStatus = searchParams.get("payment");
+    if (paymentStatus === "success") {
+      // Show success message or refresh data
+      if (booking) {
+        fetchBookingDetails();
+      }
+    }
+  }, [searchParams, booking]);
 
   const fetchBookingDetails = async () => {
     if (!user) return;
@@ -88,9 +103,17 @@ export default function BookingDetailPage() {
           address: data.address,
           payment: data.payment?.[0] || undefined,
         });
+        setError(null);
+      } else {
+        setError("Booking not found");
       }
     } catch (error) {
       console.error("Error fetching booking details:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to load booking details"
+      );
     } finally {
       setLoading(false);
     }
@@ -156,15 +179,18 @@ export default function BookingDetailPage() {
     );
   }
 
-  if (!booking) {
+  if (error || (!loading && !booking)) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card>
           <CardContent className="p-12 text-center">
-            <h2 className="text-xl font-semibold mb-2">Booking not found</h2>
+            <XCircle className="h-12 w-12 mx-auto mb-4 text-red-500" />
+            <h2 className="text-xl font-semibold mb-2">
+              {error || "Booking not found"}
+            </h2>
             <p className="text-gray-600 mb-4">
-              The booking you're looking for doesn't exist or you don't have
-              access to it.
+              {error ||
+                "The booking you're looking for doesn't exist or you don't have access to it."}
             </p>
             <Link href="/customer/bookings">
               <Button>Back to Bookings</Button>
@@ -173,6 +199,10 @@ export default function BookingDetailPage() {
         </Card>
       </div>
     );
+  }
+
+  if (!booking) {
+    return null;
   }
 
   return (
@@ -195,6 +225,22 @@ export default function BookingDetailPage() {
           </Badge>
         </div>
         <p className="text-gray-600">Booking ID: {booking.id.slice(0, 8)}</p>
+        {searchParams.get("payment") === "success" && (
+          <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2">
+            <CheckCircle2 className="h-5 w-5 text-green-600" />
+            <p className="text-green-800 font-medium">
+              Payment completed successfully!
+            </p>
+          </div>
+        )}
+        {searchParams.get("payment") === "failed" && (
+          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
+            <XCircle className="h-5 w-5 text-red-600" />
+            <p className="text-red-800 font-medium">
+              Payment failed. Please try again.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -211,22 +257,29 @@ export default function BookingDetailPage() {
             <CardContent className="space-y-4">
               <div>
                 <h3 className="font-semibold text-lg mb-1">
-                  {booking.service.name}
+                  {booking.service?.name || "Service"}
                 </h3>
-                <p className="text-gray-600">{booking.service.description}</p>
-                <Badge className="mt-2">{booking.service.category}</Badge>
+                <p className="text-gray-600">
+                  {booking.service?.description || "No description available"}
+                </p>
+                {booking.service?.category && (
+                  <Badge className="mt-2">{booking.service.category}</Badge>
+                )}
               </div>
               <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                 <div>
                   <p className="text-sm text-gray-500">Duration</p>
                   <p className="font-semibold">
-                    {booking.service.duration_minutes} minutes
+                    {booking.service?.duration_minutes || "N/A"} minutes
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Base Price</p>
                   <p className="font-semibold">
-                    ₹{Number(booking.service.base_price).toFixed(2)}
+                    ₹
+                    {booking.service?.base_price
+                      ? Number(booking.service.base_price).toFixed(2)
+                      : "0.00"}
                   </p>
                 </div>
               </div>
@@ -244,17 +297,20 @@ export default function BookingDetailPage() {
             <CardContent className="space-y-4">
               <div>
                 <h3 className="font-semibold text-lg mb-1">
-                  {booking.professional.full_name}
+                  {booking.professional?.full_name || "Professional"}
                 </h3>
                 <div className="flex items-center gap-4 mt-2">
                   <div>
                     <p className="text-sm text-gray-500">Rating</p>
                     <p className="font-semibold">
-                      {Number(booking.professional.rating_average).toFixed(1)}{" "}
-                      ⭐ ({booking.professional.total_reviews} reviews)
+                      {booking.professional?.rating_average
+                        ? Number(booking.professional.rating_average).toFixed(1)
+                        : "N/A"}{" "}
+                      ⭐ (
+                      {booking.professional?.total_reviews || 0} reviews)
                     </p>
                   </div>
-                  {booking.professional.experience_years && (
+                  {booking.professional?.experience_years && (
                     <div>
                       <p className="text-sm text-gray-500">Experience</p>
                       <p className="font-semibold">
@@ -263,7 +319,7 @@ export default function BookingDetailPage() {
                     </div>
                   )}
                 </div>
-                {booking.professional.phone && (
+                {booking.professional?.phone && (
                   <div className="flex items-center gap-2 mt-2">
                     <Phone className="h-4 w-4 text-gray-400" />
                     <span className="text-sm">
@@ -324,15 +380,18 @@ export default function BookingDetailPage() {
                   <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
                   <div>
                     <p className="text-sm text-gray-500">Service Address</p>
-                    <p className="font-semibold">{booking.address.label}</p>
+                    <p className="font-semibold">
+                      {booking.address?.label || "Address"}
+                    </p>
                     <p className="text-gray-600">
-                      {booking.address.address_line1}
-                      {booking.address.address_line2 &&
+                      {booking.address?.address_line1 || ""}
+                      {booking.address?.address_line2 &&
                         `, ${booking.address.address_line2}`}
                     </p>
                     <p className="text-gray-600">
-                      {booking.address.city}, {booking.address.state}{" "}
-                      {booking.address.postal_code}
+                      {booking.address?.city || ""}
+                      {booking.address?.state && `, ${booking.address.state}`}{" "}
+                      {booking.address?.postal_code || ""}
                     </p>
                   </div>
                 </div>
