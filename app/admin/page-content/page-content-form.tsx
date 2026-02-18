@@ -40,7 +40,6 @@ export function PageContentForm({ content, pagePath }: PageContentFormProps) {
     content_key: content?.content_key || "",
     content_type: content?.content_type || "text",
     content_value: content?.content_value || "",
-    content_json: content?.content_json ? JSON.stringify(content.content_json, null, 2) : "",
     display_order: content?.display_order?.toString() || "0",
     is_active: content?.is_active ?? true,
   });
@@ -53,7 +52,6 @@ export function PageContentForm({ content, pagePath }: PageContentFormProps) {
         content_key: content?.content_key || "",
         content_type: content?.content_type || "text",
         content_value: content?.content_value || "",
-        content_json: content?.content_json ? JSON.stringify(content.content_json, null, 2) : "",
         display_order: content?.display_order?.toString() || "0",
         is_active: content?.is_active ?? true,
       });
@@ -74,27 +72,9 @@ export function PageContentForm({ content, pagePath }: PageContentFormProps) {
         is_active: formData.is_active,
       };
 
-      if (formData.content_type === "json") {
-        if (formData.content_json) {
-          try {
-            submitData.content_json = JSON.parse(formData.content_json);
-            // Clear content_value when using JSON
-            submitData.content_value = null;
-          } catch (error) {
-            toast.error("Invalid JSON format");
-            setLoading(false);
-            return;
-          }
-        } else {
-          toast.error("JSON content is required when content type is JSON");
-          setLoading(false);
-          return;
-        }
-      } else {
-        submitData.content_value = formData.content_value || "";
-        // Clear content_json when using other types
-        submitData.content_json = null;
-      }
+      // JSON format removed - only use text, html, or image_url
+      submitData.content_value = formData.content_value || "";
+      submitData.content_json = null; // Always clear JSON
 
       if (content?.id) {
         result = await updatePageContent(content.id, submitData);
@@ -113,7 +93,6 @@ export function PageContentForm({ content, pagePath }: PageContentFormProps) {
           content_key: "",
           content_type: "text",
           content_value: "",
-          content_json: "",
           display_order: "0",
           is_active: true,
         });
@@ -157,7 +136,6 @@ export function PageContentForm({ content, pagePath }: PageContentFormProps) {
           content_key: "",
           content_type: "text",
           content_value: "",
-          content_json: "",
           display_order: "0",
           is_active: true,
         });
@@ -226,38 +204,44 @@ export function PageContentForm({ content, pagePath }: PageContentFormProps) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="text">Text</SelectItem>
-                <SelectItem value="html">HTML</SelectItem>
-                <SelectItem value="json">JSON</SelectItem>
-                <SelectItem value="image_url">Image URL</SelectItem>
+                <SelectItem value="text">Text (सामान्य text)</SelectItem>
+                <SelectItem value="html">HTML (HTML code के लिए)</SelectItem>
+                <SelectItem value="image_url">Image URL (Image link के लिए)</SelectItem>
               </SelectContent>
             </Select>
+            <p className="text-xs text-gray-500 mt-1">
+              JSON format remove कर दिया गया है - अब सिर्फ Text, HTML, या Image URL use करें
+            </p>
           </div>
 
-          {formData.content_type === "json" ? (
-            <div>
-              <Label htmlFor="content_json">JSON Content</Label>
-              <Textarea
-                id="content_json"
-                value={formData.content_json}
-                onChange={(e) => setFormData({ ...formData, content_json: e.target.value })}
-                placeholder='{"key": "value"}'
-                rows={10}
-                className="font-mono text-sm"
-              />
-            </div>
-          ) : (
-            <div>
-              <Label htmlFor="content_value">Content Value</Label>
+          <div>
+            <Label htmlFor="content_value">
+              {formData.content_type === "image_url" ? "Image URL" : "Content"}
+            </Label>
+            {formData.content_type === "html" ? (
               <Textarea
                 id="content_value"
                 value={formData.content_value}
                 onChange={(e) => setFormData({ ...formData, content_value: e.target.value })}
-                placeholder="Enter the content text..."
+                placeholder="Enter HTML content..."
+                rows={8}
+                className="font-mono text-sm"
+              />
+            ) : (
+              <Textarea
+                id="content_value"
+                value={formData.content_value}
+                onChange={(e) => setFormData({ ...formData, content_value: e.target.value })}
+                placeholder={formData.content_type === "image_url" ? "https://example.com/image.jpg" : "Enter the content text..."}
                 rows={6}
               />
-            </div>
-          )}
+            )}
+            <p className="text-xs text-gray-500 mt-1">
+              {formData.content_type === "image_url" 
+                ? "Image का पूरा URL enter करें (जैसे: https://example.com/image.jpg)"
+                : "यहाँ content type करें - यह page पर दिखाई देगा"}
+            </p>
+          </div>
 
           <div>
             <Label htmlFor="display_order">Display Order</Label>

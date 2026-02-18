@@ -31,7 +31,7 @@ export function HowItWorksSection({
   description = "Get professional services in just a few easy steps",
   steps: propSteps,
 }: HowItWorksSectionProps) {
-  const [steps, setSteps] = useState<Step[]>(propSteps || []);
+  const [steps, setSteps] = useState<Step[]>(Array.isArray(propSteps) ? propSteps : []);
   const [loading, setLoading] = useState(!propSteps);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export function HowItWorksSection({
           .eq("is_active", true)
           .single();
 
-        if (sectionData?.content?.steps) {
+        if (sectionData?.content?.steps && Array.isArray(sectionData.content.steps)) {
           setSteps(sectionData.content.steps);
         } else {
           // Default steps
@@ -103,7 +103,7 @@ export function HowItWorksSection({
     );
   }
 
-  if (steps.length === 0) return null;
+  if (!Array.isArray(steps) || steps.length === 0) return null;
 
   return (
     <section className="py-16 md:py-24 bg-gradient-to-b from-muted/30 to-background">
@@ -118,7 +118,7 @@ export function HowItWorksSection({
           )}
         </div>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {steps.map((step, index) => (
+          {Array.isArray(steps) && steps.map((step, index) => (
             <div
               key={step.id}
               className="group relative flex flex-col items-center text-center"

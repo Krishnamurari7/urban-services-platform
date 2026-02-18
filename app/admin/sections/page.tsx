@@ -111,28 +111,28 @@ export default async function AdminSectionsPage() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="px-2 py-1 bg-green-500 text-white rounded text-xs">
-                          Active
+                        <span className="px-2 py-1 bg-green-500 text-white rounded text-xs font-semibold">
+                          ✓ Active
                         </span>
-                        <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
-                          {section.section_type}
+                        <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
+                          📄 {section.section_type}
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-gray-500 font-medium">
                           Order: {section.display_order}
                         </span>
                       </div>
                       {section.title && (
-                        <h3 className="font-semibold text-lg mb-1">
+                        <h3 className="font-bold text-xl mb-1 text-gray-900">
                           {section.title}
                         </h3>
                       )}
                       {section.subtitle && (
-                        <p className="text-sm text-primary font-medium mb-1">
+                        <p className="text-sm text-primary font-semibold mb-1">
                           {section.subtitle}
                         </p>
                       )}
                       {section.description && (
-                        <p className="text-sm text-gray-600 mb-2">
+                        <p className="text-sm text-gray-700 mb-2">
                           {section.description}
                         </p>
                       )}
@@ -145,7 +145,9 @@ export default async function AdminSectionsPage() {
                         </div>
                       )}
                     </div>
-                    <SectionForm section={section} />
+                    <div className="flex flex-col gap-2">
+                      <SectionForm section={section} />
+                    </div>
                   </div>
                 </div>
               ))}
@@ -170,33 +172,35 @@ export default async function AdminSectionsPage() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="px-2 py-1 bg-gray-500 text-white rounded text-xs">
-                          Inactive
+                        <span className="px-2 py-1 bg-gray-500 text-white rounded text-xs font-semibold">
+                          ⊘ Inactive
                         </span>
-                        <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
-                          {section.section_type}
+                        <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
+                          📄 {section.section_type}
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-gray-500 font-medium">
                           Order: {section.display_order}
                         </span>
                       </div>
                       {section.title && (
-                        <h3 className="font-semibold text-lg mb-1">
+                        <h3 className="font-bold text-xl mb-1 text-gray-900">
                           {section.title}
                         </h3>
                       )}
                       {section.subtitle && (
-                        <p className="text-sm text-primary font-medium mb-1">
+                        <p className="text-sm text-primary font-semibold mb-1">
                           {section.subtitle}
                         </p>
                       )}
                       {section.description && (
-                        <p className="text-sm text-gray-600 mb-2">
+                        <p className="text-sm text-gray-700 mb-2">
                           {section.description}
                         </p>
                       )}
                     </div>
-                    <SectionForm section={section} />
+                    <div className="flex flex-col gap-2">
+                      <SectionForm section={section} />
+                    </div>
                   </div>
                 </div>
               ))}

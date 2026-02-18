@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { signOut } from "@/lib/auth/actions";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Menu, X } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 const navigation = [
     { name: "Dashboard", href: "/admin/dashboard", icon: "📊" },
@@ -26,7 +26,9 @@ const navigation = [
 
 export function AdminSidebar() {
     const pathname = usePathname();
+    const router = useRouter();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const supabase = useMemo(() => createClient(), []);
 
     // Lock body scroll when mobile menu is open
     useEffect(() => {
@@ -44,6 +46,23 @@ export function AdminSidebar() {
     useEffect(() => {
         setMobileMenuOpen(false);
     }, [pathname]);
+
+    // Handle logout with immediate state update
+    const handleLogout = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            // Sign out on client side first for immediate UI update
+            await supabase.auth.signOut();
+            // Refresh the router to update server-side state
+            router.refresh();
+            // Redirect to home page
+            router.push("/");
+        } catch (error) {
+            console.error("Logout error:", error);
+            // Fallback: try to redirect anyway
+            router.push("/");
+        }
+    };
 
     return (
         <>
@@ -135,7 +154,7 @@ export function AdminSidebar() {
 
                     {/* Logout */}
                     <div className="p-4 border-t border-gray-800">
-                        <form action={signOut}>
+                        <form onSubmit={handleLogout}>
                             <Button type="submit" variant="outline" className="w-full bg-gray-800 text-white border-gray-700 hover:bg-gray-700 transition-colors">
                                 Sign Out
                             </Button>
@@ -204,7 +223,7 @@ export function AdminSidebar() {
 
                     {/* Logout */}
                     <div className="p-4 border-t border-gray-800">
-                        <form action={signOut}>
+                        <form onSubmit={handleLogout}>
                             <Button 
                                 type="submit" 
                                 variant="outline" 

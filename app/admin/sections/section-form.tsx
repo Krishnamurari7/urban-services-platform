@@ -134,17 +134,59 @@ export function SectionForm({ section }: { section?: Section }) {
   return (
     <div>
       {!isOpen && (
-        <Button onClick={() => setIsOpen(true)} variant={section ? "outline" : "default"}>
-          {section ? "Edit" : "Create Section"}
+        <Button 
+          onClick={() => setIsOpen(true)} 
+          variant={section ? "outline" : "default"}
+          className={section ? "min-w-[120px]" : ""}
+        >
+          {section ? (
+            <span className="flex items-center gap-1">
+              ✏️ Edit
+            </span>
+          ) : (
+            "➕ Create Section"
+          )}
         </Button>
       )}
 
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <Card className="w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-            <CardHeader>
-              <CardTitle>
-                {section ? "Edit Section" : "Create New Section"}
+            <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+              <CardTitle className="text-2xl font-bold">
+                {section ? (
+                  <div className="space-y-2">
+                    <div>✏️ Edit Section</div>
+                    <div className="text-base font-normal opacity-90 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-1 bg-white/20 rounded text-xs">
+                          Type: {section.section_type || "N/A"}
+                        </span>
+                        {section.is_active ? (
+                          <span className="px-2 py-1 bg-green-500/30 rounded text-xs">
+                            Active
+                          </span>
+                        ) : (
+                          <span className="px-2 py-1 bg-gray-500/30 rounded text-xs">
+                            Inactive
+                          </span>
+                        )}
+                      </div>
+                      {section.title && (
+                        <div className="text-sm mt-2">
+                          <span className="font-semibold">Title:</span> {section.title}
+                        </div>
+                      )}
+                      {section.subtitle && (
+                        <div className="text-sm">
+                          <span className="font-semibold">Subtitle:</span> {section.subtitle}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  "➕ Create New Section"
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
