@@ -16,9 +16,12 @@ const nextConfig: NextConfig = {
   },
   // TypeScript configuration
   typescript: {
-    // Ignore TypeScript errors during builds to prevent build failures
+    // Set to true temporarily if build fails due to type errors
+    // Set to false for strict type checking in production
     ignoreBuildErrors: false,
   },
+  // Output configuration for better debugging
+  output: "standalone",
 };
 
 export default nextConfig;
