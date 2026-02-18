@@ -48,9 +48,9 @@ export async function middleware(request: NextRequest) {
 
   // Get user role from profile if authenticated
   let userRole: UserRole | null = null;
-  if (user) {
+  if (user && supabase) {
     // SECURITY: Prioritize database profile over metadata to prevent stale roles
-    if (supabase) {
+    try {
       const { data: profile } = await supabase
         .from("profiles")
         .select("role")
@@ -60,12 +60,18 @@ export async function middleware(request: NextRequest) {
       if (profile?.role) {
         userRole = profile.role as UserRole;
       }
+    } catch (error) {
+      // If database query fails, fall back to metadata
+      console.error("Error fetching user profile:", error);
     }
 
     // Fallback to metadata only if DB check fails or is unavailable
     if (!userRole) {
       userRole = (user.user_metadata?.role as UserRole) || null;
     }
+  } else if (user) {
+    // If supabase is not available, use metadata only
+    userRole = (user.user_metadata?.role as UserRole) || null;
   }
 
   // Redirect authenticated users away from auth pages
