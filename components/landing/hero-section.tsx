@@ -3,54 +3,53 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin, Users, CheckCircle2 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { usePageContent } from "@/lib/cms/client-page-content";
 
 export function HeroSection() {
     const router = useRouter();
     const [serviceQuery, setServiceQuery] = useState("");
     const [location, setLocation] = useState("");
-    const [heroData, setHeroData] = useState({
-        title: "Professional Home Services at Your Doorstep",
-        subtitle: "Home Services",
-        description: "Book verified experts for home cleaning, sanitization, and maintenance. Reliable, affordable, and just a click away.",
-        trustText: "Trusted by 10,000+ households",
-        certificationText: "CERTIFIED EXPERTS",
-        certificationSubtext: "100% Background Checked",
-        imageUrl: "",
-    });
 
-    useEffect(() => {
-        const fetchHeroData = async () => {
-            try {
-                const supabase = createClient();
-                const { data: sectionData } = await supabase
-                    .from("homepage_sections")
-                    .select("*")
-                    .eq("section_type", "hero")
-                    .eq("is_active", true)
-                    .single();
-
-                if (sectionData?.content) {
-                    setHeroData({
-                        title: sectionData.content.title || heroData.title,
-                        subtitle: sectionData.content.subtitle || heroData.subtitle,
-                        description: sectionData.content.description || heroData.description,
-                        trustText: sectionData.content.trustText || heroData.trustText,
-                        certificationText: sectionData.content.certificationText || heroData.certificationText,
-                        certificationSubtext: sectionData.content.certificationSubtext || heroData.certificationSubtext,
-                        imageUrl: sectionData.content.imageUrl || sectionData.image_url || heroData.imageUrl,
-                    });
-                }
-            } catch (error) {
-                console.error("Error fetching hero data:", error);
-            }
-        };
-        fetchHeroData();
-    }, []);
+    // Fetch all hero content from CMS
+    const { content: heroTitle } = usePageContent(
+        "/",
+        "hero_title",
+        "Professional Home Services at Your Doorstep"
+    );
+    const { content: heroSubtitle } = usePageContent(
+        "/",
+        "hero_subtitle",
+        "Home Services"
+    );
+    const { content: heroDescription } = usePageContent(
+        "/",
+        "hero_description",
+        "Book verified experts for home cleaning, sanitization, and maintenance. Reliable, affordable, and just a click away."
+    );
+    const { content: heroTrustText } = usePageContent(
+        "/",
+        "hero_trust_text",
+        "Trusted by 10,000+ households"
+    );
+    const { content: heroCertificationText } = usePageContent(
+        "/",
+        "hero_certification_text",
+        "CERTIFIED EXPERTS"
+    );
+    const { content: heroCertificationSubtext } = usePageContent(
+        "/",
+        "hero_certification_subtext",
+        "100% Background Checked"
+    );
+    const { content: heroImageUrl } = usePageContent(
+        "/",
+        "hero_image_url",
+        ""
+    );
 
     const handleSearch = () => {
         const params = new URLSearchParams();
@@ -66,13 +65,13 @@ export function HeroSection() {
                     {/* Left Content */}
                     <div>
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-                            {heroData.title.split(heroData.subtitle)[0]}
-                            <span className="text-blue-600">{heroData.subtitle}</span>
-                            {heroData.title.split(heroData.subtitle)[1] || " at Your Doorstep"}
+                            {heroTitle.split(heroSubtitle)[0]}
+                            <span className="text-blue-600">{heroSubtitle}</span>
+                            {heroTitle.split(heroSubtitle)[1] || " at Your Doorstep"}
                         </h1>
                         
                         <p className="text-lg text-gray-600 mb-8">
-                            {heroData.description}
+                            {heroDescription}
                         </p>
 
                         {/* Search Bar */}
@@ -108,16 +107,16 @@ export function HeroSection() {
                         {/* Trust Indicator */}
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                             <Users className="h-4 w-4" />
-                            <span>{heroData.trustText}</span>
+                            <span>{heroTrustText}</span>
                         </div>
                     </div>
 
                     {/* Right Image */}
                     <div className="relative">
                         <div className="relative rounded-2xl overflow-hidden bg-blue-100 aspect-[4/5]">
-                            {heroData.imageUrl ? (
+                            {heroImageUrl ? (
                                 <Image
-                                    src={heroData.imageUrl}
+                                    src={heroImageUrl}
                                     alt="Professional Service"
                                     fill
                                     className="object-cover"
@@ -140,8 +139,8 @@ export function HeroSection() {
                                     <CheckCircle2 className="h-6 w-6 text-green-600" />
                                 </div>
                                 <div>
-                                    <p className="text-xs font-semibold text-gray-900">{heroData.certificationText}</p>
-                                    <p className="text-xs text-gray-600">{heroData.certificationSubtext}</p>
+                                    <p className="text-xs font-semibold text-gray-900">{heroCertificationText}</p>
+                                    <p className="text-xs text-gray-600">{heroCertificationSubtext}</p>
                                 </div>
                             </div>
                         </div>

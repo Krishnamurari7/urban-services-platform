@@ -138,58 +138,58 @@ export default async function AdminDashboard() {
 
   return (
     <div className="space-y-8 pb-8">
-      <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-pink-600 rounded-2xl p-6 md:p-8 text-white shadow-xl">
+      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl p-6 md:p-8 text-white shadow-lg">
         <h1 className="text-4xl md:text-5xl font-bold mb-3">
           Analytics Dashboard
         </h1>
-        <p className="text-purple-100 text-lg">
+        <p className="text-blue-50 text-lg">
           Overview of platform metrics and performance
         </p>
       </div>
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="border-blue-100 bg-gradient-to-br from-blue-50 via-white to-white hover:shadow-xl transition-all duration-300">
+        <Card className="border border-blue-200 bg-blue-50 hover:shadow-lg transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-sm font-semibold text-gray-700">Total Users</CardTitle>
-            <div className="h-12 w-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+            <div className="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center">
               <span className="text-2xl">👥</span>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl md:text-4xl font-bold text-blue-900 mb-1">{analytics.totalUsers}</div>
+            <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">{analytics.totalUsers}</div>
             <p className="text-xs text-gray-500">
               {analytics.totalProfessionals} professionals
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-purple-100 bg-gradient-to-br from-purple-50 via-white to-white hover:shadow-xl transition-all duration-300">
+        <Card className="border border-cyan-200 bg-cyan-50 hover:shadow-lg transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-sm font-semibold text-gray-700">
               Total Bookings
             </CardTitle>
-            <div className="h-12 w-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
+            <div className="h-12 w-12 bg-cyan-100 rounded-xl flex items-center justify-center">
               <span className="text-2xl">📅</span>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl md:text-4xl font-bold text-purple-900 mb-1">{analytics.totalBookings}</div>
+            <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">{analytics.totalBookings}</div>
             <p className="text-xs text-gray-500">
               {analytics.statusCounts.completed} completed
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-green-100 bg-gradient-to-br from-green-50 via-white to-white hover:shadow-xl transition-all duration-300">
+        <Card className="border border-amber-200 bg-amber-50 hover:shadow-lg transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-sm font-semibold text-gray-700">Total Revenue</CardTitle>
-            <div className="h-12 w-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md">
+            <div className="h-12 w-12 bg-amber-100 rounded-xl flex items-center justify-center">
               <span className="text-2xl">💰</span>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl md:text-4xl font-bold text-green-900 mb-1">
+            <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">
               ₹{analytics.totalRevenue.toLocaleString()}
             </div>
             <p className="text-xs text-gray-500">
@@ -198,17 +198,17 @@ export default async function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-orange-100 bg-gradient-to-br from-orange-50 via-white to-white hover:shadow-xl transition-all duration-300">
+        <Card className="border border-orange-200 bg-orange-50 hover:shadow-lg transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-sm font-semibold text-gray-700">
               Active Services
             </CardTitle>
-            <div className="h-12 w-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md">
+            <div className="h-12 w-12 bg-orange-100 rounded-xl flex items-center justify-center">
               <span className="text-2xl">🔧</span>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl md:text-4xl font-bold text-orange-900 mb-1">{analytics.totalServices}</div>
+            <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">{analytics.totalServices}</div>
             <p className="text-xs text-gray-500">Available on platform</p>
           </CardContent>
         </Card>
@@ -216,28 +216,19 @@ export default async function AdminDashboard() {
 
       {/* Booking Status Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border-2 border-indigo-200 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+        <Card className="bg-white border border-gray-200 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-t-lg -m-6 mb-4 p-6 text-white">
             <CardTitle className="text-xl font-bold">Booking Status</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {Object.entries(analytics.statusCounts).map(([status, count], index) => {
-                const colors = [
-                  "from-yellow-400 to-orange-500",
-                  "from-blue-400 to-cyan-500",
-                  "from-purple-400 to-pink-500",
-                  "from-green-400 to-emerald-500",
-                  "from-red-400 to-rose-500",
-                  "from-indigo-400 to-blue-500",
-                ];
-                const colorClass = colors[index % colors.length];
                 return (
-                  <div key={status} className={`flex items-center justify-between p-4 bg-gradient-to-r ${colorClass} rounded-xl text-white shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300`}>
-                    <span className="text-sm font-semibold capitalize">
+                  <div key={status} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
+                    <span className="text-sm font-semibold text-gray-700 capitalize">
                       {status.replace("_", " ")}
                     </span>
-                    <span className="text-lg font-bold">{count}</span>
+                    <span className="text-lg font-bold text-gray-900">{count}</span>
                   </div>
                 );
               })}
@@ -245,37 +236,29 @@ export default async function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 border-2 border-cyan-200 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-cyan-600 to-blue-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+        <Card className="bg-white border border-gray-200 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-t-lg -m-6 mb-4 p-6 text-white">
             <CardTitle className="text-xl font-bold">Recent Bookings</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {analytics.recentBookings.length > 0 ? (
                 analytics.recentBookings.map((booking: any, index: number) => {
-                  const gradients = [
-                    "from-pink-400 to-rose-500",
-                    "from-blue-400 to-indigo-500",
-                    "from-purple-400 to-pink-500",
-                    "from-cyan-400 to-blue-500",
-                    "from-orange-400 to-red-500",
-                  ];
-                  const gradient = gradients[index % gradients.length];
                   return (
                     <div
                       key={booking.id}
-                      className={`flex items-center justify-between p-4 bg-gradient-to-r ${gradient} rounded-xl text-white shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300`}
+                      className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
                     >
                       <div className="flex-1">
-                        <p className="text-sm font-semibold">
+                        <p className="text-sm font-semibold text-gray-900">
                           {booking.customer?.full_name || "Customer"} →{" "}
                           {booking.professional?.full_name || "Professional"}
                         </p>
-                        <p className="text-xs text-white/90 mt-1">
+                        <p className="text-xs text-gray-600 mt-1">
                           ₹{booking.final_amount} • <span className="capitalize">{booking.status}</span>
                         </p>
                       </div>
-                      <span className="text-xs font-medium">
+                      <span className="text-xs font-medium text-gray-500">
                         {new Date(booking.created_at).toLocaleDateString()}
                       </span>
                     </div>

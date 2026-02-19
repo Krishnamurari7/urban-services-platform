@@ -1,4 +1,4 @@
-import { Footer } from "@/components/layout/footer";
+import { FooterServer } from "@/components/layout/footer-server";
 
 export default function AuthLayout({
   children,
@@ -10,7 +10,7 @@ export default function AuthLayout({
       <div className="flex-1 flex items-center justify-center">
         <div className="w-full max-w-md">{children}</div>
       </div>
-      <Footer />
+      <FooterServer />
     </div>
   );
 }

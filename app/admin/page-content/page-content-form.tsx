@@ -48,8 +48,8 @@ export function PageContentForm({ content, pagePath }: PageContentFormProps) {
   useEffect(() => {
     if (open) {
       setFormData({
-        page_path: content?.page_path || pagePath || "",
-        content_key: content?.content_key || "",
+        page_path: (content?.page_path || pagePath || "").trim(),
+        content_key: (content?.content_key || "").trim(),
         content_type: content?.content_type || "text",
         content_value: content?.content_value || "",
         display_order: content?.display_order?.toString() || "0",
@@ -60,14 +60,22 @@ export function PageContentForm({ content, pagePath }: PageContentFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
+    
+    // Validate required fields
+    if (!formData.page_path || !formData.content_key) {
+      toast.error("Page path and content key are required");
+      return;
+    }
+
     setLoading(true);
 
     try {
       let result;
       const submitData: any = {
-        page_path: formData.page_path,
-        content_key: formData.content_key,
-        content_type: formData.content_type,
+        page_path: formData.page_path.trim(),
+        content_key: formData.content_key.trim(),
+        content_type: formData.content_type || "text",
         display_order: parseInt(formData.display_order) || 0,
         is_active: formData.is_active,
       };
@@ -99,13 +107,19 @@ export function PageContentForm({ content, pagePath }: PageContentFormProps) {
         router.refresh();
       }
     } catch (error: any) {
+      console.error("Error saving content:", error);
       toast.error(error.message || "Failed to save content");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
     if (!content?.id) return;
     if (!confirm("Are you sure you want to delete this content?")) return;
 
@@ -120,6 +134,7 @@ export function PageContentForm({ content, pagePath }: PageContentFormProps) {
         router.refresh();
       }
     } catch (error: any) {
+      console.error("Error deleting content:", error);
       toast.error(error.message || "Failed to delete content");
     } finally {
       setLoading(false);
@@ -154,7 +169,7 @@ export function PageContentForm({ content, pagePath }: PageContentFormProps) {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" key={content?.id || 'new'}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" key={`${content?.id || 'new'}-${pagePath || ''}`}>
         <DialogHeader>
           <DialogTitle>
             {content ? "Edit Page Content" : "Add New Page Content"}
@@ -270,7 +285,7 @@ export function PageContentForm({ content, pagePath }: PageContentFormProps) {
               <Button
                 type="button"
                 variant="destructive"
-                onClick={handleDelete}
+                onClick={(e) => handleDelete(e)}
                 disabled={loading}
               >
                 <Trash2 className="h-4 w-4 mr-2" />
@@ -281,12 +296,22 @@ export function PageContentForm({ content, pagePath }: PageContentFormProps) {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setOpen(false)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setOpen(false);
+                }}
                 disabled={loading}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={loading}>
+              <Button 
+                type="submit" 
+                disabled={loading}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
                 {loading ? "Saving..." : content ? "Update" : "Create"}
               </Button>
             </div>

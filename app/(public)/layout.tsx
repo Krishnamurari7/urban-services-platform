@@ -1,5 +1,5 @@
 import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
+import { FooterServer } from "@/components/layout/footer-server";
 
 export default async function PublicLayout({
   children,
@@ -12,7 +12,7 @@ export default async function PublicLayout({
       <div className="fixed inset-0 -z-10 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       <Header />
       <main className="flex-1 relative">{children}</main>
-      <Footer />
+      <FooterServer />
     </div>
   );
 }

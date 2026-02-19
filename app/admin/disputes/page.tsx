@@ -106,64 +106,64 @@ export default async function AdminDisputesPage() {
 
   return (
     <div className="space-y-6 pb-8">
-      <div className="bg-gradient-to-r from-rose-600 via-red-600 to-orange-600 rounded-2xl p-6 text-white shadow-xl">
+      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl p-6 text-white shadow-lg">
         <h1 className="text-3xl font-bold">
           Refund & Dispute Handling
         </h1>
-        <p className="text-rose-100 mt-1">
+        <p className="text-blue-50 mt-1">
           Manage refunds and resolve disputes
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-gradient-to-br from-orange-500 to-amber-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+        <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">
+            <CardTitle className="text-sm font-medium text-gray-700">
               Pending Disputes
             </CardTitle>
             <span className="text-3xl">⏳</span>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{pendingDisputes.length}</div>
-            <p className="text-xs text-orange-100 mt-1">Requires action</p>
+            <div className="text-3xl font-bold text-gray-900">{pendingDisputes.length}</div>
+            <p className="text-xs text-gray-500 mt-1">Requires action</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-500 to-emerald-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+        <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Resolved</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-700">Resolved</CardTitle>
             <span className="text-3xl">✅</span>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{resolvedDisputes.length}</div>
-            <p className="text-xs text-green-100 mt-1">Refunded</p>
+            <div className="text-3xl font-bold text-gray-900">{resolvedDisputes.length}</div>
+            <p className="text-xs text-gray-500 mt-1">Refunded</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-red-500 to-rose-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+        <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">
+            <CardTitle className="text-sm font-medium text-gray-700">
               Total Refunded
             </CardTitle>
             <span className="text-3xl">💰</span>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">
+            <div className="text-3xl font-bold text-gray-900">
               ₹
               {refunds
                 .reduce((sum, r) => sum + (r.refund_amount || 0), 0)
                 .toLocaleString()}
             </div>
-            <p className="text-xs text-red-100 mt-1">All time</p>
+            <p className="text-xs text-gray-500 mt-1">All time</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Pending Disputes */}
       {pendingDisputes.length > 0 && (
-        <Card className="bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 border-2 border-orange-200 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-orange-600 to-amber-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+        <Card className="bg-white border border-gray-200 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-t-lg -m-6 mb-4 p-6 text-white">
             <CardTitle className="text-xl font-bold">Pending Disputes ({pendingDisputes.length})</CardTitle>
           </CardHeader>
           <CardContent>
@@ -178,7 +178,7 @@ export default async function AdminDisputesPage() {
                 return (
                 <div
                   key={dispute.id}
-                  className={`p-4 border-2 border-orange-300 bg-gradient-to-br ${gradient} text-white rounded-xl shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300`}
+                  className="p-4 border border-gray-200 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -193,24 +193,24 @@ export default async function AdminDisputesPage() {
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
                           <span className="text-gray-600">Customer:</span>{" "}
-                          {dispute.customer?.full_name}
+                          <span className="text-gray-900">{dispute.customer?.full_name}</span>
                         </div>
                         <div>
                           <span className="text-gray-600">Professional:</span>{" "}
-                          {dispute.professional?.full_name}
+                          <span className="text-gray-900">{dispute.professional?.full_name}</span>
                         </div>
                         <div>
                           <span className="text-gray-600">Service:</span>{" "}
-                          {dispute.service?.name}
+                          <span className="text-gray-900">{dispute.service?.name}</span>
                         </div>
                         <div>
-                          <span className="text-gray-600">Amount:</span> ₹
-                          {dispute.final_amount}
+                          <span className="text-gray-600">Amount:</span>{" "}
+                          <span className="text-gray-900">₹{dispute.final_amount}</span>
                         </div>
                       </div>
                       {dispute.cancellation_reason && (
                         <div className="mt-2">
-                          <span className="text-sm font-medium">Reason:</span>
+                          <span className="text-sm font-medium text-gray-700">Reason:</span>
                           <p className="text-sm text-gray-600 mt-1">
                             {dispute.cancellation_reason}
                           </p>
@@ -249,29 +249,29 @@ export default async function AdminDisputesPage() {
       )}
 
       {/* Refund History */}
-      <Card className="bg-gradient-to-br from-red-50 via-rose-50 to-pink-50 border-2 border-red-200 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-red-600 to-rose-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+      <Card className="bg-white border border-gray-200 shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-t-lg -m-6 mb-4 p-6 text-white">
           <CardTitle className="text-xl font-bold">Refund History ({refunds.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b bg-gradient-to-r from-red-500 to-rose-500 text-white">
-                  <th className="text-left p-2 text-white font-semibold">Payment ID</th>
-                  <th className="text-left p-2 text-white font-semibold">Customer</th>
-                  <th className="text-left p-2 text-white font-semibold">Service</th>
-                  <th className="text-left p-2 text-white font-semibold">Original Amount</th>
-                  <th className="text-left p-2 text-white font-semibold">Refund Amount</th>
-                  <th className="text-left p-2 text-white font-semibold">Reason</th>
-                  <th className="text-left p-2 text-white font-semibold">Date</th>
+                <tr className="border-b bg-gray-100">
+                  <th className="text-left p-2 text-gray-700 font-semibold">Payment ID</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Customer</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Service</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Original Amount</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Refund Amount</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Reason</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Date</th>
                 </tr>
               </thead>
               <tbody>
                 {refunds.map((refund: any, index: number) => {
                   const booking = refund.booking as any;
                   return (
-                    <tr key={refund.id} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-red-50'} hover:bg-red-100 transition-colors`}>
+                    <tr key={refund.id} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-colors`}>
                       <td className="p-2 text-sm font-mono">
                         {refund.id.substring(0, 8)}...
                       </td>

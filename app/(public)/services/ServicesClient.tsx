@@ -44,6 +44,7 @@ export default function ServicesClient() {
     const [services, setServices] = useState<Service[]>([]);
     const [loading, setLoading] = useState(true);
     const [popularServices, setPopularServices] = useState<Service[]>([]);
+    const [servicesByCategory, setServicesByCategory] = useState<Record<string, Service[]>>({});
 
     // Booking form state
     const [selectedService, setSelectedService] = useState("");
@@ -103,6 +104,17 @@ export default function ServicesClient() {
                 .sort((a, b) => (b.reviewCount || 0) - (a.reviewCount || 0))
                 .slice(0, 4);
             setPopularServices(popular);
+
+            // Group services by category
+            const grouped: Record<string, Service[]> = {};
+            finalServices.forEach((service) => {
+                const category = service.category || "Other";
+                if (!grouped[category]) {
+                    grouped[category] = [];
+                }
+                grouped[category].push(service);
+            });
+            setServicesByCategory(grouped);
         } catch (error) {
             console.error("Error fetching services:", error);
             setServices([]);
@@ -385,53 +397,71 @@ export default function ServicesClient() {
                 </div>
             </section>
 
-            {/* See What We Can Do Section */}
+            {/* All Services by Category Section */}
             <section className="py-16 md:py-20 bg-white">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
-                            See what we can do
+                            All Services
                         </h2>
                         <p className="text-lg text-gray-600">
-                            Real results from our expert cleaning professionals
+                            Explore our complete range of professional services organized by category
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-8">
-                        {[
-                            {
-                                title: "Kitchen Deep Clean",
-                                description: "Professional sanitization and degreasing for a luxury kitchen.",
-                                before: "/api/placeholder/400/300",
-                                after: "/api/placeholder/400/300",
-                            },
-                            {
-                                title: "Luxury Bathroom Polish",
-                                description: "Removal of calcium deposits and high-gloss floor polishing.",
-                                before: "/api/placeholder/400/300",
-                                after: "/api/placeholder/400/300",
-                            },
-                        ].map((item, idx) => (
-                            <div key={idx} className="space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <div className="bg-gray-200 rounded-lg h-48 flex items-center justify-center mb-2">
-                                            <span className="text-gray-500 font-medium">BEFORE</span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div className="bg-teal-100 rounded-lg h-48 flex items-center justify-center mb-2">
-                                            <span className="text-teal-700 font-medium">AFTER</span>
-                                        </div>
+                    {loading ? (
+                        <div className="space-y-16">
+                            {[...Array(3)].map((_, i) => (
+                                <div key={i} className="space-y-6">
+                                    <div className="h-8 w-48 bg-gray-200 rounded animate-pulse" />
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                        {[...Array(4)].map((_, j) => (
+                                            <ServiceCardSkeleton key={j} />
+                                        ))}
                                     </div>
                                 </div>
-                                <div>
-                                    <h3 className="text-xl font-bold text-gray-900 mb-1">{item.title}</h3>
-                                    <p className="text-gray-600">{item.description}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    ) : Object.keys(servicesByCategory).length === 0 ? (
+                        <div className="text-center py-12">
+                            <p className="text-gray-600 text-lg">No services available at the moment.</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-16">
+                            {Object.entries(servicesByCategory)
+                                .sort(([a], [b]) => a.localeCompare(b))
+                                .map(([category, categoryServices]) => (
+                                    <div key={category} className="space-y-6">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 capitalize">
+                                                    {category}
+                                                </h3>
+                                                <p className="text-gray-600 mt-1">
+                                                    {categoryServices.length} {categoryServices.length === 1 ? "service" : "services"} available
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                            {categoryServices.map((service) => (
+                                                <ServiceCard
+                                                    key={service.id}
+                                                    id={service.id}
+                                                    name={service.name}
+                                                    description={service.description}
+                                                    category={service.category}
+                                                    basePrice={service.base_price}
+                                                    durationMinutes={service.duration_minutes}
+                                                    imageUrl={service.image_url}
+                                                    rating={service.rating}
+                                                    reviewCount={service.reviewCount}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                        </div>
+                    )}
                 </div>
             </section>
 

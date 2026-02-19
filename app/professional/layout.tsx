@@ -23,7 +23,7 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import type { Profile } from "@/lib/types/database";
 import { ProtectedRoute } from "@/components/auth/protected-route";
-import { Footer } from "@/components/layout/footer";
+import { FooterClient } from "@/components/layout/footer-client";
 
 const navigation = [
   { name: "Dashboard", href: "/professional/dashboard", icon: LayoutDashboard },
@@ -294,7 +294,7 @@ function ProfessionalLayoutContent({
       </div>
 
       {/* Footer */}
-      <Footer />
+      <FooterClient />
     </div>
   );
 }

@@ -84,63 +84,63 @@ export default async function AdminReviewsPage() {
 
   return (
     <div className="space-y-6 pb-8">
-      <div className="bg-gradient-to-r from-amber-600 via-yellow-600 to-orange-600 rounded-2xl p-6 text-white shadow-xl">
+      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl p-6 text-white shadow-lg">
         <h1 className="text-3xl font-bold">Review Moderation</h1>
-        <p className="text-amber-100 mt-1">
+        <p className="text-blue-50 mt-1">
           Manage and moderate customer reviews
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="bg-gradient-to-br from-amber-500 to-yellow-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+        <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Total Reviews</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-700">Total Reviews</CardTitle>
             <span className="text-3xl">📝</span>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{reviews.length}</div>
-            <p className="text-xs text-amber-100 mt-1">All reviews</p>
+            <div className="text-3xl font-bold text-gray-900">{reviews.length}</div>
+            <p className="text-xs text-gray-500 mt-1">All reviews</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-500 to-emerald-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+        <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Visible</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-700">Visible</CardTitle>
             <span className="text-3xl">👁️</span>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{visibleReviews.length}</div>
-            <p className="text-xs text-green-100 mt-1">Public reviews</p>
+            <div className="text-3xl font-bold text-gray-900">{visibleReviews.length}</div>
+            <p className="text-xs text-gray-500 mt-1">Public reviews</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-red-500 to-rose-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+        <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Hidden</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-700">Hidden</CardTitle>
             <span className="text-3xl">🚫</span>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{hiddenReviews.length}</div>
-            <p className="text-xs text-red-100 mt-1">Hidden reviews</p>
+            <div className="text-3xl font-bold text-gray-900">{hiddenReviews.length}</div>
+            <p className="text-xs text-gray-500 mt-1">Hidden reviews</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-orange-500 to-amber-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+        <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Pending</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-700">Pending</CardTitle>
             <span className="text-3xl">⏳</span>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{pendingReviews.length}</div>
-            <p className="text-xs text-orange-100 mt-1">Need verification</p>
+            <div className="text-3xl font-bold text-gray-900">{pendingReviews.length}</div>
+            <p className="text-xs text-gray-500 mt-1">Need verification</p>
           </CardContent>
         </Card>
       </div>
 
       {/* All Reviews */}
-      <Card className="bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 border-2 border-amber-200 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-amber-600 to-yellow-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+      <Card className="bg-white border border-gray-200 shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-t-lg -m-6 mb-4 p-6 text-white">
           <CardTitle className="text-xl font-bold">All Reviews ({reviews.length})</CardTitle>
         </CardHeader>
         <CardContent>
@@ -164,7 +164,7 @@ export default async function AdminReviewsPage() {
                 return (
                 <div
                   key={review.id}
-                  className={`p-4 border-2 rounded-xl bg-gradient-to-br ${gradient} text-white shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300 ${!review.is_visible ? 'border-red-300' : 'border-transparent'}`}
+                  className="p-4 border border-gray-200 rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -218,25 +218,25 @@ export default async function AdminReviewsPage() {
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                         <div>
                           <span className="text-gray-600">Customer:</span>{" "}
-                          <span className="font-medium">
+                          <span className="font-medium text-gray-900">
                             {review.customer?.full_name || "N/A"}
                           </span>
                         </div>
                         <div>
                           <span className="text-gray-600">Professional:</span>{" "}
-                          <span className="font-medium">
+                          <span className="font-medium text-gray-900">
                             {review.professional?.full_name || "N/A"}
                           </span>
                         </div>
                         <div>
                           <span className="text-gray-600">Service:</span>{" "}
-                          <span className="font-medium">
+                          <span className="font-medium text-gray-900">
                             {review.service?.name || "N/A"}
                           </span>
                         </div>
                         <div>
                           <span className="text-gray-600">Date:</span>{" "}
-                          <span className="font-medium">
+                          <span className="font-medium text-gray-900">
                             {new Date(review.created_at).toLocaleDateString()}
                           </span>
                         </div>

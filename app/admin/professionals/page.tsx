@@ -130,17 +130,17 @@ export default async function AdminProfessionalsPage() {
 
   return (
     <div className="space-y-6 pb-8">
-      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 rounded-2xl p-6 text-white shadow-xl">
+      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl p-6 text-white shadow-lg">
         <h1 className="text-3xl font-bold">
           Professional Management
         </h1>
-        <p className="text-violet-100 mt-1">Approve and manage professionals</p>
+        <p className="text-blue-50 mt-1">Approve and manage professionals</p>
       </div>
 
       {/* Pending Approvals */}
       {pendingProfessionals.length > 0 && (
-        <Card className="bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50 border-2 border-yellow-200 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-yellow-500 to-orange-500 rounded-t-lg -m-6 mb-4 p-6 text-white">
+        <Card className="bg-white border border-gray-200 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-t-lg -m-6 mb-4 p-6 text-white">
             <CardTitle className="text-xl font-bold">
               Pending Approvals ({pendingProfessionals.length})
             </CardTitle>
@@ -157,27 +157,27 @@ export default async function AdminProfessionalsPage() {
                 return (
                 <div
                   key={professional.id}
-                  className={`p-4 border-2 border-yellow-300 rounded-xl bg-gradient-to-br ${gradient} text-white shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300`}
+                  className="p-4 border border-gray-200 rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg text-white">
+                      <h3 className="font-semibold text-lg text-gray-900">
                         {professional.full_name}
                       </h3>
-                      <p className="text-sm text-white/90">
+                      <p className="text-sm text-gray-700">
                         {professional.email || "Email N/A"}
                       </p>
-                      <p className="text-sm text-white/90">
+                      <p className="text-sm text-gray-700">
                         {professional.phone || "Phone N/A"}
                       </p>
                       {professional.bio && (
-                        <p className="text-sm text-white/80 mt-1">
+                        <p className="text-sm text-gray-600 mt-1">
                           {professional.bio}
                         </p>
                       )}
 
                       {professional.experience_years && (
-                        <p className="text-sm text-white/80 mt-1">
+                        <p className="text-sm text-gray-600 mt-1">
                           Experience: {professional.experience_years} years
                         </p>
                       )}
@@ -194,14 +194,14 @@ export default async function AdminProfessionalsPage() {
                                   key={doc.id}
                                   className="flex items-center gap-2 text-sm flex-wrap"
                                 >
-                                  <span className="capitalize text-white/90">
+                                  <span className="capitalize text-gray-700">
                                     {doc.document_type}:
                                   </span>
                                   <a
                                     href={doc.file_url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-white hover:text-yellow-200 underline font-medium"
+                                    className="text-blue-600 hover:text-blue-800 underline font-medium"
                                   >
                                     {doc.document_name}
                                   </a>
@@ -264,31 +264,31 @@ export default async function AdminProfessionalsPage() {
       )}
 
       {/* All Professionals */}
-      <Card className="bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 border-2 border-purple-200 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+      <Card className="bg-white border border-gray-200 shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-t-lg -m-6 mb-4 p-6 text-white">
           <CardTitle className="text-xl font-bold">All Professionals ({professionals.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                  <th className="text-left p-2 text-white font-semibold">Name</th>
-                  <th className="text-left p-2 text-white font-semibold">Email</th>
-                  <th className="text-left p-2 text-white font-semibold">Phone</th>
-                  <th className="text-left p-2 text-white font-semibold">Rating</th>
-                  <th className="text-left p-2 text-white font-semibold">Jobs</th>
-                  <th className="text-left p-2 text-white font-semibold">Completed</th>
-                  <th className="text-left p-2 text-white font-semibold">Experience</th>
-                  <th className="text-left p-2 text-white font-semibold">Status</th>
-                  <th className="text-left p-2 text-white font-semibold">Actions</th>
+                <tr className="border-b bg-gray-100">
+                  <th className="text-left p-2 text-gray-700 font-semibold">Name</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Email</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Phone</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Rating</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Jobs</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Completed</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Experience</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Status</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {professionals.map((professional: any, index: number) => (
                   <tr
                     key={professional.id}
-                    className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-purple-50'} hover:bg-purple-100 transition-colors`}
+                    className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-colors`}
                   >
                     <td className="p-2 font-medium">
                       {professional.full_name}

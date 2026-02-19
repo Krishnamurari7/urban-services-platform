@@ -73,28 +73,28 @@ export default async function AdminBookingsPage() {
 
   return (
     <div className="space-y-6 pb-8">
-      <div className="bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600 rounded-2xl p-6 text-white shadow-xl">
+      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl p-6 text-white shadow-lg">
         <h1 className="text-3xl font-bold">Booking Management</h1>
-        <p className="text-teal-100 mt-1">View and manage all bookings</p>
+        <p className="text-blue-50 mt-1">View and manage all bookings</p>
       </div>
 
       {/* Status Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
         {Object.entries(statusCounts).map(([status, count], index) => {
-          const gradients = [
-            "from-yellow-400 to-orange-500",
-            "from-blue-400 to-cyan-500",
-            "from-purple-400 to-pink-500",
-            "from-green-400 to-emerald-500",
-            "from-red-400 to-rose-500",
-            "from-indigo-400 to-blue-500",
+          const colorClasses = [
+            { bg: "bg-yellow-50", border: "border-yellow-200" }, // pending
+            { bg: "bg-blue-50", border: "border-blue-200" }, // confirmed
+            { bg: "bg-purple-50", border: "border-purple-200" }, // in_progress
+            { bg: "bg-green-50", border: "border-green-200" }, // completed
+            { bg: "bg-red-50", border: "border-red-200" }, // cancelled
+            { bg: "bg-indigo-50", border: "border-indigo-200" }, // refunded
           ];
-          const gradient = gradients[index % gradients.length];
+          const colors = colorClasses[index % colorClasses.length];
           return (
-            <Card key={status} className={`bg-gradient-to-br ${gradient} text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300`}>
+            <Card key={status} className={`${colors.bg} border ${colors.border} shadow-lg hover:shadow-xl transition-all duration-300`}>
               <CardContent className="p-4">
-                <div className="text-3xl font-bold">{count}</div>
-                <div className="text-sm text-white/90 capitalize mt-1">
+                <div className="text-3xl font-bold text-gray-900">{count}</div>
+                <div className="text-sm text-gray-600 capitalize mt-1">
                   {status.replace("_", " ")}
                 </div>
               </CardContent>
@@ -104,8 +104,8 @@ export default async function AdminBookingsPage() {
       </div>
 
       {/* Bookings Table */}
-      <Card className="bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 border-2 border-cyan-200 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-cyan-600 to-blue-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+      <Card className="bg-white border border-gray-200 shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-t-lg -m-6 mb-4 p-6 text-white">
           <CardTitle className="text-xl sm:text-2xl font-bold">
             <span className="inline-flex items-center gap-2">
               All Bookings
@@ -128,7 +128,7 @@ export default async function AdminBookingsPage() {
               ];
               const gradient = gradients[index % gradients.length];
               return (
-              <Card key={booking.id} className={`border-2 bg-gradient-to-br ${gradient} text-white shadow-lg`}>
+              <Card key={booking.id} className="border border-gray-200 bg-white shadow-lg">
                 <CardContent className="p-4 space-y-3">
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
@@ -182,21 +182,21 @@ export default async function AdminBookingsPage() {
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full min-w-[800px]">
               <thead>
-                <tr className="border-b bg-gradient-to-r from-cyan-500 to-blue-500 text-white">
-                  <th className="text-left p-2 text-white font-semibold">ID</th>
-                  <th className="text-left p-2 text-white font-semibold">Customer</th>
-                  <th className="text-left p-2 text-white font-semibold">Professional</th>
-                  <th className="text-left p-2 text-white font-semibold">Service</th>
-                  <th className="text-left p-2 text-white font-semibold">Scheduled</th>
-                  <th className="text-left p-2 text-white font-semibold">Amount</th>
-                  <th className="text-left p-2 text-white font-semibold">Status</th>
-                  <th className="text-left p-2 text-white font-semibold">Payment</th>
-                  <th className="text-left p-2 text-white font-semibold">Actions</th>
+                <tr className="border-b bg-gray-100">
+                  <th className="text-left p-2 text-gray-700 font-semibold">ID</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Customer</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Professional</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Service</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Scheduled</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Amount</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Status</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Payment</th>
+                  <th className="text-left p-2 text-gray-700 font-semibold">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {bookings.map((booking: any, index: number) => (
-                  <tr key={booking.id} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-cyan-50'} hover:bg-cyan-100 transition-colors`}>
+                  <tr key={booking.id} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-colors`}>
                     <td className="p-2 text-sm font-mono">
                       {booking.id.substring(0, 8)}...
                     </td>

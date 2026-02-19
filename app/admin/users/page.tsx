@@ -141,75 +141,85 @@ export default async function AdminUsersPage() {
 
   return (
     <div className="space-y-6 pb-8">
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl p-6 text-white shadow-xl">
+      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl p-6 text-white shadow-lg">
         <h1 className="text-3xl font-bold">User Management</h1>
-        <p className="text-indigo-100 mt-1">
+        <p className="text-blue-50 mt-1">
           Manage all users, customers, and professionals
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-        <Card className="bg-gradient-to-br from-blue-500 to-cyan-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+        <Card className="bg-blue-50 border border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Total Users</CardTitle>
-            <span className="text-3xl">👥</span>
+            <CardTitle className="text-sm font-medium text-gray-700">Total Users</CardTitle>
+            <div className="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center">
+              <span className="text-3xl">👥</span>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{users.length}</div>
-            <p className="text-xs text-blue-100 mt-1">All users</p>
+            <div className="text-3xl font-bold text-gray-900">{users.length}</div>
+            <p className="text-xs text-gray-500 mt-1">All users</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-500 to-emerald-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+        <Card className="bg-purple-50 border border-purple-200 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Customers</CardTitle>
-            <span className="text-3xl">🛒</span>
+            <CardTitle className="text-sm font-medium text-gray-700">Customers</CardTitle>
+            <div className="h-12 w-12 bg-purple-100 rounded-xl flex items-center justify-center">
+              <span className="text-3xl">🛒</span>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{customers.length}</div>
-            <p className="text-xs text-green-100 mt-1">Active customers</p>
+            <div className="text-3xl font-bold text-gray-900">{customers.length}</div>
+            <p className="text-xs text-gray-500 mt-1">Active customers</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-500 to-pink-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+        <Card className="bg-indigo-50 border border-indigo-200 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Professionals</CardTitle>
-            <span className="text-3xl">👷</span>
+            <CardTitle className="text-sm font-medium text-gray-700">Professionals</CardTitle>
+            <div className="h-12 w-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+              <span className="text-3xl">👷</span>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{professionals.length}</div>
-            <p className="text-xs text-purple-100 mt-1">Service providers</p>
+            <div className="text-3xl font-bold text-gray-900">{professionals.length}</div>
+            <p className="text-xs text-gray-500 mt-1">Service providers</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-teal-500 to-cyan-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+        <Card className="bg-green-50 border border-green-200 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Active</CardTitle>
-            <span className="text-3xl">✅</span>
+            <CardTitle className="text-sm font-medium text-gray-700">Active</CardTitle>
+            <div className="h-12 w-12 bg-green-100 rounded-xl flex items-center justify-center">
+              <span className="text-3xl">✅</span>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{activeUsers.length}</div>
-            <p className="text-xs text-teal-100 mt-1">Active accounts</p>
+            <div className="text-3xl font-bold text-gray-900">{activeUsers.length}</div>
+            <p className="text-xs text-gray-500 mt-1">Active accounts</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-orange-500 to-red-500 text-white border-0 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+        <Card className="bg-gray-50 border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Inactive</CardTitle>
-            <span className="text-3xl">⏸️</span>
+            <CardTitle className="text-sm font-medium text-gray-700">Inactive</CardTitle>
+            <div className="h-12 w-12 bg-gray-100 rounded-xl flex items-center justify-center">
+              <span className="text-3xl">⏸️</span>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{inactiveUsers.length}</div>
-            <p className="text-xs text-orange-100 mt-1">Suspended accounts</p>
+            <div className="text-3xl font-bold text-gray-900">{inactiveUsers.length}</div>
+            <p className="text-xs text-gray-500 mt-1">Suspended accounts</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Customers Section */}
       {customers.length > 0 && (
-        <Card className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 border-2 border-green-200 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+        <Card className="bg-white border border-gray-200 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-t-lg -m-6 mb-4 p-6 text-white">
             <CardTitle className="text-xl font-bold">Customers ({customers.length})</CardTitle>
           </CardHeader>
           <CardContent>
@@ -229,7 +239,7 @@ export default async function AdminUsersPage() {
                 </thead>
                 <tbody>
                   {customers.map((user: any, index: number) => (
-                    <tr key={user.id} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-green-50'} hover:bg-green-100 transition-colors`}>
+                    <tr key={user.id} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-colors`}>
                       <td className="p-2 font-medium">
                         {user.full_name || "N/A"}
                       </td>
@@ -303,8 +313,8 @@ export default async function AdminUsersPage() {
 
       {/* Professionals Section */}
       {professionals.length > 0 && (
-        <Card className="bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 border-2 border-purple-200 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+        <Card className="bg-white border border-gray-200 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-t-lg -m-6 mb-4 p-6 text-white">
             <CardTitle className="text-xl font-bold">Professionals ({professionals.length})</CardTitle>
           </CardHeader>
           <CardContent>
@@ -325,7 +335,7 @@ export default async function AdminUsersPage() {
                 </thead>
                 <tbody>
                   {professionals.map((user: any, index: number) => (
-                    <tr key={user.id} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-purple-50'} hover:bg-purple-100 transition-colors`}>
+                    <tr key={user.id} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-colors`}>
                       <td className="p-2 font-medium">
                         {user.full_name || "N/A"}
                       </td>
@@ -412,8 +422,8 @@ export default async function AdminUsersPage() {
       )}
 
       {/* All Users Table */}
-      <Card className="bg-gradient-to-br from-blue-50 via-indigo-50 to-cyan-50 border-2 border-blue-200 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+      <Card className="bg-white border border-gray-200 shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-t-lg -m-6 mb-4 p-6 text-white">
           <CardTitle className="text-xl font-bold">All Users ({users.length})</CardTitle>
         </CardHeader>
         <CardContent>
@@ -433,7 +443,7 @@ export default async function AdminUsersPage() {
               </thead>
               <tbody>
                 {users.map((user: any, index: number) => (
-                  <tr key={user.id} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-blue-50'} hover:bg-blue-100 transition-colors`}>
+                  <tr key={user.id} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-colors`}>
                     <td className="p-2 font-medium">
                       {user.full_name || "N/A"}
                     </td>

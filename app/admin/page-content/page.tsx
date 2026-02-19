@@ -41,9 +41,9 @@ export default async function AdminPageContentPage() {
 
   return (
     <div className="space-y-6 pb-8">
-      <div className="bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 rounded-2xl p-6 text-white shadow-xl">
+      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl p-6 text-white shadow-lg">
         <h1 className="text-3xl font-bold">Page Content Management</h1>
-        <p className="text-sky-100 mt-1">
+        <p className="text-blue-50 mt-1">
           Edit all content on public and customer pages
         </p>
       </div>

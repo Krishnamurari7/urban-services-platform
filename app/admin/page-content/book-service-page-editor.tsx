@@ -6,172 +6,97 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { createPageContent, updatePageContent, getPageContentsForAdmin } from "./actions";
+import { createPageContent, updatePageContent } from "./actions";
 import { useRouter } from "next/navigation";
 import { Save, Eye, Info } from "lucide-react";
 import toast from "react-hot-toast";
 
-// Predefined content keys for home page with descriptions
-const HOME_PAGE_FIELDS = [
-  // Hero Section
+// Predefined content keys for book service page with descriptions
+const BOOK_SERVICE_PAGE_FIELDS = [
   {
-    key: "hero_title",
-    label: "Hero Title (Main Heading)",
-    description: "यह homepage के सबसे ऊपर दिखाई देगा - मुख्य शीर्षक",
-    placeholder: "Professional Home Services at Your Doorstep",
+    key: "page_title",
+    label: "Page Title (Main Heading)",
+    description: "Book Service page का मुख्य शीर्षक",
+    placeholder: "Book a Service",
     type: "text",
   },
   {
-    key: "hero_subtitle",
-    label: "Hero Subtitle (Highlighted Text)",
-    description: "यह title में नीले रंग में दिखाई देगा",
-    placeholder: "Home Services",
+    key: "page_subtitle",
+    label: "Page Subtitle",
+    description: "Page title के नीचे दिखाई देने वाला subtitle (optional)",
+    placeholder: "Choose your service and book instantly",
     type: "text",
   },
   {
-    key: "hero_description",
-    label: "Hero Description",
-    description: "Hero section के नीचे दिखाई देने वाला विवरण",
-    placeholder: "Book verified experts for home cleaning, sanitization, and maintenance...",
+    key: "help_text",
+    label: "Help Text / Instructions",
+    description: "Page के ऊपर दिखाई देने वाला help text या instructions",
+    placeholder: "Select a service, choose a professional, pick a date and time, and complete your booking.",
     type: "textarea",
   },
   {
-    key: "hero_trust_text",
-    label: "Trust Text",
-    description: "Hero section में दिखाई देने वाला trust message",
-    placeholder: "Trusted by 10,000+ households",
+    key: "step_1_label",
+    label: "Step 1 Label (Select Service)",
+    description: "Booking process के पहले step का label",
+    placeholder: "Select Service",
     type: "text",
   },
   {
-    key: "hero_certification_text",
-    label: "Certification Text",
-    description: "Certification badge में दिखाई देने वाला text",
-    placeholder: "CERTIFIED EXPERTS",
+    key: "step_2_label",
+    label: "Step 2 Label (Choose Professional)",
+    description: "Booking process के दूसरे step का label",
+    placeholder: "Choose Professional",
     type: "text",
   },
   {
-    key: "hero_certification_subtext",
-    label: "Certification Subtext",
-    description: "Certification badge में दिखाई देने वाला subtext",
-    placeholder: "100% Background Checked",
+    key: "step_3_label",
+    label: "Step 3 Label (Date & Time)",
+    description: "Booking process के तीसरे step का label",
+    placeholder: "Date & Time",
     type: "text",
   },
   {
-    key: "hero_image_url",
-    label: "Hero Image URL",
-    description: "Hero section में दिखाई देने वाली image का URL",
-    placeholder: "https://example.com/image.jpg",
-    type: "url",
-  },
-  // Categories Section
-  {
-    key: "categories_title",
-    label: "Categories Section Title",
-    description: "Categories/Services section का मुख्य शीर्षक",
-    placeholder: "Our Premium Services",
+    key: "step_4_label",
+    label: "Step 4 Label (Address)",
+    description: "Booking process के चौथे step का label",
+    placeholder: "Address",
     type: "text",
   },
   {
-    key: "categories_description",
-    label: "Categories Section Description",
-    description: "Categories section का विवरण",
-    placeholder: "Explore our range of professional cleaning and maintenance solutions...",
-    type: "textarea",
-  },
-  // Features Section
-  {
-    key: "features_title",
-    label: "Features Section Title",
-    description: "Features section का मुख्य शीर्षक",
-    placeholder: "Why Homeowners Trust Us",
+    key: "step_5_label",
+    label: "Step 5 Label (Review)",
+    description: "Booking process के पांचवें step का label",
+    placeholder: "Review",
     type: "text",
   },
   {
-    key: "features_description",
-    label: "Features Section Description",
-    description: "Features section का विवरण",
-    placeholder: "We've simplified home maintenance so you can focus on what matters...",
-    type: "textarea",
-  },
-  // Testimonials Section
-  {
-    key: "testimonials_title",
-    label: "Testimonials Section Title",
-    description: "Testimonials section का मुख्य शीर्षक",
-    placeholder: "What Our Customers Say",
+    key: "step_6_label",
+    label: "Step 6 Label (Payment)",
+    description: "Booking process के छठे step का label",
+    placeholder: "Payment",
     type: "text",
   },
   {
-    key: "testimonials_subtitle",
-    label: "Testimonials Section Subtitle",
-    description: "Testimonials section का subtitle (ऊपर छोटा text)",
-    placeholder: "Don't just take our word for it",
-    type: "text",
-  },
-  {
-    key: "testimonials_description",
-    label: "Testimonials Section Description",
-    description: "Testimonials section का विवरण",
-    placeholder: "Read what our satisfied customers have to say about our services",
-    type: "textarea",
-  },
-  // CTA Section
-  {
-    key: "cta_title",
-    label: "CTA Section Title",
-    description: "Call-to-Action section का मुख्य शीर्षक",
-    placeholder: "Ready to Experience a Spotless Home?",
-    type: "text",
-  },
-  {
-    key: "cta_description",
-    label: "CTA Section Description",
-    description: "CTA section का विवरण",
-    placeholder: "Join over 10,000 happy customers and book your first service today...",
+    key: "payment_secure_text",
+    label: "Payment Security Text",
+    description: "Payment section में दिखाई देने वाला security message",
+    placeholder: "Secure Payment: You will be redirected to Razorpay's secure payment gateway...",
     type: "textarea",
   },
   {
-    key: "cta_primary_button_text",
-    label: "CTA Primary Button Text",
-    description: "CTA section में मुख्य button का text",
-    placeholder: "Book a Service Now",
-    type: "text",
-  },
-  {
-    key: "cta_primary_button_link",
-    label: "CTA Primary Button Link",
-    description: "CTA section में मुख्य button का link (URL path)",
-    placeholder: "/services",
-    type: "text",
-  },
-  {
-    key: "cta_secondary_button_text",
-    label: "CTA Secondary Button Text",
-    description: "CTA section में दूसरे button का text",
-    placeholder: "Download App",
-    type: "text",
-  },
-  {
-    key: "cta_secondary_button_link",
-    label: "CTA Secondary Button Link",
-    description: "CTA section में दूसरे button का link (URL path)",
-    placeholder: "/#download-app",
-    type: "text",
-  },
-  {
-    key: "cta_background_color",
-    label: "CTA Background Color",
-    description: "CTA section का background color (hex code जैसे #2563EB)",
-    placeholder: "#2563EB",
+    key: "payment_info_text",
+    label: "Payment Info Text",
+    description: "Payment section में दिखाई देने वाला additional info",
+    placeholder: "Your payment information is secure and encrypted",
     type: "text",
   },
 ];
 
-interface HomePageEditorProps {
+interface BookServicePageEditorProps {
   initialContents?: any[];
 }
 
-export function HomePageEditor({ initialContents = [] }: HomePageEditorProps) {
+export function BookServicePageEditor({ initialContents = [] }: BookServicePageEditorProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [contents, setContents] = useState<Record<string, any>>({});
@@ -180,7 +105,7 @@ export function HomePageEditor({ initialContents = [] }: HomePageEditorProps) {
   useEffect(() => {
     const contentMap: Record<string, any> = {};
     initialContents.forEach((content) => {
-      if (content.page_path === "/") {
+      if (content.page_path === "/customer/book-service") {
         contentMap[content.content_key] = content;
       }
     });
@@ -194,7 +119,7 @@ export function HomePageEditor({ initialContents = [] }: HomePageEditorProps) {
         ...prev[key],
         content_value: value,
         content_key: key,
-        page_path: "/",
+        page_path: "/customer/book-service",
         content_type: "text",
       },
     }));
@@ -206,7 +131,7 @@ export function HomePageEditor({ initialContents = [] }: HomePageEditorProps) {
       let savedCount = 0;
       let errorCount = 0;
 
-      for (const field of HOME_PAGE_FIELDS) {
+      for (const field of BOOK_SERVICE_PAGE_FIELDS) {
         const content = contents[field.key];
         const value = content?.content_value?.trim() || "";
 
@@ -216,11 +141,11 @@ export function HomePageEditor({ initialContents = [] }: HomePageEditorProps) {
         }
 
         const submitData = {
-          page_path: "/",
+          page_path: "/customer/book-service",
           content_key: field.key,
           content_type: "text",
           content_value: value,
-          display_order: HOME_PAGE_FIELDS.findIndex((f) => f.key === field.key),
+          display_order: BOOK_SERVICE_PAGE_FIELDS.findIndex((f) => f.key === field.key),
           is_active: true,
         };
 
@@ -273,14 +198,14 @@ export function HomePageEditor({ initialContents = [] }: HomePageEditorProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Eye className="h-5 w-5" />
-            Home Page Content Editor
+            Book Service Page Content Editor
           </CardTitle>
           <CardDescription>
-            यहाँ आप homepage के सभी text और content को edit कर सकते हैं। हर field के नीचे description है जो बताती है कि वह कहाँ दिखाई देगा।
+            यहाँ आप Book Service page के सभी text और content को edit कर सकते हैं। हर field के नीचे description है जो बताती है कि वह कहाँ दिखाई देगा।
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {HOME_PAGE_FIELDS.map((field) => {
+          {BOOK_SERVICE_PAGE_FIELDS.map((field) => {
             const content = contents[field.key];
             const value = content?.content_value || "";
 

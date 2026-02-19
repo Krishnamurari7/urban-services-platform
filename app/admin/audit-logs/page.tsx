@@ -103,10 +103,10 @@ export default function AuditLogPage() {
 
     return (
         <div className="space-y-6 pb-8">
-            <div className="flex justify-between items-center bg-gradient-to-r from-slate-600 via-gray-600 to-zinc-600 rounded-2xl p-6 text-white shadow-xl">
+            <div className="flex justify-between items-center bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl p-6 text-white shadow-lg">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">Audit Logs</h1>
-                    <p className="text-slate-100">
+                    <p className="text-blue-50">
                         Track all administrative actions performed across the platform.
                     </p>
                 </div>
@@ -115,8 +115,8 @@ export default function AuditLogPage() {
                 </Button>
             </div>
 
-            <Card className="bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50 border-2 border-slate-200 shadow-lg">
-                <CardHeader className="bg-gradient-to-r from-slate-600 to-gray-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+            <Card className="bg-white border border-gray-200 shadow-lg">
+                <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-t-lg -m-6 mb-4 p-6 text-white">
                     <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                         <div className="relative w-full md:w-96">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -160,18 +160,18 @@ export default function AuditLogPage() {
                         <div className="border-2 border-slate-200 rounded-md overflow-hidden">
                             <Table>
                                 <TableHeader>
-                                    <TableRow className="bg-gradient-to-r from-slate-500 to-gray-500 text-white">
-                                        <TableHead className="text-white font-semibold">Timestamp</TableHead>
-                                        <TableHead className="text-white font-semibold">Admin</TableHead>
-                                        <TableHead className="text-white font-semibold">Action</TableHead>
-                                        <TableHead className="text-white font-semibold">Target</TableHead>
-                                        <TableHead className="text-white font-semibold">Description</TableHead>
-                                        <TableHead className="text-right text-white font-semibold">Details</TableHead>
+                                    <TableRow className="bg-gray-100">
+                                        <TableHead className="text-gray-700 font-semibold">Timestamp</TableHead>
+                                        <TableHead className="text-gray-700 font-semibold">Admin</TableHead>
+                                        <TableHead className="text-gray-700 font-semibold">Action</TableHead>
+                                        <TableHead className="text-gray-700 font-semibold">Target</TableHead>
+                                        <TableHead className="text-gray-700 font-semibold">Description</TableHead>
+                                        <TableHead className="text-right text-gray-700 font-semibold">Details</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {filteredLogs.map((log, index) => (
-                                        <TableRow key={log.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-slate-50'} hover:bg-slate-100 transition-colors`}>
+                                        <TableRow key={log.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-colors`}>
                                             <TableCell className="whitespace-nowrap">
                                                 {format(new Date(log.created_at), "MMM d, yyyy HH:mm:ss")}
                                             </TableCell>
@@ -216,8 +216,8 @@ export default function AuditLogPage() {
 
             {/* Detail View Modal (Simplified as a side-car or just bottom section for now) */}
             {selectedLog && (
-                <Card className="border-2 border-slate-300 bg-gradient-to-br from-slate-100 via-gray-100 to-zinc-100 shadow-xl">
-                    <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-slate-600 to-gray-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+                <Card className="border border-gray-200 bg-white shadow-xl">
+                    <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-blue-500 to-cyan-500 rounded-t-lg -m-6 mb-4 p-6 text-white">
                         <div>
                             <CardTitle className="text-lg">Log Details</CardTitle>
                             <CardDescription>

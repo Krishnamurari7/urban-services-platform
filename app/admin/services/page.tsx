@@ -59,18 +59,18 @@ export default async function AdminServicesPage() {
 
   return (
     <div className="space-y-6 pb-8">
-      <div className="flex items-center justify-between bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 rounded-2xl p-6 text-white shadow-xl">
+      <div className="flex items-center justify-between bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl p-6 text-white shadow-lg">
         <div>
           <h1 className="text-3xl font-bold">
             Service Management
           </h1>
-          <p className="text-orange-100 mt-1">Manage services, pricing, and availability</p>
+          <p className="text-blue-50 mt-1">Manage services, pricing, and availability</p>
         </div>
         <ServiceForm />
       </div>
 
-      <Card className="border-2 border-orange-200 shadow-lg bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
-        <CardHeader className="bg-gradient-to-r from-orange-600 to-red-600 rounded-t-lg -m-6 mb-4 p-6 text-white">
+      <Card className="border border-gray-200 shadow-lg bg-white">
+        <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-t-lg -m-6 mb-4 p-6 text-white">
           <div className="flex items-center justify-between">
             <CardTitle className="text-xl font-bold">All Services</CardTitle>
             <Badge variant="secondary" className="text-sm bg-white text-orange-600 font-bold">
@@ -82,13 +82,13 @@ export default async function AdminServicesPage() {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
-                  <TableHead className="font-semibold text-white">Name</TableHead>
-                  <TableHead className="font-semibold text-white">Category</TableHead>
-                  <TableHead className="font-semibold text-white">Base Price</TableHead>
-                  <TableHead className="font-semibold text-white">Duration</TableHead>
-                  <TableHead className="font-semibold text-white">Status</TableHead>
-                  <TableHead className="font-semibold text-right text-white">Actions</TableHead>
+                <TableRow className="bg-gray-100">
+                  <TableHead className="font-semibold text-gray-700">Name</TableHead>
+                  <TableHead className="font-semibold text-gray-700">Category</TableHead>
+                  <TableHead className="font-semibold text-gray-700">Base Price</TableHead>
+                  <TableHead className="font-semibold text-gray-700">Duration</TableHead>
+                  <TableHead className="font-semibold text-gray-700">Status</TableHead>
+                  <TableHead className="font-semibold text-right text-gray-700">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -100,7 +100,7 @@ export default async function AdminServicesPage() {
                   </TableRow>
                 ) : (
                   services.map((service, index) => (
-                    <TableRow key={service.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-orange-50'} hover:bg-orange-100 transition-colors`}>
+                    <TableRow key={service.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-colors`}>
                       <TableCell className="font-medium">{service.name}</TableCell>
                       <TableCell>
                         <Badge variant="secondary" className="capitalize">

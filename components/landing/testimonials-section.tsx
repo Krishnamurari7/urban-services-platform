@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Star } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { usePageContent } from "@/lib/cms/client-page-content";
 
 interface Testimonial {
   id: string;
@@ -21,11 +22,27 @@ interface TestimonialsSectionProps {
 }
 
 export function TestimonialsSection({
-  title = "What Our Customers Say",
-  subtitle = "Don't just take our word for it",
-  description = "Read what our satisfied customers have to say about our services",
+  title: propTitle,
+  subtitle: propSubtitle,
+  description: propDescription,
   testimonials: propTestimonials,
 }: TestimonialsSectionProps) {
+  const { content: testimonialsTitle } = usePageContent(
+    "/",
+    "testimonials_title",
+    propTitle || "What Our Customers Say"
+  );
+  const { content: testimonialsSubtitle } = usePageContent(
+    "/",
+    "testimonials_subtitle",
+    propSubtitle || "Don't just take our word for it"
+  );
+  const { content: testimonialsDescription } = usePageContent(
+    "/",
+    "testimonials_description",
+    propDescription || "Read what our satisfied customers have to say about our services"
+  );
+
   const [testimonials, setTestimonials] = useState<Testimonial[]>(
     Array.isArray(propTestimonials) ? propTestimonials : []
   );
@@ -38,16 +55,17 @@ export function TestimonialsSection({
       try {
         const supabase = createClient();
         
-        // Fetch from database if not provided
-        const { data: sectionData } = await supabase
-          .from("homepage_sections")
-          .select("content")
-          .eq("section_type", "testimonials")
+        // Fetch from page_contents CMS
+        const { data: testimonialsData } = await supabase
+          .from("page_contents")
+          .select("content_json")
+          .eq("page_path", "/")
+          .eq("content_key", "testimonials_data")
           .eq("is_active", true)
           .single();
 
-        if (sectionData?.content?.testimonials && Array.isArray(sectionData.content.testimonials)) {
-          setTestimonials(sectionData.content.testimonials);
+        if (testimonialsData?.content_json?.testimonials && Array.isArray(testimonialsData.content_json.testimonials)) {
+          setTestimonials(testimonialsData.content_json.testimonials);
         } else {
           // Default testimonials if none in DB
           setTestimonials([
@@ -105,9 +123,12 @@ export function TestimonialsSection({
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center mb-12">
           <p className="text-sm font-semibold text-blue-600 uppercase tracking-wider mb-2">
-            TESTIMONIALS
+            {testimonialsSubtitle}
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">{title}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">{testimonialsTitle}</h2>
+          {testimonialsDescription && (
+            <p className="text-gray-600 mt-2">{testimonialsDescription}</p>
+          )}
         </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {Array.isArray(testimonials) && testimonials.map((testimonial) => (

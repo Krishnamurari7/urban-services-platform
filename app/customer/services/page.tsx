@@ -27,6 +27,7 @@ import {
   Calendar,
   Sparkles,
   MapPin,
+  TrendingUp,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -41,6 +42,8 @@ export default function CustomerServicesPage() {
   const searchParams = useSearchParams();
   const [services, setServices] = useState<ServiceWithRating[]>([]);
   const [filteredServices, setFilteredServices] = useState<ServiceWithRating[]>([]);
+  const [trendingServices, setTrendingServices] = useState<ServiceWithRating[]>([]);
+  const [servicesByCategory, setServicesByCategory] = useState<Record<string, ServiceWithRating[]>>({});
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
@@ -115,6 +118,28 @@ export default function CustomerServicesPage() {
 
       setServices(finalServices);
       setFilteredServices(finalServices);
+      
+      // Get trending services (top 4 by review count or rating)
+      const trending = [...finalServices]
+        .sort((a, b) => {
+          // Sort by review count first, then by rating
+          const reviewDiff = (b.reviewCount || 0) - (a.reviewCount || 0);
+          if (reviewDiff !== 0) return reviewDiff;
+          return (b.rating || 0) - (a.rating || 0);
+        })
+        .slice(0, 4);
+      setTrendingServices(trending);
+
+      // Group services by category
+      const grouped: Record<string, ServiceWithRating[]> = {};
+      finalServices.forEach((service) => {
+        const category = service.category || "Other";
+        if (!grouped[category]) {
+          grouped[category] = [];
+        }
+        grouped[category].push(service);
+      });
+      setServicesByCategory(grouped);
     } catch (error) {
       console.error("Error fetching services:", error);
       setServices([]);
@@ -303,6 +328,79 @@ export default function CustomerServicesPage() {
         </div>
       </section>
 
+      {/* Trending Services Section */}
+      {trendingServices.length > 0 && !searchQuery && categoryFilter === "all" && (
+        <section className="py-16 md:py-20 bg-white">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp className="h-6 w-6 text-purple-600" />
+                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+                    Trending Services
+                  </h2>
+                </div>
+                <p className="text-gray-600">
+                  The most popular services right now
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {trendingServices.map((service) => (
+                <div key={service.id} className="relative group">
+                  <Link href={`/customer/book-service?serviceId=${service.id}`}>
+                    <div className="relative h-64 rounded-xl overflow-hidden cursor-pointer">
+                      {service.image_url ? (
+                        <Image
+                          src={service.image_url}
+                          alt={service.name}
+                          fill
+                          className="object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-purple-100 to-teal-100 flex items-center justify-center">
+                          <span className="text-4xl font-bold text-purple-300">
+                            {service.name[0]}
+                          </span>
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                      <div className="absolute top-3 right-3">
+                        <Badge className="capitalize shadow-md bg-purple-600">
+                          {service.category}
+                        </Badge>
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                        <p className="text-sm font-medium mb-1">
+                          Starting at ₹{service.base_price}
+                        </p>
+                        <h3 className="text-lg font-bold mb-2">{service.name}</h3>
+                        <div className="flex items-center gap-2 text-sm mb-2">
+                          <Clock className="h-4 w-4" />
+                          <span>{service.duration_minutes} min</span>
+                        </div>
+                        {service.rating !== undefined && service.reviewCount !== undefined && (
+                          <div className="flex items-center gap-1">
+                            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                            <span className="text-sm font-semibold">
+                              {service.rating.toFixed(1)}
+                            </span>
+                            <span className="text-sm text-gray-300">
+                              ({service.reviewCount.toLocaleString()} reviews)
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Filters Section */}
       <section className="py-8 bg-white border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
@@ -336,32 +434,22 @@ export default function CustomerServicesPage() {
         </div>
       </section>
 
-      {/* All Services Section */}
+      {/* Services Section - Category-wise or Filtered */}
       <section className="py-16 md:py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                All Services
-              </h2>
-              <p className="text-gray-600">
-                {filteredServices.length} {filteredServices.length === 1 ? "service" : "services"} available
-              </p>
-            </div>
-          </div>
-
-          {/* Services Grid */}
-          {filteredServices.length === 0 ? (
-            <Card>
-              <CardContent className="p-12 text-center">
-                <Package className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                <h3 className="text-lg font-semibold mb-2">No services found</h3>
-                <p className="text-gray-600 mb-4">
-                  {services.length === 0
-                    ? "No services are currently available."
-                    : "No services match your search criteria."}
-                </p>
-                {searchQuery && (
+          {/* Show filtered results when search or category filter is active */}
+          {(searchQuery || categoryFilter !== "all") ? (
+            <>
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                    Search Results
+                  </h2>
+                  <p className="text-gray-600">
+                    {filteredServices.length} {filteredServices.length === 1 ? "service" : "services"} found
+                  </p>
+                </div>
+                {(searchQuery || categoryFilter !== "all") && (
                   <Button
                     variant="outline"
                     onClick={() => {
@@ -372,60 +460,166 @@ export default function CustomerServicesPage() {
                     Clear Filters
                   </Button>
                 )}
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {filteredServices.map((service) => (
-                <div key={service.id} className="relative group">
-                  <Link href={`/customer/book-service?serviceId=${service.id}`}>
-                    <div className="relative h-64 rounded-xl overflow-hidden cursor-pointer">
-                      {service.image_url ? (
-                        <Image
-                          src={service.image_url}
-                          alt={service.name}
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-500"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-purple-100 to-teal-100 flex items-center justify-center">
-                          <span className="text-4xl font-bold text-purple-300">
-                            {service.name[0]}
-                          </span>
-                        </div>
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                      <div className="absolute top-3 right-3">
-                        <Badge className="capitalize shadow-md">
-                          {service.category}
-                        </Badge>
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                        <p className="text-sm font-medium mb-1">
-                          Starting at ₹{service.base_price}
-                        </p>
-                        <h3 className="text-lg font-bold mb-2">{service.name}</h3>
-                        <div className="flex items-center gap-2 text-sm mb-2">
-                          <Clock className="h-4 w-4" />
-                          <span>{service.duration_minutes} min</span>
-                        </div>
-                        {service.rating !== undefined && service.reviewCount !== undefined && (
-                          <div className="flex items-center gap-1">
-                            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                            <span className="text-sm font-semibold">
-                              {service.rating.toFixed(1)}
-                            </span>
-                            <span className="text-sm text-gray-300">
-                              ({service.reviewCount.toLocaleString()} reviews)
-                            </span>
+              </div>
+
+              {filteredServices.length === 0 ? (
+                <Card>
+                  <CardContent className="p-12 text-center">
+                    <Package className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+                    <h3 className="text-lg font-semibold mb-2">No services found</h3>
+                    <p className="text-gray-600 mb-4">
+                      No services match your search criteria.
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {filteredServices.map((service) => (
+                    <div key={service.id} className="relative group">
+                      <Link href={`/customer/book-service?serviceId=${service.id}`}>
+                        <div className="relative h-64 rounded-xl overflow-hidden cursor-pointer">
+                          {service.image_url ? (
+                            <Image
+                              src={service.image_url}
+                              alt={service.name}
+                              fill
+                              className="object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-purple-100 to-teal-100 flex items-center justify-center">
+                              <span className="text-4xl font-bold text-purple-300">
+                                {service.name[0]}
+                              </span>
+                            </div>
+                          )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                          <div className="absolute top-3 right-3">
+                            <Badge className="capitalize shadow-md">
+                              {service.category}
+                            </Badge>
                           </div>
-                        )}
-                      </div>
+                          <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                            <p className="text-sm font-medium mb-1">
+                              Starting at ₹{service.base_price}
+                            </p>
+                            <h3 className="text-lg font-bold mb-2">{service.name}</h3>
+                            <div className="flex items-center gap-2 text-sm mb-2">
+                              <Clock className="h-4 w-4" />
+                              <span>{service.duration_minutes} min</span>
+                            </div>
+                            {service.rating !== undefined && service.reviewCount !== undefined && (
+                              <div className="flex items-center gap-1">
+                                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                <span className="text-sm font-semibold">
+                                  {service.rating.toFixed(1)}
+                                </span>
+                                <span className="text-sm text-gray-300">
+                                  ({service.reviewCount.toLocaleString()} reviews)
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </Link>
                     </div>
-                  </Link>
+                  ))}
                 </div>
-              ))}
-            </div>
+              )}
+            </>
+          ) : (
+            /* Show category-wise sections when no filters are active */
+            <>
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+                  All Services
+                </h2>
+                <p className="text-lg text-gray-600">
+                  Explore our complete range of professional services organized by category
+                </p>
+              </div>
+
+              {Object.keys(servicesByCategory).length === 0 ? (
+                <Card>
+                  <CardContent className="p-12 text-center">
+                    <Package className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+                    <h3 className="text-lg font-semibold mb-2">No services found</h3>
+                    <p className="text-gray-600">
+                      No services are currently available.
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-16">
+                  {Object.entries(servicesByCategory)
+                    .sort(([a], [b]) => a.localeCompare(b))
+                    .map(([category, categoryServices]) => (
+                      <div key={category} className="space-y-6">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 capitalize">
+                              {category}
+                            </h3>
+                            <p className="text-gray-600 mt-1">
+                              {categoryServices.length} {categoryServices.length === 1 ? "service" : "services"} available
+                            </p>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                          {categoryServices.map((service) => (
+                            <div key={service.id} className="relative group">
+                              <Link href={`/customer/book-service?serviceId=${service.id}`}>
+                                <div className="relative h-64 rounded-xl overflow-hidden cursor-pointer">
+                                  {service.image_url ? (
+                                    <Image
+                                      src={service.image_url}
+                                      alt={service.name}
+                                      fill
+                                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                    />
+                                  ) : (
+                                    <div className="w-full h-full bg-gradient-to-br from-purple-100 to-teal-100 flex items-center justify-center">
+                                      <span className="text-4xl font-bold text-purple-300">
+                                        {service.name[0]}
+                                      </span>
+                                    </div>
+                                  )}
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                                  <div className="absolute top-3 right-3">
+                                    <Badge className="capitalize shadow-md">
+                                      {service.category}
+                                    </Badge>
+                                  </div>
+                                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                                    <p className="text-sm font-medium mb-1">
+                                      Starting at ₹{service.base_price}
+                                    </p>
+                                    <h3 className="text-lg font-bold mb-2">{service.name}</h3>
+                                    <div className="flex items-center gap-2 text-sm mb-2">
+                                      <Clock className="h-4 w-4" />
+                                      <span>{service.duration_minutes} min</span>
+                                    </div>
+                                    {service.rating !== undefined && service.reviewCount !== undefined && (
+                                      <div className="flex items-center gap-1">
+                                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                        <span className="text-sm font-semibold">
+                                          {service.rating.toFixed(1)}
+                                        </span>
+                                        <span className="text-sm text-gray-300">
+                                          ({service.reviewCount.toLocaleString()} reviews)
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </Link>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>

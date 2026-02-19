@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageContentForm } from "./page-content-form";
 import { HomePageEditor } from "./home-page-editor";
 import { CustomerDashboardEditor } from "./customer-dashboard-editor";
+import { AboutPageEditor } from "./about-page-editor";
+import { BookServicePageEditor } from "./book-service-page-editor";
 
 // Main pages (shown as tabs)
 const MAIN_PAGES = [
@@ -65,6 +67,7 @@ export function PageContentTabs({ contentsByPage }: PageContentTabsProps) {
           return (
             <button
               key={page.path}
+              type="button"
               onClick={() => setActiveTab(page.path)}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 isActive
@@ -86,6 +89,7 @@ export function PageContentTabs({ contentsByPage }: PageContentTabsProps) {
             return (
               <button
                 key={subPage.path}
+                type="button"
                 onClick={() => setActiveTab(subPage.path)}
                 className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
                   isActive
@@ -106,7 +110,7 @@ export function PageContentTabs({ contentsByPage }: PageContentTabsProps) {
           key={page.path}
           className={activeTab === page.path ? "block" : "hidden"}
         >
-          {/* Use special editors for home page and customer dashboard */}
+          {/* Use special editors for specific pages */}
           {page.path === "/" && (
             <HomePageEditor initialContents={contentsByPage[page.path] || []} />
           )}
@@ -115,11 +119,22 @@ export function PageContentTabs({ contentsByPage }: PageContentTabsProps) {
             <CustomerDashboardEditor initialContents={contentsByPage[page.path] || []} />
           )}
 
+          {page.path === "/about" && (
+            <AboutPageEditor initialContents={contentsByPage[page.path] || []} />
+          )}
+
+          {page.path === "/customer/book-service" && (
+            <BookServicePageEditor initialContents={contentsByPage[page.path] || []} />
+          )}
+
           {/* Use standard form for other pages */}
-          {page.path !== "/" && page.path !== "/customer/dashboard" && (
+          {page.path !== "/" && 
+           page.path !== "/customer/dashboard" && 
+           page.path !== "/about" && 
+           page.path !== "/customer/book-service" && (
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flex-wrap gap-4">
                   <div>
                     <CardTitle>{page.name}</CardTitle>
                     <p className="text-sm text-gray-500 mt-1">Page Path: {page.path}</p>
@@ -135,9 +150,9 @@ export function PageContentTabs({ contentsByPage }: PageContentTabsProps) {
                     {contentsByPage[page.path].map((content: any) => (
                       <div
                         key={content.id}
-                        className="border border-gray-200 rounded-lg p-4"
+                        className="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors"
                       >
-                        <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start justify-between gap-4 flex-wrap">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-2 flex-wrap">
                               <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
@@ -166,6 +181,14 @@ export function PageContentTabs({ contentsByPage }: PageContentTabsProps) {
                                 </p>
                               </div>
                             )}
+                            {content.content_json && (
+                              <div className="mt-2">
+                                <p className="text-sm font-medium text-gray-700 mb-1">JSON Content:</p>
+                                <pre className="text-xs text-gray-600 bg-gray-50 p-2 rounded overflow-auto max-h-32">
+                                  {JSON.stringify(content.content_json, null, 2)}
+                                </pre>
+                              </div>
+                            )}
                           </div>
                           <div className="flex-shrink-0">
                             <PageContentForm content={content} />
@@ -175,9 +198,9 @@ export function PageContentTabs({ contentsByPage }: PageContentTabsProps) {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    <p className="mb-4">No content configured for this page yet.</p>
-                    <p className="text-sm mb-4">Click the "Add Content" button above to start editing.</p>
+                  <div className="text-center py-12 text-gray-500">
+                    <p className="mb-2 text-lg font-medium">No content configured for this page yet.</p>
+                    <p className="text-sm mb-6 text-gray-400">Click the "Add Content" button above to start editing.</p>
                     <div className="flex justify-center">
                       <PageContentForm pagePath={page.path} />
                     </div>

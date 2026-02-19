@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
 import { Home, UtensilsCrossed, Sofa, Bug, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { createClient } from "@/lib/supabase/client";
+import { usePageContent } from "@/lib/cms/client-page-content";
 
 const iconMap: Record<string, React.ReactNode> = {
     Home: <Home className="h-12 w-12 text-blue-500" />,
@@ -41,50 +40,33 @@ const defaultServices = [
 ];
 
 export function CategoriesSection() {
-    const [sectionData, setSectionData] = useState({
-        title: "Our Premium Services",
-        description: "Explore our range of professional cleaning and maintenance solutions designed to keep your home pristine.",
-        services: defaultServices,
-    });
-
-    useEffect(() => {
-        const fetchServicesData = async () => {
-            try {
-                const supabase = createClient();
-                const { data: sectionData } = await supabase
-                    .from("homepage_sections")
-                    .select("*")
-                    .eq("section_type", "services")
-                    .eq("is_active", true)
-                    .single();
-
-                if (sectionData?.content) {
-                    setSectionData({
-                        title: sectionData.content.title || sectionData.title || "Our Premium Services",
-                        description: sectionData.content.description || sectionData.description || "",
-                        services: sectionData.content.services || defaultServices,
-                    });
-                }
-            } catch (error) {
-                console.error("Error fetching services data:", error);
-            }
-        };
-        fetchServicesData();
-    }, []);
+    const { content: categoriesTitle } = usePageContent(
+        "/",
+        "categories_title",
+        "Our Premium Services"
+    );
+    const { content: categoriesDescription } = usePageContent(
+        "/",
+        "categories_description",
+        "Explore our range of professional cleaning and maintenance solutions designed to keep your home pristine."
+    );
+    
+    // Use default services for now - can be enhanced later with JSON support
+    const services = defaultServices;
 
     return (
         <section className="py-16 md:py-24 bg-white">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mx-auto max-w-2xl text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                        {sectionData.title}
+                        {categoriesTitle}
                     </h2>
                     <p className="text-lg text-gray-600">
-                        {sectionData.description}
+                        {categoriesDescription}
                     </p>
                 </div>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                    {sectionData.services.map((service, index) => (
+                    {services.map((service, index) => (
                         <Card key={service.name || index} className="border border-gray-200 hover:shadow-lg transition-shadow">
                             <CardContent className="p-6">
                                 <div className="mb-4">
