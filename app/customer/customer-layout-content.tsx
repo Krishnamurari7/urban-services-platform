@@ -115,10 +115,6 @@ export function CustomerLayoutContent({ children }: { children: React.ReactNode 
               </div>
             </Link>
 
-            <button className="hidden items-center gap-2 rounded-full border border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-2 text-xs font-semibold text-gray-700 shadow-sm transition-all hover:border-blue-300 hover:from-blue-100 hover:to-indigo-100 hover:shadow-md sm:flex">
-              <MapPin className="h-4 w-4 text-blue-600" />
-              <span>Set location</span>
-            </button>
           </div>
 
           {/* Center: Search */}
@@ -148,13 +144,6 @@ export function CustomerLayoutContent({ children }: { children: React.ReactNode 
 
           {/* Right: Actions + Account */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Notifications */}
-            <button className="hidden relative rounded-full border border-gray-200 bg-white p-2.5 text-gray-600 shadow-sm transition-all hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 md:inline-flex">
-              <Bell className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-[10px] font-bold text-white flex items-center justify-center">
-                3
-              </span>
-            </button>
 
             {/* Desktop Navigation Links */}
             <nav className="hidden items-center gap-1 lg:flex">

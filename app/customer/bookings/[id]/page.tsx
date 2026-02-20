@@ -28,7 +28,6 @@ import {
   MapPin,
   Package,
   User,
-  DollarSign,
   ArrowLeft,
   Phone,
   Mail,
@@ -439,7 +438,6 @@ export default function BookingDetailPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5" />
                 Payment Summary
               </CardTitle>
             </CardHeader>

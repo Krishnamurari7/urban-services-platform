@@ -62,6 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let mounted = true;
+    let hasInitialized = false;
 
     // Get initial session - use getSession() to read from cookies immediately
     const initializeAuth = async () => {
@@ -89,11 +90,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setRole(null);
           }
           setLoading(false);
+          hasInitialized = true;
         }
       } catch (error) {
         console.error("Error initializing auth:", error);
         if (mounted) {
           setLoading(false);
+          hasInitialized = true;
         }
       }
     };
@@ -106,11 +109,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!mounted) return;
 
+      // Don't show loading screen for token refresh events (happens on tab/window focus)
+      // Only show loading for actual auth state changes (SIGNED_IN, SIGNED_OUT)
+      if (event === 'TOKEN_REFRESHED' && hasInitialized) {
+        // Just silently update user without showing loading screen
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+        return; // Don't fetch role again or show loading
+      }
+
+      // For real auth changes (login/logout), show loading
+      const isRealAuthChange = event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED';
+      if (isRealAuthChange && hasInitialized) {
+        setLoading(true);
+      }
+
       const currentUser = session?.user ?? null;
       setUser(currentUser);
 
       if (currentUser) {
-        setLoading(true); // Ensure loading is true while fetching role
         try {
           await Promise.race([
             fetchUserRole(currentUser.id),
@@ -123,7 +140,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         setRole(null);
       }
-      setLoading(false);
+      
+      if (isRealAuthChange && hasInitialized) {
+        setLoading(false);
+      }
     });
 
     return () => {

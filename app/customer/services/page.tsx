@@ -20,7 +20,6 @@ import {
   Package, 
   Search, 
   Clock, 
-  DollarSign, 
   ArrowRight,
   Star,
   CheckCircle2,
@@ -554,14 +553,27 @@ export default function CustomerServicesPage() {
                     .sort(([a], [b]) => a.localeCompare(b))
                     .map(([category, categoryServices]) => (
                       <div key={category} className="space-y-6">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 capitalize">
-                              {category}
-                            </h3>
-                            <p className="text-gray-600 mt-1">
-                              {categoryServices.length} {categoryServices.length === 1 ? "service" : "services"} available
-                            </p>
+                        <div className="relative">
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-purple-500 to-teal-500 rounded-full"></div>
+                          <div className="pl-8 py-4 border-l-4 border-purple-200 bg-gradient-to-r from-purple-50/50 via-white to-white rounded-r-xl hover:shadow-md transition-all duration-300">
+                            <div className="flex items-center justify-between flex-wrap gap-4">
+                              <div className="flex items-center gap-4">
+                                <div className="bg-gradient-to-br from-purple-500 to-teal-500 rounded-lg p-2.5 shadow-md">
+                                  <Package className="h-6 w-6 text-white" />
+                                </div>
+                                <div>
+                                  <h3 className="text-2xl md:text-3xl font-bold text-gray-900 capitalize">
+                                    {category}
+                                  </h3>
+                                  <p className="text-gray-600 mt-1 text-sm md:text-base">
+                                    {categoryServices.length} {categoryServices.length === 1 ? "service" : "services"} available
+                                  </p>
+                                </div>
+                              </div>
+                              <Badge className="bg-purple-100 text-purple-700 border-purple-200 text-sm px-4 py-1.5 font-semibold hover:bg-purple-200 transition-colors">
+                                {categoryServices.length} Services
+                              </Badge>
+                            </div>
                           </div>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

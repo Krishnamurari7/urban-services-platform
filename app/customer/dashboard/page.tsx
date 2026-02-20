@@ -23,7 +23,6 @@ import { CTASection } from "@/components/landing/cta-section";
 import {
   Calendar,
   Clock,
-  DollarSign,
   Package,
   Plus,
   CheckCircle2,
@@ -548,7 +547,6 @@ export default function CustomerDashboard() {
                     </div>
                     {booking.total_amount && (
                       <div className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                        <DollarSign className="h-4 w-4" />
                         <span>₹{Number(booking.total_amount).toLocaleString()}</span>
                       </div>
                     )}

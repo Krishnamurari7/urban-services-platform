@@ -16,7 +16,6 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import type { Payment, Booking, Service } from "@/lib/types/database";
 import {
-  DollarSign,
   Calendar,
   CreditCard,
   Search,
