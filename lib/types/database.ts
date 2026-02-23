@@ -43,6 +43,8 @@ export type PaymentMethod =
 
 export type ServiceStatus = "active" | "inactive" | "suspended";
 
+export type ServiceType = "normal" | "intense" | "deep";
+
 export type AvailabilityStatus = "available" | "booked" | "unavailable";
 
 export type AdminActionType =
@@ -123,13 +125,23 @@ export interface Database {
         Row: {
           id: string;
           name: string;
+          slug: string | null;
           description: string | null;
+          short_description: string | null;
+          long_description: string | null;
           category: string;
           subcategory: string | null;
           base_price: number;
           duration_minutes: number;
           image_url: string | null;
+          thumbnail_image: string | null;
+          service_type: ServiceType;
           status: ServiceStatus;
+          duration_label: string | null;
+          best_for: string | null;
+          cleaning_type: string | null;
+          equipment_used: string | null;
+          warranty_info: string | null;
           created_at: string;
           updated_at: string;
           created_by: string | null;
@@ -137,13 +149,23 @@ export interface Database {
         Insert: {
           id?: string;
           name: string;
+          slug?: string | null;
           description?: string | null;
+          short_description?: string | null;
+          long_description?: string | null;
           category: string;
           subcategory?: string | null;
           base_price: number;
           duration_minutes: number;
           image_url?: string | null;
+          thumbnail_image?: string | null;
+          service_type?: ServiceType;
           status?: ServiceStatus;
+          duration_label?: string | null;
+          best_for?: string | null;
+          cleaning_type?: string | null;
+          equipment_used?: string | null;
+          warranty_info?: string | null;
           created_at?: string;
           updated_at?: string;
           created_by?: string | null;
@@ -151,16 +173,171 @@ export interface Database {
         Update: {
           id?: string;
           name?: string;
+          slug?: string | null;
           description?: string | null;
+          short_description?: string | null;
+          long_description?: string | null;
           category?: string;
           subcategory?: string | null;
           base_price?: number;
           duration_minutes?: number;
           image_url?: string | null;
+          thumbnail_image?: string | null;
+          service_type?: ServiceType;
           status?: ServiceStatus;
+          duration_label?: string | null;
+          best_for?: string | null;
+          cleaning_type?: string | null;
+          equipment_used?: string | null;
+          warranty_info?: string | null;
           created_at?: string;
           updated_at?: string;
           created_by?: string | null;
+        };
+      };
+      service_pricing: {
+        Row: {
+          id: string;
+          service_id: string;
+          title: string;
+          price: number;
+          duration_minutes: number;
+          discount_price: number | null;
+          is_popular: boolean;
+          display_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          service_id: string;
+          title: string;
+          price: number;
+          duration_minutes: number;
+          discount_price?: number | null;
+          is_popular?: boolean;
+          display_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          service_id?: string;
+          title?: string;
+          price?: number;
+          duration_minutes?: number;
+          discount_price?: number | null;
+          is_popular?: boolean;
+          display_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      service_features: {
+        Row: {
+          id: string;
+          service_id: string;
+          feature_title: string;
+          display_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          service_id: string;
+          feature_title: string;
+          display_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          service_id?: string;
+          feature_title?: string;
+          display_order?: number;
+          created_at?: string;
+        };
+      };
+      service_faq: {
+        Row: {
+          id: string;
+          service_id: string;
+          question: string;
+          answer: string;
+          display_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          service_id: string;
+          question: string;
+          answer: string;
+          display_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          service_id?: string;
+          question?: string;
+          answer?: string;
+          display_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      service_gallery: {
+        Row: {
+          id: string;
+          service_id: string;
+          image_url: string;
+          alt_text: string | null;
+          display_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          service_id: string;
+          image_url: string;
+          alt_text?: string | null;
+          display_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          service_id?: string;
+          image_url?: string;
+          alt_text?: string | null;
+          display_order?: number;
+          created_at?: string;
+        };
+      };
+      service_seo: {
+        Row: {
+          id: string;
+          service_id: string;
+          meta_title: string | null;
+          meta_description: string | null;
+          meta_keywords: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          service_id: string;
+          meta_title?: string | null;
+          meta_description?: string | null;
+          meta_keywords?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          service_id?: string;
+          meta_title?: string | null;
+          meta_description?: string | null;
+          meta_keywords?: string | null;
+          created_at?: string;
+          updated_at?: string;
         };
       };
       professional_services: {

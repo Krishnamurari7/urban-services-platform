@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ServiceForm } from "./service-form";
+import { ComprehensiveServiceForm } from "./comprehensive-service-form";
 import { DeleteServiceButton } from "@/components/admin/delete-service-button";
 import {
   Table,
@@ -66,7 +66,7 @@ export default async function AdminServicesPage() {
           </h1>
           <p className="text-blue-50 mt-1">Manage services, pricing, and availability</p>
         </div>
-        <ServiceForm />
+        <ComprehensiveServiceForm />
       </div>
 
       <Card className="border border-gray-200 shadow-lg bg-white">
@@ -127,7 +127,7 @@ export default async function AdminServicesPage() {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <ServiceForm service={service} />
+                          <ComprehensiveServiceForm service={service} />
                           <DeleteServiceButton serviceId={service.id} />
                         </div>
                       </TableCell>

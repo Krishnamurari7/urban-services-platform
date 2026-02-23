@@ -17,22 +17,54 @@ async function getService(id: string) {
     return null;
   }
 
-  // Get average rating for SEO
-  const { data: reviews } = await supabase
-    .from("reviews")
-    .select("rating")
-    .eq("service_id", id)
-    .eq("is_visible", true);
+  // Get comprehensive service data
+  const [pricing, features, faqs, gallery, seo, reviews] = await Promise.all([
+    supabase
+      .from("service_pricing")
+      .select("*")
+      .eq("service_id", id)
+      .order("display_order"),
+    supabase
+      .from("service_features")
+      .select("*")
+      .eq("service_id", id)
+      .order("display_order"),
+    supabase
+      .from("service_faq")
+      .select("*")
+      .eq("service_id", id)
+      .order("display_order"),
+    supabase
+      .from("service_gallery")
+      .select("*")
+      .eq("service_id", id)
+      .order("display_order"),
+    supabase
+      .from("service_seo")
+      .select("*")
+      .eq("service_id", id)
+      .single(),
+    supabase
+      .from("reviews")
+      .select("rating")
+      .eq("service_id", id)
+      .eq("is_visible", true),
+  ]);
 
   const rating =
-    reviews && reviews.length > 0
-      ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+    reviews.data && reviews.data.length > 0
+      ? reviews.data.reduce((sum, r) => sum + r.rating, 0) / reviews.data.length
       : null;
 
   return {
     ...service,
+    pricing: pricing.data || [],
+    features: features.data || [],
+    faqs: faqs.data || [],
+    gallery: gallery.data || [],
+    seo: seo.data || null,
     rating,
-    reviewCount: reviews?.length || 0,
+    reviewCount: reviews.data?.length || 0,
   };
 }
 
@@ -52,8 +84,10 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${service.name} - ${service.category} Service | Vera Company`;
+  const title = service.seo?.meta_title || `${service.name} - ${service.category} Service | Vera Company`;
   const description =
+    service.seo?.meta_description ||
+    service.short_description ||
     service.description ||
     `Book ${service.name} service starting at ₹${service.base_price}. Professional ${service.category.toLowerCase()} service with verified professionals.`;
 
@@ -64,13 +98,13 @@ export async function generateMetadata({
       title,
       description,
       type: "website",
-      images: service.image_url ? [service.image_url] : [],
+      images: service.thumbnail_image ? [service.thumbnail_image] : service.image_url ? [service.image_url] : [],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: service.image_url ? [service.image_url] : [],
+      images: service.thumbnail_image ? [service.thumbnail_image] : service.image_url ? [service.image_url] : [],
     },
     alternates: {
       canonical: `/services/${id}`,
@@ -97,17 +131,8 @@ export default async function ServiceDetailPage({
     notFound();
   }
 
-  const supabase = await createClient();
-  const { data: reviews } = await supabase
-    .from("reviews")
-    .select("rating")
-    .eq("service_id", service.id)
-    .eq("is_visible", true);
-
-  const rating =
-    reviews && reviews.length > 0
-      ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
-      : null;
+  // Rating already included in getService
+  const rating = service.rating;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -126,23 +151,24 @@ export default async function ServiceDetailPage({
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: service.category,
-      itemListElement: [
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: service.name,
-          },
-          price: service.base_price,
-          priceCurrency: "INR",
+      itemListElement: (service.pricing && service.pricing.length > 0
+        ? service.pricing
+        : [{ price: service.base_price }]
+      ).map((p: any) => ({
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: service.name,
         },
-      ],
+        price: p.price || service.base_price,
+        priceCurrency: "INR",
+      })),
     },
     aggregateRating: rating
       ? {
         "@type": "AggregateRating",
         ratingValue: rating,
-        reviewCount: reviews?.length || 0,
+        reviewCount: service.reviewCount || 0,
       }
       : undefined,
   };

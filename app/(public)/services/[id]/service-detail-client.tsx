@@ -23,46 +23,60 @@ import { useAuth } from "@/components/auth/auth-provider";
 import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 
+interface PricingVariant {
+  id: string;
+  title: string;
+  price: number;
+  duration_minutes: number;
+  discount_price?: number | null;
+  is_popular: boolean;
+}
+
+interface Feature {
+  id: string;
+  feature_title: string;
+}
+
+interface FAQ {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+interface GalleryImage {
+  id: string;
+  image_url: string;
+  alt_text?: string | null;
+}
+
 interface Service {
   id: string;
   name: string;
+  slug?: string | null;
   description: string | null;
+  short_description?: string | null;
+  long_description?: string | null;
   category: string;
   subcategory: string | null;
   base_price: number;
   duration_minutes: number;
   image_url: string | null;
+  thumbnail_image?: string | null;
+  service_type?: "normal" | "intense" | "deep";
   status: string;
+  duration_label?: string | null;
+  best_for?: string | null;
+  cleaning_type?: string | null;
+  equipment_used?: string | null;
+  warranty_info?: string | null;
+  pricing?: PricingVariant[];
+  features?: Feature[];
+  faqs?: FAQ[];
+  gallery?: GalleryImage[];
   rating?: number | null;
   reviewCount?: number;
 }
 
-const faqs = [
-  {
-    question: "How do I book this service?",
-    answer: "Simply click the 'Book Now' button, select your preferred date and time, provide your address, and complete the payment. You'll receive instant confirmation.",
-  },
-  {
-    question: "What is included in the service?",
-    answer: "Our service includes professional and verified service providers, on-time service guarantee, quality assured work, and 100% satisfaction guarantee.",
-  },
-  {
-    question: "Can I reschedule my booking?",
-    answer: "Yes, you can reschedule your booking up to 24 hours before the scheduled time. Simply go to your bookings section and select 'Reschedule'.",
-  },
-  {
-    question: "What payment methods do you accept?",
-    answer: "We accept all major credit cards, debit cards, UPI, net banking, and digital wallets. All payments are secure and encrypted.",
-  },
-  {
-    question: "Are your professionals verified?",
-    answer: "Yes, all our professionals undergo a thorough verification process including background checks, ID verification, and skill assessments.",
-  },
-  {
-    question: "What if I'm not satisfied with the service?",
-    answer: "We offer a 100% satisfaction guarantee. If you're not happy with the service, contact our support team within 24 hours and we'll make it right.",
-  },
-];
 
 export default function ServiceDetailClient({ service }: { service: Service }) {
   const { user, role } = useAuth();
@@ -104,7 +118,14 @@ export default function ServiceDetailClient({ service }: { service: Service }) {
     window.location.href = bookingPath;
   };
 
-  const images = service.image_url ? [service.image_url] : [];
+  // Build images array from gallery or fallback to thumbnail/image_url
+  const images = service.gallery && service.gallery.length > 0
+    ? service.gallery.map((img) => img.image_url)
+    : service.thumbnail_image
+    ? [service.thumbnail_image]
+    : service.image_url
+    ? [service.image_url]
+    : [];
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
@@ -209,79 +230,183 @@ export default function ServiceDetailClient({ service }: { service: Service }) {
               )}
             </div>
 
-            {/* Price and Duration */}
-            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-              <CardContent className="p-6">
-                <div className="flex items-baseline gap-6">
-                  <div>
-                    <span className="text-sm text-muted-foreground">
-                      Starting from
-                    </span>
-                    <div className="text-4xl font-bold">
-                      ₹{service.base_price}
+            {/* Pricing Variants */}
+            {service.pricing && service.pricing.length > 0 ? (
+              <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+                <CardHeader>
+                  <CardTitle>Select Package</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {service.pricing.map((price) => (
+                    <div
+                      key={price.id}
+                      className={`p-4 rounded-lg border-2 transition-all cursor-pointer hover:shadow-md ${
+                        price.is_popular
+                          ? "border-primary bg-primary/5"
+                          : "border-gray-200 bg-white"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-semibold">{price.title}</span>
+                            {price.is_popular && (
+                              <Badge className="bg-primary text-white text-xs">
+                                Popular
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-baseline gap-2">
+                            {price.discount_price ? (
+                              <>
+                                <span className="text-2xl font-bold">
+                                  ₹{price.discount_price}
+                                </span>
+                                <span className="text-lg text-muted-foreground line-through">
+                                  ₹{price.price}
+                                </span>
+                              </>
+                            ) : (
+                              <span className="text-2xl font-bold">
+                                ₹{price.price}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                            <Clock className="h-4 w-4" />
+                            <span>{price.duration_minutes} minutes</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 text-muted-foreground border-l pl-6">
-                    <Clock className="h-5 w-5" />
+                  ))}
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+                <CardContent className="p-6">
+                  <div className="flex items-baseline gap-6">
                     <div>
-                      <div className="text-sm">Duration</div>
-                      <div className="font-semibold">
-                        {service.duration_minutes} minutes
+                      <span className="text-sm text-muted-foreground">
+                        Starting from
+                      </span>
+                      <div className="text-4xl font-bold">
+                        ₹{service.base_price}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 text-muted-foreground border-l pl-6">
+                      <Clock className="h-5 w-5" />
+                      <div>
+                        <div className="text-sm">Duration</div>
+                        <div className="font-semibold">
+                          {service.duration_minutes} minutes
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Description */}
-            {service.description && (
+            {(service.long_description || service.description || service.short_description) && (
               <Card>
                 <CardHeader>
                   <CardTitle>About this service</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {service.description}
-                  </p>
+                  <div className="text-muted-foreground leading-relaxed space-y-4">
+                    {service.short_description && (
+                      <p className="text-lg font-medium text-foreground">
+                        {service.short_description}
+                      </p>
+                    )}
+                    {(service.long_description || service.description) && (
+                      <p className="whitespace-pre-line">
+                        {service.long_description || service.description}
+                      </p>
+                    )}
+                  </div>
+                  {(service.duration_label || service.best_for || service.cleaning_type || service.equipment_used || service.warranty_info) && (
+                    <div className="mt-6 pt-6 border-t space-y-3">
+                      {service.duration_label && (
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-primary" />
+                          <span className="text-sm"><strong>Duration:</strong> {service.duration_label}</span>
+                        </div>
+                      )}
+                      {service.best_for && (
+                        <div className="text-sm"><strong>Best for:</strong> {service.best_for}</div>
+                      )}
+                      {service.cleaning_type && (
+                        <div className="text-sm"><strong>Cleaning type:</strong> {service.cleaning_type}</div>
+                      )}
+                      {service.equipment_used && (
+                        <div className="text-sm"><strong>Equipment used:</strong> {service.equipment_used}</div>
+                      )}
+                      {service.warranty_info && (
+                        <div className="text-sm"><strong>Warranty:</strong> {service.warranty_info}</div>
+                      )}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )}
 
             {/* Features */}
-            <Card>
-              <CardHeader>
-                <CardTitle>What's included</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-4">
-                  <li className="flex items-start gap-3">
-                    <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-muted-foreground">
-                      Professional and verified service provider
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-muted-foreground">
-                      On-time service guarantee
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-muted-foreground">
-                      Quality assured work
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-muted-foreground">
-                      100% satisfaction guarantee
-                    </span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
+            {service.features && service.features.length > 0 ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle>What's included</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3">
+                    {service.features.map((feature) => (
+                      <li key={feature.id} className="flex items-start gap-3">
+                        <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary flex-shrink-0" />
+                        <span className="text-muted-foreground">
+                          {feature.feature_title}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card>
+                <CardHeader>
+                  <CardTitle>What's included</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-4">
+                    <li className="flex items-start gap-3">
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary flex-shrink-0" />
+                      <span className="text-muted-foreground">
+                        Professional and verified service provider
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary flex-shrink-0" />
+                      <span className="text-muted-foreground">
+                        On-time service guarantee
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary flex-shrink-0" />
+                      <span className="text-muted-foreground">
+                        Quality assured work
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary flex-shrink-0" />
+                      <span className="text-muted-foreground">
+                        100% satisfaction guarantee
+                      </span>
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Trust Badges */}
             <div className="flex flex-wrap gap-3">
@@ -299,25 +424,27 @@ export default function ServiceDetailClient({ service }: { service: Service }) {
           </div>
 
           {/* FAQs Section */}
-          <Card className="bg-white">
-            <CardHeader>
-              <CardTitle>Frequently Asked Questions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Accordion type="single" className="w-full">
-                {faqs.map((faq, index) => (
-                  <AccordionItem key={index} value={`item-${index}`}>
-                    <AccordionTrigger value={`item-${index}`} className="text-left font-semibold">
-                      {faq.question}
-                    </AccordionTrigger>
-                    <AccordionContent value={`item-${index}`} className="text-muted-foreground">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </CardContent>
-          </Card>
+          {service.faqs && service.faqs.length > 0 && (
+            <Card className="bg-white">
+              <CardHeader>
+                <CardTitle>Frequently Asked Questions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" className="w-full">
+                  {service.faqs.map((faq, index) => (
+                    <AccordionItem key={faq.id} value={`item-${index}`}>
+                      <AccordionTrigger value={`item-${index}`} className="text-left font-semibold">
+                        {faq.question}
+                      </AccordionTrigger>
+                      <AccordionContent value={`item-${index}`} className="text-muted-foreground whitespace-pre-line">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Similar Services */}
           {similarServices.length > 0 && (

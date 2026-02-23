@@ -62,8 +62,14 @@ export function AdminHeader() {
             <div className="h-full px-4 sm:px-6 flex items-center justify-between">
                 {/* Left side - Logo and Search */}
                 <div className="flex items-center gap-4 flex-1">
+                    
                     <div className="flex items-center gap-2">
-                        <span className="text-lg font-semibold text-blue-700 hidden sm:inline">Vira Company</span>
+                        <img 
+                            src="/logo.png" 
+                            alt="Vera Company Logo" 
+                            className="h-16 w-16 object-contain"
+                        />
+                        <span className="text-2xl font-semibold text-blue-700 hidden sm:inline">Vera Company</span>
                     </div>
                    
                 </div>

@@ -348,7 +348,7 @@ export default function CustomerServicesPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {trendingServices.map((service) => (
                 <div key={service.id} className="relative group">
-                  <Link href={`/customer/book-service?serviceId=${service.id}`}>
+                  <Link href={`/customer/services/${service.id}`}>
                     <div className="relative h-64 rounded-xl overflow-hidden cursor-pointer">
                       {service.image_url ? (
                         <Image
@@ -475,7 +475,7 @@ export default function CustomerServicesPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                   {filteredServices.map((service) => (
                     <div key={service.id} className="relative group">
-                      <Link href={`/customer/book-service?serviceId=${service.id}`}>
+                      <Link href={`/customer/services/${service.id}`}>
                         <div className="relative h-64 rounded-xl overflow-hidden cursor-pointer">
                           {service.image_url ? (
                             <Image
@@ -579,7 +579,7 @@ export default function CustomerServicesPage() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                           {categoryServices.map((service) => (
                             <div key={service.id} className="relative group">
-                              <Link href={`/customer/book-service?serviceId=${service.id}`}>
+                              <Link href={`/customer/services/${service.id}`}>
                                 <div className="relative h-64 rounded-xl overflow-hidden cursor-pointer">
                                   {service.image_url ? (
                                     <Image
