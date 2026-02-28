@@ -88,13 +88,13 @@ export function CustomerLayoutContent({ children }: { children: React.ReactNode 
   return (
     <>
       {/* Top Navbar - Modern & Clean Design */}
-      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur-md shadow-sm">
+      <header className="sticky top-0 z-50 border-b border-gray-200/60 bg-white/80 backdrop-blur-xl shadow-sm hover:shadow-md transition-shadow">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           {/* Left: Logo + location selector */}
           <div className="flex items-center gap-4 sm:gap-6">
             <Link
               href="/customer/dashboard"
-              className="flex items-center gap-2.5 transition-transform hover:scale-105"
+              className="flex items-center gap-2.5 transition-transform hover:scale-105 group"
             >
               <div className="relative">
                 <Image
@@ -102,11 +102,11 @@ export function CustomerLayoutContent({ children }: { children: React.ReactNode 
                   alt="Vera Company"
                   width={40}
                   height={40}
-                  className="rounded-xl shadow-md ring-2 ring-blue-100"
+                  className="rounded-xl shadow-md ring-2 ring-blue-100/50 group-hover:ring-blue-200 transition-all"
                 />
               </div>
               <div className="hidden flex-col leading-tight sm:flex">
-                <span className="text-base font-bold text-gray-900">
+                <span className="text-base font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
                   Vera Company
                 </span>
                 <span className="text-xs text-gray-500 font-medium">
@@ -131,13 +131,13 @@ export function CustomerLayoutContent({ children }: { children: React.ReactNode 
                 }
               }}
             >
-              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Search className="pointer-events-none absolute left-3 sm:left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <Input
                 type="search"
-                placeholder="Search services... (e.g., AC service, Salon at home)"
+                placeholder="Search services..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-11 rounded-full border-gray-200 bg-gray-50 pl-11 pr-4 text-sm shadow-sm transition-all focus:bg-white focus:shadow-md focus:ring-2 focus:ring-blue-500/20"
+                className="h-10 sm:h-11 rounded-full border-gray-200 bg-gray-50/80 backdrop-blur-sm pl-10 sm:pl-11 pr-4 text-sm shadow-sm transition-all focus:bg-white focus:shadow-md focus:ring-2 focus:ring-purple-500/20 focus:border-purple-300"
               />
             </form>
           </div>
@@ -156,9 +156,9 @@ export function CustomerLayoutContent({ children }: { children: React.ReactNode 
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-all",
+                      "flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-all",
                       isActive
-                        ? "bg-blue-50 text-blue-700 shadow-sm"
+                        ? "bg-gradient-to-r from-purple-50 to-blue-50 text-purple-700 shadow-sm"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                     )}
                   >
@@ -173,9 +173,9 @@ export function CustomerLayoutContent({ children }: { children: React.ReactNode 
             <div className="relative" ref={accountDropdownRef}>
               <button
                 onClick={() => setAccountOpen((prev) => !prev)}
-                className="flex items-center gap-2.5 rounded-full border border-gray-200 bg-gradient-to-r from-gray-50 to-white px-3 py-2 text-xs font-semibold text-gray-900 shadow-sm transition-all hover:border-blue-300 hover:shadow-md sm:px-4"
+                className="flex items-center gap-2.5 rounded-full border border-gray-200/80 bg-white/80 backdrop-blur-sm px-3 py-2 text-xs font-semibold text-gray-900 shadow-sm transition-all hover:border-purple-300 hover:shadow-md hover:bg-white sm:px-4"
               >
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-xs font-bold text-white shadow-md ring-2 ring-blue-100">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-600 text-xs font-bold text-white shadow-md ring-2 ring-purple-100">
                   {user?.email?.[0]?.toUpperCase() || "U"}
                 </span>
                 <span className="hidden flex-col text-left sm:flex">
@@ -195,7 +195,7 @@ export function CustomerLayoutContent({ children }: { children: React.ReactNode 
               </button>
 
               {accountOpen && (
-                <div className="absolute right-0 mt-2 w-64 animate-in fade-in-0 zoom-in-95 rounded-xl border border-gray-100 bg-white py-2 text-sm shadow-xl ring-1 ring-black/5">
+                <div className="absolute right-0 mt-2 w-64 animate-in fade-in-0 zoom-in-95 rounded-xl border border-gray-100/80 bg-white/95 backdrop-blur-xl py-2 text-sm shadow-2xl ring-1 ring-black/5">
                   {/* User Info Header */}
                   <div className="px-4 pb-3 pt-2 border-b border-gray-100">
                     <div className="flex items-center gap-3">
@@ -225,9 +225,9 @@ export function CustomerLayoutContent({ children }: { children: React.ReactNode 
                             router.push(item.href);
                           }}
                           className={cn(
-                            "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-medium transition-colors",
+                            "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-medium transition-all rounded-lg mx-2",
                             isActive
-                              ? "bg-blue-50 text-blue-700"
+                              ? "bg-gradient-to-r from-purple-50 to-blue-50 text-purple-700 shadow-sm"
                               : "text-gray-700 hover:bg-gray-50"
                           )}
                         >
@@ -264,7 +264,7 @@ export function CustomerLayoutContent({ children }: { children: React.ReactNode 
 
             {/* Mobile menu button */}
             <button
-              className="inline-flex rounded-lg border border-gray-200 bg-white p-2.5 text-gray-600 shadow-sm transition-all hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 md:hidden"
+              className="inline-flex rounded-lg border border-gray-200/80 bg-white/80 backdrop-blur-sm p-2.5 text-gray-600 shadow-sm transition-all hover:border-purple-300 hover:bg-purple-50 hover:text-purple-600 md:hidden"
               onClick={() => setMobileMenuOpen((prev) => !prev)}
             >
               {mobileMenuOpen ? (
@@ -280,11 +280,11 @@ export function CustomerLayoutContent({ children }: { children: React.ReactNode 
         {mobileMenuOpen && (
           <div
             ref={mobileMenuRef}
-            className="border-t border-gray-200 bg-white px-4 pb-6 pt-4 shadow-lg md:hidden animate-in slide-in-from-top-2"
+            className="border-t border-gray-200/60 bg-white/95 backdrop-blur-xl px-4 pb-6 pt-4 shadow-xl md:hidden animate-in slide-in-from-top-2"
           >
             {/* Mobile User Info */}
-            <div className="mb-4 flex items-center gap-3 rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 p-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-sm font-bold text-white shadow-md">
+            <div className="mb-4 flex items-center gap-3 rounded-lg bg-gradient-to-r from-purple-50 to-indigo-50 p-3 border border-purple-100/50 shadow-sm">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-600 text-sm font-bold text-white shadow-md">
                 {user?.email?.[0]?.toUpperCase() || "U"}
               </div>
               <div className="flex-1 min-w-0">
@@ -311,14 +311,14 @@ export function CustomerLayoutContent({ children }: { children: React.ReactNode 
                 }
               }}
             >
-              <div className="relative">
+              <div className="relative w-full">
                 <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                 <Input
                   type="search"
                   placeholder="Search services..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-11 rounded-full border-gray-200 bg-gray-50 pl-10 pr-4 text-sm shadow-sm focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+                  className="h-11 w-full rounded-full border-gray-200 bg-gray-50 pl-10 pr-4 text-sm shadow-sm focus:bg-white focus:ring-2 focus:ring-purple-500/20"
                 />
               </div>
             </form>
@@ -337,7 +337,7 @@ export function CustomerLayoutContent({ children }: { children: React.ReactNode 
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all",
                       isActive
-                        ? "bg-blue-50 text-blue-700 shadow-sm"
+                        ? "bg-gradient-to-r from-purple-50 to-blue-50 text-purple-700 shadow-sm"
                         : "text-gray-700 hover:bg-gray-50"
                     )}
                   >

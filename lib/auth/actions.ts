@@ -86,7 +86,7 @@ export async function signUp(
         full_name: fullName,
         role: role,
       },
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/auth/callback`,
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/auth/callback`,
     },
   });
 
@@ -158,7 +158,7 @@ export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/auth/callback`,
+      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/auth/callback`,
       queryParams: {
         access_type: "offline",
         prompt: "consent",
@@ -188,7 +188,7 @@ export async function sendOTP(phone: string) {
       return { error: "Invalid phone number. Please enter a valid 10-digit Indian mobile number." };
     }
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/auth/otp/send`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/auth/otp/send`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -228,7 +228,7 @@ export async function verifyOTP(
       return { error: "OTP must be 6 digits" };
     }
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/auth/otp/verify`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/auth/otp/verify`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

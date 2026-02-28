@@ -387,32 +387,45 @@ export default function CustomerDashboard() {
   return (
     <div className="w-full flex min-h-screen flex-col">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-white via-purple-50/30 to-teal-50/30 py-16 md:py-24">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-          <div className="max-w-4xl">
+      <section className="bg-gradient-to-br from-white via-purple-50/40 to-teal-50/40 py-12 sm:py-16 md:py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.1),transparent_50%)]"></div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
+          <div className="max-w-4xl w-full">
             {/* Stats & Welcome */}
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               <CustomerDashboardHero 
                 profileName={profile?.full_name || "Customer"}
               />
               
               {/* Stats Grid */}
-              <div className="grid grid-cols-2 gap-4 pt-4">
-                <Link href="/customer/bookings" className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all cursor-pointer">
-                  <div className="text-2xl font-bold text-gray-900">{stats.totalBookings}</div>
-                  <div className="text-sm text-gray-600">Total Bookings</div>
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 pt-4">
+                <Link href="/customer/bookings" className="group bg-white/80 backdrop-blur-sm rounded-xl p-4 sm:p-5 shadow-md border border-gray-100/80 hover:shadow-xl hover:border-purple-300 active:scale-[0.98] sm:hover:scale-[1.02] transition-all duration-300 cursor-pointer relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="relative">
+                    <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">{stats.totalBookings}</div>
+                    <div className="text-xs sm:text-sm text-gray-600 font-medium">Total Bookings</div>
+                  </div>
                 </Link>
-                <Link href="/customer/bookings?status=upcoming" className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all cursor-pointer">
-                  <div className="text-2xl font-bold text-purple-600">{stats.upcomingBookings}</div>
-                  <div className="text-sm text-gray-600">Upcoming</div>
+                <Link href="/customer/bookings?status=upcoming" className="group bg-white/80 backdrop-blur-sm rounded-xl p-4 sm:p-5 shadow-md border border-gray-100/80 hover:shadow-xl hover:border-purple-300 active:scale-[0.98] sm:hover:scale-[1.02] transition-all duration-300 cursor-pointer relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="relative">
+                    <div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-1">{stats.upcomingBookings}</div>
+                    <div className="text-xs sm:text-sm text-gray-600 font-medium">Upcoming</div>
+                  </div>
                 </Link>
-                <Link href="/customer/bookings?status=completed" className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-teal-200 transition-all cursor-pointer">
-                  <div className="text-2xl font-bold text-teal-600">{stats.completedBookings}</div>
-                  <div className="text-sm text-gray-600">Completed</div>
+                <Link href="/customer/bookings?status=completed" className="group bg-white/80 backdrop-blur-sm rounded-xl p-4 sm:p-5 shadow-md border border-gray-100/80 hover:shadow-xl hover:border-teal-300 active:scale-[0.98] sm:hover:scale-[1.02] transition-all duration-300 cursor-pointer relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-teal-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="relative">
+                    <div className="text-2xl sm:text-3xl font-bold text-teal-600 mb-1">{stats.completedBookings}</div>
+                    <div className="text-xs sm:text-sm text-gray-600 font-medium">Completed</div>
+                  </div>
                 </Link>
-                <Link href="/customer/payments" className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all cursor-pointer">
-                  <div className="text-2xl font-bold text-gray-900">₹{stats.totalSpent.toLocaleString()}</div>
-                  <div className="text-sm text-gray-600">Total Spent</div>
+                <Link href="/customer/payments" className="group bg-white/80 backdrop-blur-sm rounded-xl p-4 sm:p-5 shadow-md border border-gray-100/80 hover:shadow-xl hover:border-blue-300 active:scale-[0.98] sm:hover:scale-[1.02] transition-all duration-300 cursor-pointer relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="relative">
+                    <div className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1 break-words">₹{stats.totalSpent.toLocaleString()}</div>
+                    <div className="text-xs sm:text-sm text-gray-600 font-medium">Total Spent</div>
+                  </div>
                 </Link>
               </div>
             </div>
@@ -427,10 +440,10 @@ export default function CustomerDashboard() {
       <FeaturesSection />
 
       {/* Popular Services Section */}
-      <section className="py-16 md:py-20 bg-white">
+      <section className="py-12 sm:py-16 md:py-20 bg-white relative">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-          <div className="flex items-center justify-between mb-8">
-            <div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 sm:mb-10">
+            <div className="flex-1">
               <CustomerDashboardSectionTitle 
                 titleKey="popular_services_title"
                 descriptionKey="popular_services_description"
@@ -438,50 +451,55 @@ export default function CustomerDashboard() {
                 defaultDescription="The most booked services in your neighborhood"
               />
             </div>
-            <Link href="/customer/services" className="text-purple-600 hover:text-purple-700 font-medium flex items-center gap-2">
-              View All Services <ArrowRight className="h-4 w-4" />
+            <Link href="/customer/services" className="text-purple-600 hover:text-purple-700 font-semibold flex items-center gap-2 group transition-all text-sm sm:text-base">
+              View All Services <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-64 bg-gray-200 rounded-xl animate-pulse"></div>
+                <div key={i} className="h-56 sm:h-64 bg-gradient-to-br from-gray-200 to-gray-300 rounded-xl animate-pulse shadow-md"></div>
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {popularServices.slice(0, 4).map((service: Service) => (
-                <div key={service.id} className="relative group">
-                  <Link href={`/customer/book-service?serviceId=${service.id}`}>
-                    <div className="relative h-64 rounded-xl overflow-hidden">
+                <div key={service.id} className="relative group w-full">
+                  <Link href={`/customer/book-service?serviceId=${service.id}`} className="block w-full">
+                    <div className="relative h-56 sm:h-64 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 w-full">
                       {service.image_url ? (
                         <Image
                           src={service.image_url}
                           alt={service.name}
                           fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-500"
+                          className="object-cover group-hover:scale-110 transition-transform duration-700"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-purple-100 to-teal-100 flex items-center justify-center">
-                          <span className="text-4xl font-bold text-purple-300">
+                        <div className="w-full h-full bg-gradient-to-br from-purple-100 via-purple-50 to-teal-100 flex items-center justify-center">
+                          <span className="text-5xl font-bold text-purple-300">
                             {service.name[0]}
                           </span>
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                      <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                        <p className="text-sm font-medium mb-1">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent group-hover:from-black/95 transition-all" />
+                      <div className="absolute top-3 right-3">
+                        <Badge className="bg-purple-600/90 backdrop-blur-sm text-white border-0 shadow-md">
+                          Popular
+                        </Badge>
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+                        <p className="text-sm font-semibold mb-1.5 opacity-90">
                           Starting at ₹{service.base_price}
                         </p>
-                        <h3 className="text-lg font-bold mb-2">{service.name}</h3>
+                        <h3 className="text-lg font-bold mb-2.5 group-hover:text-purple-200 transition-colors">{service.name}</h3>
                         {(service as any).rating !== undefined && (service as any).reviewCount !== undefined && (
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1.5">
                             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                             <span className="text-sm font-semibold">
                               {(service as any).rating.toFixed(1)}
                             </span>
-                            <span className="text-sm text-gray-300">
+                            <span className="text-sm text-gray-300 opacity-80">
                               ({(service as any).reviewCount.toLocaleString()} reviews)
                             </span>
                           </div>
@@ -501,9 +519,9 @@ export default function CustomerDashboard() {
 
       {/* Recent Bookings Section */}
       {stats.recentBookings.length > 0 && (
-        <section className="py-16 md:py-20 bg-white">
+        <section className="py-16 md:py-20 bg-gradient-to-b from-white to-gray-50/50">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between mb-10">
               <div>
                 <CustomerDashboardSectionTitle
                   titleKey="recent_bookings_title"
@@ -512,17 +530,17 @@ export default function CustomerDashboard() {
                   defaultDescription="Your latest service bookings and their status"
                 />
               </div>
-              <Link href="/customer/bookings" className="text-purple-600 hover:text-purple-700 font-medium flex items-center gap-2">
-                View All <ArrowRight className="h-4 w-4" />
+              <Link href="/customer/bookings" className="text-purple-600 hover:text-purple-700 font-semibold flex items-center gap-2 group transition-all">
+                View All <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {stats.recentBookings.slice(0, 6).map((booking: Booking) => (
-                <Card key={booking.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
+                <Card key={booking.id} className="hover:shadow-xl transition-all duration-300 border-gray-100 hover:border-purple-200 group cursor-pointer">
+                  <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg">{serviceNames.get(booking.service_id) || "Service"}</CardTitle>
+                      <CardTitle className="text-lg font-bold group-hover:text-purple-600 transition-colors">{serviceNames.get(booking.service_id) || "Service"}</CardTitle>
                       <Badge
                         variant={
                           booking.status === "completed"
@@ -531,30 +549,35 @@ export default function CustomerDashboard() {
                             ? ("secondary" as const)
                             : ("outline" as const)
                         }
+                        className="shadow-sm"
                       >
                         {booking.status.replace("_", " ")}
                       </Badge>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Calendar className="h-4 w-4" />
-                      <span>{new Date(booking.scheduled_at).toLocaleDateString()}</span>
+                  <CardContent className="space-y-3 pt-0">
+                    <div className="flex items-center gap-2.5 text-sm text-gray-600">
+                      <div className="bg-blue-100 rounded-lg p-1.5">
+                        <Calendar className="h-3.5 w-3.5 text-blue-600" />
+                      </div>
+                      <span className="font-medium">{new Date(booking.scheduled_at).toLocaleDateString()}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Clock className="h-4 w-4" />
-                      <span>{new Date(booking.scheduled_at).toLocaleTimeString()}</span>
+                    <div className="flex items-center gap-2.5 text-sm text-gray-600">
+                      <div className="bg-purple-100 rounded-lg p-1.5">
+                        <Clock className="h-3.5 w-3.5 text-purple-600" />
+                      </div>
+                      <span className="font-medium">{new Date(booking.scheduled_at).toLocaleTimeString()}</span>
                     </div>
                     {booking.total_amount && (
-                      <div className="flex items-center gap-2 text-sm font-semibold text-gray-900">
+                      <div className="flex items-center gap-2 text-base font-bold text-gray-900 pt-2 border-t border-gray-100">
                         <span>₹{Number(booking.total_amount).toLocaleString()}</span>
                       </div>
                     )}
                   </CardContent>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     <Link href={`/customer/bookings/${booking.id}`}>
-                      <Button variant="outline" className="w-full">
-                        View Details <ArrowRight className="h-4 w-4 ml-2" />
+                      <Button variant="outline" className="w-full group-hover:border-purple-300 group-hover:text-purple-600 transition-all">
+                        View Details <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                       </Button>
                     </Link>
                   </CardContent>

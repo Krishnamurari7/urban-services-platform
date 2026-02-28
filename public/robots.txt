@@ -1,0 +1,13 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Disallow admin and private routes
+Disallow: /admin/
+Disallow: /customer/
+Disallow: /professional/
+Disallow: /dashboard/
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://your-domain.com/sitemap.xml

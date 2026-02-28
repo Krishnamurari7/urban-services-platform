@@ -12,7 +12,10 @@ export async function updateSession(request: NextRequest) {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.error("Missing Supabase environment variables");
+    // Log error in production but don't expose details
+    if (process.env.NODE_ENV === "development") {
+      console.error("Missing Supabase environment variables");
+    }
     return {
       supabase: null as SupabaseClient<any> | null,
       user: null,

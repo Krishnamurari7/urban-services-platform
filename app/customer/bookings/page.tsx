@@ -215,60 +215,61 @@ export default function CustomerBookingsPage() {
   return (
     <div className="w-full">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-white via-purple-50/30 to-teal-50/30 py-12 md:py-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-          <div className="mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-purple-100 rounded-full text-sm font-medium text-purple-700 mb-4">
-              <Package className="h-4 w-4" />
+      <section className="bg-gradient-to-br from-white via-purple-50/40 to-teal-50/40 py-10 sm:py-12 md:py-16 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.1),transparent_50%)]"></div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
+          <div className="mb-6 sm:mb-8">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-purple-100 to-purple-50 rounded-full text-xs sm:text-sm font-semibold text-purple-700 mb-3 sm:mb-4 shadow-sm border border-purple-100">
+              <Package className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span>Your Bookings</span>
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-3">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-2 sm:mb-3">
               <span className="text-gray-900">Manage Your</span>{" "}
-              <span className="text-purple-600">Bookings</span>
+              <span className="bg-gradient-to-r from-purple-600 to-teal-600 bg-clip-text text-transparent">Bookings</span>
             </h1>
-            <p className="text-lg md:text-xl text-gray-600 max-w-2xl">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl leading-relaxed">
               Track and manage all your service bookings in one place
             </p>
           </div>
 
           {/* Stats Cards */}
           {bookings.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-              <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm">
-                <CardContent className="p-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
+              <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm hover:shadow-xl transition-all duration-300 group cursor-pointer border border-gray-100/80 active:scale-[0.98] sm:hover:scale-[1.02]">
+                <CardContent className="p-4 sm:p-5">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Total Bookings</p>
-                      <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs sm:text-sm text-gray-600 mb-1.5 font-medium">Total Bookings</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors break-words">{stats.total}</p>
                     </div>
-                    <div className="bg-purple-100 rounded-lg p-3">
-                      <Package className="h-6 w-6 text-purple-600" />
+                    <div className="bg-gradient-to-br from-purple-100 to-purple-50 rounded-xl p-2.5 sm:p-3.5 group-hover:scale-110 transition-transform shadow-md flex-shrink-0 ml-2">
+                      <Package className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600" />
                     </div>
                   </div>
                 </CardContent>
               </Card>
-              <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm">
-                <CardContent className="p-4">
+              <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm hover:shadow-xl transition-all duration-300 group cursor-pointer border border-gray-100/80 active:scale-[0.98] sm:hover:scale-[1.02]">
+                <CardContent className="p-4 sm:p-5">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Upcoming</p>
-                      <p className="text-2xl font-bold text-blue-600">{stats.upcoming}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs sm:text-sm text-gray-600 mb-1.5 font-medium">Upcoming</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-blue-600 group-hover:text-blue-700 transition-colors break-words">{stats.upcoming}</p>
                     </div>
-                    <div className="bg-blue-100 rounded-lg p-3">
-                      <Calendar className="h-6 w-6 text-blue-600" />
+                    <div className="bg-gradient-to-br from-blue-100 to-blue-50 rounded-xl p-2.5 sm:p-3.5 group-hover:scale-110 transition-transform shadow-md flex-shrink-0 ml-2">
+                      <Calendar className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
                     </div>
                   </div>
                 </CardContent>
               </Card>
-              <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm">
-                <CardContent className="p-4">
+              <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm hover:shadow-xl transition-all duration-300 group cursor-pointer border border-gray-100/80 active:scale-[0.98] sm:hover:scale-[1.02]">
+                <CardContent className="p-4 sm:p-5">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Completed</p>
-                      <p className="text-2xl font-bold text-green-600">{stats.completed}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs sm:text-sm text-gray-600 mb-1.5 font-medium">Completed</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-green-600 group-hover:text-green-700 transition-colors break-words">{stats.completed}</p>
                     </div>
-                    <div className="bg-green-100 rounded-lg p-3">
-                      <CheckCircle2 className="h-6 w-6 text-green-600" />
+                    <div className="bg-gradient-to-br from-green-100 to-green-50 rounded-xl p-2.5 sm:p-3.5 group-hover:scale-110 transition-transform shadow-md flex-shrink-0 ml-2">
+                      <CheckCircle2 className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
                     </div>
                   </div>
                 </CardContent>
@@ -279,26 +280,26 @@ export default function CustomerBookingsPage() {
       </section>
 
       {/* Filters Section */}
-      <section className="py-8 bg-white border-b">
+      <section className="py-4 sm:py-6 md:py-8 bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-16 z-40">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-          <Card className="border-0 shadow-sm">
-            <CardContent className="p-4">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
+            <CardContent className="p-4 sm:p-5">
+              <div className="flex flex-col md:flex-row gap-3 sm:gap-4">
+                <div className="flex-1 relative w-full">
+                  <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                   <Input
                     placeholder="Search by service, professional, or location..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 h-12"
+                    className="pl-10 sm:pl-12 h-11 sm:h-12 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-lg text-sm sm:text-base w-full"
                   />
                 </div>
-                <div className="relative">
-                  <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+                <div className="relative w-full md:w-auto">
+                  <Filter className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400 pointer-events-none" />
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="px-4 pl-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 appearance-none bg-white min-w-[200px] h-12"
+                    className="px-3 sm:px-4 pl-10 sm:pl-11 py-2.5 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 appearance-none bg-white w-full md:w-auto md:min-w-[200px] h-11 sm:h-12 font-medium text-sm sm:text-base"
                   >
                     <option value="all">All Status</option>
                     <option value="upcoming">Upcoming</option>
@@ -353,62 +354,62 @@ export default function CustomerBookingsPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-4 sm:space-y-5">
               {filteredBookings.map((booking) => (
-                <Link key={booking.id} href={`/customer/bookings/${booking.id}`}>
-                  <Card className="border-0 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group bg-white">
-                    <CardContent className="p-6">
-                      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <Link key={booking.id} href={`/customer/bookings/${booking.id}`} className="block w-full">
+                  <Card className="border-0 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group bg-white/90 backdrop-blur-sm border border-gray-100/80 hover:border-purple-200 active:scale-[0.98] w-full">
+                    <CardContent className="p-4 sm:p-6 md:p-8">
+                      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
                         {/* Left Section - Main Info */}
-                        <div className="flex-1 min-w-0 space-y-4">
+                        <div className="flex-1 min-w-0 space-y-4 sm:space-y-5 w-full">
                           {/* Header with Service Name and Status */}
-                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                            <div className="flex-1">
-                              <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 group-hover:text-purple-600 transition-colors break-words">
                                 {booking.service?.name || "Service"}
                               </h3>
                               <Badge 
-                                className={`${getStatusColor(booking.status)} border flex items-center gap-1.5 w-fit px-3 py-1 font-semibold`}
+                                className={`${getStatusColor(booking.status)} border flex items-center gap-1.5 w-fit px-3 sm:px-3.5 py-1 sm:py-1.5 font-semibold shadow-sm text-xs sm:text-sm`}
                               >
                                 {getStatusIcon(booking.status)}
                                 <span className="capitalize">{booking.status.replace("_", " ")}</span>
                               </Badge>
                             </div>
-                            <div className="text-left sm:text-right">
-                              <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
+                            <div className="text-left sm:text-right flex-shrink-0">
+                              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1.5 group-hover:text-purple-600 transition-colors break-words">
                                 ₹{Number(booking.final_amount).toFixed(2)}
                               </div>
-                              <p className="text-xs text-gray-500 font-mono">
+                              <p className="text-xs text-gray-500 font-mono bg-gray-50 px-2 py-1 rounded inline-block break-all">
                                 ID: {booking.id.slice(0, 8).toUpperCase()}
                               </p>
                             </div>
                           </div>
 
                           {/* Details Grid */}
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-100">
-                            <div className="flex items-start gap-3">
-                              <div className="bg-purple-100 rounded-lg p-2 mt-0.5">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 pt-4 sm:pt-5 border-t border-gray-100">
+                            <div className="flex items-start gap-3.5">
+                              <div className="bg-gradient-to-br from-purple-100 to-purple-50 rounded-xl p-2.5 mt-0.5 shadow-sm">
                                 <User className="h-4 w-4 text-purple-600" />
                               </div>
                               <div>
-                                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
                                   Professional
                                 </p>
-                                <p className="text-sm font-medium text-gray-900">
+                                <p className="text-sm font-semibold text-gray-900">
                                   {booking.professional?.full_name || "N/A"}
                                 </p>
                               </div>
                             </div>
 
-                            <div className="flex items-start gap-3">
-                              <div className="bg-blue-100 rounded-lg p-2 mt-0.5">
+                            <div className="flex items-start gap-3.5">
+                              <div className="bg-gradient-to-br from-blue-100 to-blue-50 rounded-xl p-2.5 mt-0.5 shadow-sm">
                                 <Calendar className="h-4 w-4 text-blue-600" />
                               </div>
                               <div>
-                                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
                                   Scheduled
                                 </p>
-                                <p className="text-sm font-medium text-gray-900">
+                                <p className="text-sm font-semibold text-gray-900">
                                   {booking.scheduled_at
                                     ? new Date(booking.scheduled_at).toLocaleDateString(
                                         "en-US",
@@ -426,15 +427,15 @@ export default function CustomerBookingsPage() {
                               </div>
                             </div>
 
-                            <div className="flex items-start gap-3">
-                              <div className="bg-teal-100 rounded-lg p-2 mt-0.5">
+                            <div className="flex items-start gap-3.5">
+                              <div className="bg-gradient-to-br from-teal-100 to-teal-50 rounded-xl p-2.5 mt-0.5 shadow-sm">
                                 <MapPin className="h-4 w-4 text-teal-600" />
                               </div>
                               <div>
-                                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
                                   Location
                                 </p>
-                                <p className="text-sm font-medium text-gray-900">
+                                <p className="text-sm font-semibold text-gray-900">
                                   {booking.address?.city || "N/A"}
                                   {booking.address?.state && `, ${booking.address.state}`}
                                 </p>
@@ -442,15 +443,15 @@ export default function CustomerBookingsPage() {
                             </div>
 
                             {booking.completed_at && (
-                              <div className="flex items-start gap-3">
-                                <div className="bg-green-100 rounded-lg p-2 mt-0.5">
+                              <div className="flex items-start gap-3.5">
+                                <div className="bg-gradient-to-br from-green-100 to-green-50 rounded-xl p-2.5 mt-0.5 shadow-sm">
                                   <CheckCircle2 className="h-4 w-4 text-green-600" />
                                 </div>
                                 <div>
-                                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
                                     Completed
                                   </p>
-                                  <p className="text-sm font-medium text-gray-900">
+                                  <p className="text-sm font-semibold text-gray-900">
                                     {new Date(booking.completed_at).toLocaleDateString("en-US", {
                                       month: "short",
                                       day: "numeric",
@@ -465,7 +466,7 @@ export default function CustomerBookingsPage() {
 
                         {/* Right Section - Action Arrow */}
                         <div className="flex items-center justify-end lg:pl-6">
-                          <div className="bg-purple-100 group-hover:bg-purple-600 rounded-full p-3 transition-colors">
+                          <div className="bg-gradient-to-br from-purple-100 to-purple-50 group-hover:from-purple-600 group-hover:to-purple-700 rounded-full p-4 transition-all duration-300 shadow-md group-hover:shadow-lg group-hover:scale-110">
                             <ArrowRight className="h-5 w-5 text-purple-600 group-hover:text-white transition-colors" />
                           </div>
                         </div>

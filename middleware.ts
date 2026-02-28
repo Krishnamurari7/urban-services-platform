@@ -62,7 +62,7 @@ export async function middleware(request: NextRequest) {
       }
     } catch (error) {
       // If database query fails, fall back to metadata
-      console.error("Error fetching user profile:", error);
+      // Error is logged but not thrown to allow fallback to metadata
     }
 
     // Fallback to metadata only if DB check fails or is unavailable

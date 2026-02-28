@@ -16,8 +16,57 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vera Company",
-  description: "Professional home services marketplace",
+  title: {
+    default: "Vera Company - Professional Home Services Marketplace",
+    template: "%s | Vera Company",
+  },
+  description: "Find trusted professionals for all your home service needs. Book plumbers, electricians, cleaners, and more with ease.",
+  keywords: ["home services", "professional services", "plumber", "electrician", "home maintenance", "service marketplace"],
+  authors: [{ name: "Vera Company" }],
+  creator: "Vera Company",
+  publisher: "Vera Company",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+    siteName: "Vera Company",
+    title: "Vera Company - Professional Home Services Marketplace",
+    description: "Find trusted professionals for all your home service needs. Book plumbers, electricians, cleaners, and more with ease.",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Vera Company Logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Vera Company - Professional Home Services Marketplace",
+    description: "Find trusted professionals for all your home service needs.",
+    images: ["/logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   icons: {
     icon: [
       { url: "/logo.png", sizes: "any" },

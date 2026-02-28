@@ -50,37 +50,47 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200/50 bg-white/95 backdrop-blur-xl supports-[backdrop-filter]:bg-white/90 shadow-sm transition-all duration-300">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200/60 bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/80 shadow-sm transition-all duration-300 hover:shadow-md">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <div className="flex h-16 md:h-20 items-center justify-between">
           {/* Logo */}
           <Link 
             href="/" 
-            className="flex items-center space-x-3 group min-w-0 flex-shrink-0"
+            className="flex items-center space-x-3 group min-w-0 flex-shrink-0 transition-transform hover:scale-105"
             prefetch={true}
             aria-label="Home"
           >
-            <Image
-              src="/logo.png"
-              alt="Vera Company"
-              width={40}
-              height={40}
-              className="rounded-lg shadow-sm object-contain"
-            />
-            <span className="text-xl font-bold text-gray-900 truncate">
+            <div className="relative">
+              <Image
+                src="/logo.png"
+                alt="Vera Company"
+                width={40}
+                height={40}
+                className="rounded-xl shadow-md ring-2 ring-blue-100/50 group-hover:ring-blue-200 transition-all object-contain"
+              />
+            </div>
+            <div className="hidden sm:flex flex-col leading-tight">
+              <span className="text-xl font-bold text-gray-900 truncate group-hover:text-blue-600 transition-colors">
+                Vera Company
+              </span>
+              <span className="text-xs text-gray-500 font-medium">
+                Home services at your doorstep
+              </span>
+            </div>
+            <span className="sm:hidden text-xl font-bold text-gray-900 truncate">
               Vera Company
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6" aria-label="Main navigation">
+          <nav className="hidden md:flex items-center space-x-1" aria-label="Main navigation">
             <Link
               href="/services"
               prefetch={true}
-              className={`px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+              className={`px-4 py-2 text-sm font-medium transition-all duration-200 rounded-lg ${
                 isActive("/services")
-                  ? "text-blue-600 font-semibold"
-                  : "text-gray-700 hover:text-gray-900"
+                  ? "text-blue-600 font-semibold bg-blue-50 shadow-sm"
+                  : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
               Services
@@ -90,10 +100,10 @@ export function Header() {
               <Link
                 href="/become-professional"
                 prefetch={true}
-                className={`px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+                className={`px-4 py-2 text-sm font-medium transition-all duration-200 rounded-lg ${
                   isActive("/become-professional")
-                    ? "text-blue-600 font-semibold"
-                    : "text-gray-700 hover:text-gray-900"
+                    ? "text-blue-600 font-semibold bg-blue-50 shadow-sm"
+                    : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                 }`}
               >
                 Become a Professional
@@ -102,12 +112,13 @@ export function Header() {
             {!loading && (
               <>
                 {isAuthenticated ? (
-                  <div className="flex items-center space-x-3 ml-4 pl-4 border-l border-gray-200">
+                  <div className="flex items-center space-x-2 ml-4 pl-4 border-l border-gray-200/60">
                     <button 
-                      className="p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                      className="p-2.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all duration-200 relative"
                       aria-label="Notifications"
                     >
                       <Bell className="h-5 w-5" />
+                      <span className="absolute top-1 right-1 w-2 h-2 bg-blue-600 rounded-full"></span>
                     </button>
                     <Link 
                       href={getRoleBasedRedirect(role || "customer")}
@@ -116,7 +127,7 @@ export function Header() {
                       <Button 
                         variant="ghost" 
                         size="sm"
-                        className="gap-2 hover:bg-gray-100"
+                        className="gap-2 hover:bg-gray-100 rounded-lg transition-all"
                       >
                         <User className="h-4 w-4" />
                         <span className="hidden lg:inline">Dashboard</span>
@@ -127,7 +138,7 @@ export function Header() {
                         variant="outline" 
                         size="sm" 
                         type="submit"
-                        className="gap-2"
+                        className="gap-2 border-gray-200 hover:border-gray-300 rounded-lg transition-all"
                       >
                         <LogOut className="h-4 w-4" />
                         <span className="hidden lg:inline">Sign Out</span>
@@ -135,12 +146,12 @@ export function Header() {
                     </form>
                   </div>
                 ) : (
-                  <div className="flex items-center space-x-3 ml-4 pl-4 border-l border-gray-200">
+                  <div className="flex items-center space-x-2 ml-4 pl-4 border-l border-gray-200/60">
                     <Link href="/login" prefetch={true}>
                       <Button 
                         size="sm"
                         variant="ghost"
-                        className="text-gray-700 hover:text-gray-900"
+                        className="text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
                       >
                         Login
                       </Button>
@@ -148,7 +159,7 @@ export function Header() {
                     <Link href="/register" prefetch={true}>
                       <Button 
                         size="sm"
-                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                        className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md hover:shadow-lg rounded-lg transition-all"
                       >
                         Sign Up
                       </Button>
@@ -161,7 +172,7 @@ export function Header() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 -mr-2 touch-manipulation rounded-xl hover:bg-gray-100/80 transition-all duration-300"
+            className="md:hidden p-2.5 -mr-2 touch-manipulation rounded-xl hover:bg-gray-100/80 transition-all duration-300 border border-gray-200/50 hover:border-gray-300"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
@@ -176,14 +187,14 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="border-t border-gray-200/50 bg-white/95 backdrop-blur-xl md:hidden animate-in slide-in-from-top-2 duration-300">
+          <div className="border-t border-gray-200/60 bg-white/95 backdrop-blur-xl md:hidden animate-in slide-in-from-top-2 duration-300 shadow-lg">
             <nav className="flex flex-col py-3 px-2" aria-label="Mobile navigation">
               <Link
                 href="/services"
                 prefetch={true}
-                className={`px-4 py-3 text-sm font-medium transition-colors rounded-lg ${
+                className={`px-4 py-3 text-sm font-medium transition-all rounded-lg ${
                   isActive("/services")
-                    ? "text-blue-600 font-semibold bg-blue-50"
+                    ? "text-blue-600 font-semibold bg-blue-50 shadow-sm"
                     : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
@@ -195,9 +206,9 @@ export function Header() {
                 <Link
                   href="/become-professional"
                   prefetch={true}
-                  className={`px-4 py-3 text-sm font-medium transition-colors rounded-lg ${
+                  className={`px-4 py-3 text-sm font-medium transition-all rounded-lg ${
                     isActive("/become-professional")
-                      ? "text-blue-600 font-semibold bg-blue-50"
+                      ? "text-blue-600 font-semibold bg-blue-50 shadow-sm"
                       : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
